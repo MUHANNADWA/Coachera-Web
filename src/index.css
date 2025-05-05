@@ -1,0 +1,102 @@
+@import "tailwindcss";
+
+/* Ensure the body takes full height */
+html, body, #root {
+  height: 100%;
+}
+
+/* Smooth transitions for main content */
+.main-content {
+  transition: margin-left 0.3s ease;
+}
+
+/* Prevent horizontal scroll */
+body {
+  overflow-x: hidden;
+}
+
+body {
+  @apply bg-gray-50;
+}
+
+/* Custom styles */
+.course-progress {
+  @apply w-full bg-gray-200 rounded-full h-2.5;
+}
+
+.course-progress-bar {
+  @apply bg-blue-500 h-2.5 rounded-full;
+}
+
+/* Smooth transitions for sidebar */
+.sidebar-transition {
+  transition: margin-left 0.3s ease;
+}
+
+/* Ensure content doesn't get hidden behind sidebar */
+.main-content {
+  margin-left: 4rem; /* matches collapsed sidebar width */
+}
+
+@media (min-width: 768px) {
+  .main-content {
+    margin-left: 16rem; /* matches expanded sidebar width */
+  }
+}
+
+/* Breadcrumb specific styles */
+.breadcrumb {
+  background-color: #f9fafb;
+  padding: 0.75rem 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.breadcrumb-item {
+  display: flex;
+  align-items: center;
+}
+
+.breadcrumb-separator {
+  color: #9ca3af;
+  margin: 0 0.5rem;
+}
+
+.breadcrumb-link {
+  color: #6b7280;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.breadcrumb-link:hover {
+  color: #374151;
+}
+
+.breadcrumb-current {
+  color: #374151;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Custom player styles */
+.video-container {
+  aspect-ratio: 16/9;
+}
+
+/* Sidebar scrollbar */
+.course-sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.course-sidebar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.course-sidebar::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.course-sidebar::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
