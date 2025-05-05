@@ -59,7 +59,7 @@ export default function CourseDetail() {
               
               <div className="bg-white p-4 rounded-lg shadow-sm mb-4">
                 <div className="flex justify-between items-center mb-4">
-                  <span className="text-2xl font-bold text-coachera-blue">${course.price}</span>
+                  <span className="text-2xl font-bold text-blue">${course.price}</span>
                   <span className="flex items-center bg-yellow-100 px-2 py-1 rounded text-sm">
                     ★ {course.rating}
                   </span>
@@ -67,7 +67,7 @@ export default function CourseDetail() {
                 <button className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-500-700 transition mb-2">
                   Enroll Now
                 </button>
-                <button className="w-full border border-coachera-blue text-coachera-blue py-3 rounded-lg hover:bg-blue-500-50 transition">
+                <button className="w-full border border-blue text-blue py-3 rounded-lg hover:bg-blue-500-50 transition">
                   Add to Wishlist
                 </button>
               </div>
