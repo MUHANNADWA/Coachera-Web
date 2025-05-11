@@ -1,13 +1,14 @@
-import { Link } from 'react-router-dom'
-import CourseCard from '../../features/courses/components/CourseCard'
-import { Course } from '../types/types'
-import SearchBar from '../components/SearchBar'
-import { useGetCoursesQuery } from '../slices/coursesApiSlice'
-import Loader from '../components/Loader'
-import Message from '../components/Message'
+import { Suspense } from 'react';
+import { Link } from 'react-router-dom';
+import { Course } from '../types/types';
+import SearchBar from '../components/SearchBar';
+import { useGetCoursesQuery } from '../slices/coursesApiSlice';
+import Message from '../components/Message';
+import { courses } from '../data/sampleData';
+import CourseCard from '../../features/courses/components/CourseCard';
+import CourseCardSkeleton from '../../features/courses/components/CourseCardSkeleton';
 
 export default function Home() {
-
   const { data, isLoading, error } = useGetCoursesQuery({});
 
   return (
@@ -37,13 +38,28 @@ export default function Home() {
           <h2 className="text-3xl font-bold mb-12 text-center">Featured Courses</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {
-              isLoading ? <Loader/> : error ? <Message>{(error as Error).message}</Message> :
-                data?.map((course: Course) => (
+            isLoading ? (
+              Array(6).fill(0).map((_, index) => (
+                <CourseCardSkeleton key={index} />
+              ))
+            ) :
+             error ? (
+              <>
+                <Message variant="danger">An unexpected error occurred </Message>
+                {courses.map((course: Course) => (
                   <CourseCard key={course.id} course={course} />
                 ))}
+              </>
+            ) : (
+              <Suspense fallback={Array(3).fill(0).map((_, index) => (<CourseCardSkeleton key={index} />))}>
+                {data?.map((course: Course) => (
+                  <CourseCard key={course.id} course={course} />
+                ))}
+              </Suspense>
+            )}
           </div>
         </div>
       </section>
     </div>
-  )
+  );
 }

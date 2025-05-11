@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../../shared/hooks/hooks';
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { useRegisterMutation } from '../usersApiSlice';
+import { useLoginMutation, useRegisterMutation } from '../usersApiSlice';
 import { setCredentials } from '../authSlice';
+import toast from 'react-hot-toast';
 
-export default function Signup() {
+export default function Register() {
   const [formData, setFormData] = useState({
-    name: '',
+    username: '',
     email: '',
     password: ''
   })
@@ -14,7 +15,10 @@ export default function Signup() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const [login, { isLoading }] = useRegisterMutation();
+  const [register, { isLoading: isRegisterLoading }] = useRegisterMutation();
+  const [login, { isLoading: isLoginLoading }] = useLoginMutation();
+
+  const isLoading = isRegisterLoading || isLoginLoading;
 
   const { user } = useAppSelector((state) => state.auth);
 
@@ -30,10 +34,27 @@ export default function Signup() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const loginFormData = {
+      identifier: formData.email,
+      password: formData.password
+    }
+
+
     try {
-      const res = await login(formData).unwrap();
-      dispatch(setCredentials({ ...res }));
-      navigate(redirect);
+      await toast.promise(
+        (async () => {
+          await register(formData).unwrap();
+          const res = await login(loginFormData).unwrap();
+          dispatch(setCredentials({ ...res }));
+          navigate(redirect);
+        })(),
+        {
+          loading: 'Registering...',
+          success: 'Registration successful!',
+          error: 'Registration failed',
+        }
+      );
     } catch (err) {
       console.log(err);
     }
@@ -59,17 +80,17 @@ export default function Signup() {
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md space-y-4">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                Full Name
+              <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                Username
               </label>
               <input
-                id="name"
-                name="name"
+                id="username"
+                name="username"
                 type="text"
-                autoComplete="name"
+                autoComplete="username"
                 required
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                value={formData.username}
+                onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
@@ -126,7 +147,7 @@ export default function Signup() {
 
           <div>
             <button
-              type="submit"
+              onClick={handleSubmit}
               disabled={isLoading}
               className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >

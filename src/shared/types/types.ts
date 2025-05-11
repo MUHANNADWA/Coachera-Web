@@ -7,6 +7,7 @@ export interface Course {
   rating: number
   image: string
   duration: string
+  ratingCount: number
   level: string
 }
 export interface Video {

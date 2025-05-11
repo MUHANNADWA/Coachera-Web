@@ -12,7 +12,7 @@ import { logout } from "../../features/auth/authSlice";
 
 export default function Header() {
 
-  const { user } = useAppSelector((state) => state.auth);
+  const user = useAppSelector((state) => state.auth.user);
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -22,9 +22,9 @@ export default function Header() {
 
   const logoutHandler = async () => {
     try {
-      await logoutApiCall().unwrap();
+      await logoutApiCall(user?.accessToken);
       dispatch(logout());
-      navigate("/");
+      navigate("/login");
     } catch (err) {
       console.error(err);
     }
@@ -33,7 +33,7 @@ export default function Header() {
     <header className="bg-white shadow-sm ">
       <div className="container mx-auto p-4">
         <div className="flex justify-between">
-          <h1 className="text-xl font-bold text-blue-950">Hi {user?.name ?? "Guest" }!</h1>
+          <h1 className="text-xl font-bold text-blue-950">Hi {user?.userDTO?.username ?? "Guest" }!</h1>
           {/* User profile/notification icons can go here */}
           <div className="flex items-center space-x-4">
             <button className="text-gray-600 hover:text-gray-900">

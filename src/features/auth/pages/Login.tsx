@@ -3,10 +3,11 @@ import { useAppDispatch, useAppSelector } from '../../../shared/hooks/hooks'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useLoginMutation } from '../usersApiSlice'
 import { setCredentials } from '../authSlice'
+import toast from 'react-hot-toast'
 
 export default function Login() {
   const [formData, setFormData] = useState({
-    email: '',
+    identifier: '',
     password: ''
   })
 
@@ -30,12 +31,22 @@ export default function Login() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await login(formData).unwrap();
-      dispatch(setCredentials({ ...res }));
-      navigate(redirect);
+      await toast.promise(
+        (async () => {
+          const res = await login(formData).unwrap();
+          dispatch(setCredentials({ ...res }));
+          navigate(redirect);
+        })(),
+        {
+          loading: 'Logging in...',
+          success: 'Logged in successfully!',
+          error: 'Logging in failed',
+        }
+      );
     } catch (err) {
       console.log(err);
     }
+
   };
 
 
@@ -58,17 +69,15 @@ export default function Login() {
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md space-y-4">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="identifier" className="block text-sm font-medium text-gray-700">
                 Email address
               </label>
               <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
+                id="identifier"
+                name="identifier"
                 required
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                value={formData.identifier}
+                onChange={(e) => setFormData({ ...formData, identifier: e.target.value })}
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
@@ -112,7 +121,7 @@ export default function Login() {
 
           <div>
             <button
-              type="submit"
+              onClick={handleSubmit}
               disabled={isLoading}
               className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >

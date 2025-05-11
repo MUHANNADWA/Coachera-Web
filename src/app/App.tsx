@@ -4,6 +4,7 @@ import Sidebar from '../shared/components/Sidebar'
 import Header from '../shared/components/Header'
 import Breadcrumb from '../shared/components/Breadcrumb'
 import Footer from '../shared/components/Footer'
+import { Toaster } from 'react-hot-toast'
 
 function AppContent() {
   const location = useLocation()
@@ -47,9 +48,11 @@ function AppContent() {
           ...getBreadcrumbs()
         ]} />
 
-        <main className="flex-grow p-6">
+        <main className="flex-grow">
           <Outlet />
         </main>
+
+        <Toaster />
 
         <Footer />
       </div>

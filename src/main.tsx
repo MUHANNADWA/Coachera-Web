@@ -8,11 +8,12 @@ import {
 import ReactDOM from 'react-dom/client'
 import App from './app/App'
 import './index.css'
+import 'react-loading-skeleton/dist/skeleton.css'
 import { HelmetProvider } from "react-helmet-async";
 import { Provider } from 'react-redux'
 import { store } from './app/Store'
 import Login from './features/auth/pages/Login';
-import Signup from './features/auth/pages/Signup';
+import Signup from './features/auth/pages/Register';
 import Home from './shared/pages/Home';
 import Courses from './features/courses/pages/Courses';
 import CourseDetail from './features/courses/pages/CourseDetail';

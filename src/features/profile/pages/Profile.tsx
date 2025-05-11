@@ -7,7 +7,7 @@ export default function Profile() {
 
   return (
     <div>
-      {!user?.token ?
+      {!user?.accessToken ?
         <Message>
           You should be logged in to continue. <a href="/login">Login</a></Message> :
         <div>

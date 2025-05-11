@@ -8,6 +8,7 @@ export const courses: Course[] = [
     instructor: 'Jane Smith',
     price: 49.99,
     rating: 4.7,
+    ratingCount: 50,
     image: 'https://placehold.co/300x200?text=React',
     duration: '6 weeks',
     level: 'Beginner'
@@ -19,6 +20,7 @@ export const courses: Course[] = [
     instructor: 'John Doe',
     price: 59.99,
     rating: 4.9,
+    ratingCount: 50,
     image: 'https://placehold.co/300x200?text=TypeScript',
     duration: '8 weeks',
     level: 'Advanced'
@@ -30,6 +32,7 @@ export const courses: Course[] = [
     instructor: 'Alex Johnson',
     price: 69.99,
     rating: 4.8,
+    ratingCount: 50,
     image: 'https://placehold.co/300x200?text=Algorithms',
     duration: '10 weeks',
     level: 'Intermediate'
@@ -41,6 +44,7 @@ export const courses: Course[] = [
     instructor: 'Sarah Williams',
     price: 54.99,
     rating: 4.6,
+    ratingCount: 50,
     image: 'https://placehold.co/300x200?text=Design',
     duration: '5 weeks',
     level: 'Beginner'
