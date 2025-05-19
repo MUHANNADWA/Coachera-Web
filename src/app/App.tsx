@@ -1,5 +1,5 @@
 import { useLocation, Outlet } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Sidebar from '../shared/components/Sidebar'
 import Header from '../shared/components/Header'
 import Breadcrumb from '../shared/components/Breadcrumb'
@@ -34,19 +34,19 @@ function AppContent() {
 
   return (
     <div className="flex h-screen">
-      <Sidebar
+      {/* <Sidebar
         collapsed={collapsed}
         toggleCollapse={() => setSidebarCollapsed(!collapsed)}
-      />
+      /> */}
 
       {/* Main content area */}
-      <div className={`flex-1 flex flex-col overflow-auto transition-all duration-300 ${collapsed ? 'ml-16' : 'ml-64'
+      <div className={`flex-1 flex flex-col overflow-auto transition-all duration-300 ${collapsed ? 'ml-0' : 'ml-64'
         }`}>
         <Header />
-        <Breadcrumb items={[
+        {/* <Breadcrumb items={[
           { label: 'Home', path: '/' },
           ...getBreadcrumbs()
-        ]} />
+        ]} /> */}
 
         <main className="flex-grow">
           <Outlet />

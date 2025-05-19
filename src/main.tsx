@@ -13,7 +13,7 @@ import { HelmetProvider } from "react-helmet-async";
 import { Provider } from 'react-redux'
 import { store } from './app/Store'
 import Login from './features/auth/pages/Login';
-import Signup from './features/auth/pages/Register';
+import Register from './features/auth/pages/Register';
 import Home from './shared/pages/Home';
 import Courses from './features/courses/pages/Courses';
 import CourseDetail from './features/courses/pages/CourseDetail';
@@ -32,7 +32,7 @@ const router = createBrowserRouter(
 
       <Route index path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
+      <Route path="/signup" element={<Register />} />
       <Route path="/courses" element={<Courses />} />
       <Route path="/courses/:id" element={<CourseDetail />} />
       <Route path="/learn/:id" element={<CoursePlayer />} />

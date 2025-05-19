@@ -1,5 +1,5 @@
-// export const BASE_URL = "http://158.101.243.249:9090/api";
-export const BASE_URL = "http://172.26.1.30:8080/api";
+export const BASE_URL = "http://158.101.248.180:8080/api";
+// export const BASE_URL = "http://172.26.1.30:8080/api";
 export const USERS_URL = "/auth";
 export const COURSES_URL = "/courses";
 export const UPLOAD_URL = "/upload";

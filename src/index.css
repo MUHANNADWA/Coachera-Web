@@ -1,16 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 @import "tailwindcss";
 
-/* Ensure the body takes full height */
-html, body, #root {
-  height: 100%;
+@theme {
+  --color-primary: #2EC4B6;
 }
 
-/* Smooth transitions for main content */
+
+html, body, #root {
+  height: 100%;
+  font-family: 'Poppins', sans-serif;
+}
+
+
 .main-content {
   transition: margin-left 0.3s ease;
 }
 
-/* Prevent horizontal scroll */
+
 body {
   overflow-x: hidden;
 }
@@ -19,32 +25,32 @@ body {
   @apply bg-gray-50;
 }
 
-/* Custom styles */
+
 .course-progress {
   @apply w-full bg-gray-200 rounded-full h-2.5;
 }
 
 .course-progress-bar {
-  @apply bg-blue-500 h-2.5 rounded-full;
+  @apply bg-primary h-2.5 rounded-full;
 }
 
-/* Smooth transitions for sidebar */
+
 .sidebar-transition {
   transition: margin-left 0.3s ease;
 }
 
-/* Ensure content doesn't get hidden behind sidebar */
+
 .main-content {
-  margin-left: 4rem; /* matches collapsed sidebar width */
+  margin-left: 4rem; 
 }
 
 @media (min-width: 768px) {
   .main-content {
-    margin-left: 16rem; /* matches expanded sidebar width */
+    margin-left: 16rem; 
   }
 }
 
-/* Breadcrumb specific styles */
+
 .breadcrumb {
   background-color: #f9fafb;
   padding: 0.75rem 1.5rem;
@@ -78,12 +84,12 @@ body {
   font-weight: 500;
 }
 
-/* Custom player styles */
+
 .video-container {
   aspect-ratio: 16/9;
 }
 
-/* Sidebar scrollbar */
+
 .course-sidebar::-webkit-scrollbar {
   width: 6px;
 }
@@ -99,4 +105,34 @@ body {
 
 .course-sidebar::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
+}
+
+.ql-editor{
+  & .ql-video{
+    display: flex;
+    justify-self: center;
+    width: 800px;
+    height: 450px;
+    border-radius: 10px;
+    margin-top: 10px;
+  }
+  & img{
+    border-radius: 10px;
+    margin-top: 10px;
+  }
+  p{
+    &.ql-align-center img{
+      display: flex;
+      justify-self: center;
+    }
+    &.ql-align-right{
+      display: flex;
+      justify-self: end;
+    }
+    &.ql-align-justify{
+      display: flex;
+      justify-self: center;
+      height: 100%;
+    }
+  }
 }

@@ -44,7 +44,7 @@ export default function Register() {
     try {
       await toast.promise(
         (async () => {
-          await register(formData).unwrap();
+          await register(formData);
           const res = await login(loginFormData).unwrap();
           dispatch(setCredentials({ ...res }));
           navigate(redirect);
@@ -72,7 +72,7 @@ export default function Register() {
           <p className="mt-2 text-sm text-gray-600">
             Or{' '}
             <Link to="/login" className="font-medium text-blue-600 hover:text-blue-500">
-              sign in to existing account
+              log in to existing account
             </Link>
           </p>
         </div>

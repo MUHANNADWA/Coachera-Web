@@ -1,37 +1,37 @@
-import { useState, useEffect } from 'react'
 import CourseCard from '../components/CourseCard'
 import { Course } from '../../../shared/types/types'
-import axios from 'axios'
+import { useGetCoursesQuery } from '../../../shared/slices/coursesApiSlice';
+import CourseCardSkeleton from '../components/CourseCardSkeleton';
+import Message from '../../../shared/components/Message';
+import { courses } from '../../../shared/data/sampleData';
 
 export default function Courses() {
-  const [courses, setCourses] = useState<Course[]>([])
-  const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const response = await axios.get('https://api.example.com/courses')
-        setCourses(response.data)
-      } catch (error) {
-        console.error('Error fetching courses:', error)
-      } finally {
-        setLoading(false)
-      }
-    }
-    
-    fetchCourses()
-  }, [])
-
-  if (loading) return <div className="text-center py-10">Loading...</div>
+  const { data, isLoading, error } = useGetCoursesQuery({});
 
   return (
-    <div className="container mx-auto py-8">
-      <h1 className="text-3xl font-bold mb-8">All Courses</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {courses.map(course => (
-          <CourseCard key={course.id} course={course} />
-        ))}
+    <section className="py-16 bg-gray-50">
+      <div className="container mx-auto px-4">
+        <h2 className="text-3xl font-bold mb-12 text-center">Featured Courses</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {isLoading ? (
+            Array(6).fill(0).map((_, index) => (
+              <CourseCardSkeleton key={index} />
+            ))
+          ) : error ? (
+            <>
+              <Message variant="danger">An unexpected error occurred </Message>
+              {courses.map((course: Course) => (
+                <CourseCard key={course.id} course={course} />
+              ))}
+            </>
+          ) : (
+            data.map((course: Course) => (
+              <CourseCard key={course.id} course={course} />
+            ))
+          )}
+        </div>
       </div>
-    </div>
-  )
+    </section>
+  );
 }
