@@ -37,8 +37,7 @@ function AppContent() {
       /> */}
 
       {/* Main content area */}
-      <div className={`flex-1 flex flex-col overflow-auto transition-all duration-300 ${'ml-64'
-        }`}>
+      <div className={`flex-1 flex flex-col overflow-auto transition-all duration-300`}>
         <Header />
         {/* <Breadcrumb items={[
           { label: 'Home', path: '/' },
