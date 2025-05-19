@@ -3,7 +3,7 @@ import { useAppSelector } from '../hooks/hooks';
 
 const AdminRoute = () => {
   const { user } = useAppSelector((state) => state.auth);
-  return user && user.isAdmin ? (
+  return user && user.userDTO.isAdmin ? (
     <Outlet />
   ) : (
     <Navigate to="/login" replace />
