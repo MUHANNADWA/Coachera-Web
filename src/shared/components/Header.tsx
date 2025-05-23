@@ -31,27 +31,27 @@ export default function Header() {
     }
   };
   return (
-    <header className="sticky top-0 bg-white z-50">
+    <header className="sticky top-0 bg-white z-50 shadow-sm">
       <div className="container mx-auto p-4">
         <div className="flex justify-between">
-          <div className="flex justify-between items-center">
+          <Link to='/' className="flex justify-between items-center">
             <img src={logo} alt="logo" className="w-10" />
             <h1 className="text-xl px-4 font-bold text-primary">coachera</h1>
-          </div>
-          <div className="flex items-center space-x-8 font-semibold">
-            <Link to='/login'>
+          </Link>
+          <section className="flex items-center space-x-8 font-semibold *:">
+            <Link to='/learn/1' className="header-element">
               What we offer
             </Link >
-            <Link to='/courses'>
+            <Link to='/courses' className="header-element">
               Courses
             </Link >
-            <Link to='/courses'>
+            <Link to='/courses' className="header-element">
               Categories
             </Link >
-            <Link to='/login'>
+            <Link to='/prices' className="header-element">
               Prices
             </Link >
-          </div>
+          </section>
           <Menu as="div" className="relative inline-block text-left">
             <div>
               <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-50">

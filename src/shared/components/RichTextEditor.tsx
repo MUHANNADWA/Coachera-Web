@@ -1,52 +1,57 @@
-import { useState } from 'react';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import { Editor } from '@tinymce/tinymce-react';
+import { useRef, useState } from 'react';
+import type { Editor as TinyMCEEditor } from 'tinymce';
 
 export default function RichTextEditor() {
-  const [value, setValue] = useState('');
+  const editorRef = useRef<TinyMCEEditor | null>(null);
+  const [content, setContent] = useState('');
 
-  const modules = {
-    toolbar: [
-      [{ font: [] }, { size: [] }],
-      [{ list: "ordered" }, { list: "bullet" }],
-      [{ align: [] }],
-      ["bold", "italic", "underline", "strike"],
-      [{ color: [] }, { background: [] }],
-      [{ script: "sub" }, { script: "super" }],
-      ["blockquote", "code-block"],
-      ["link", "image", "video", "formula"],
-      ["clean"],
-    ]
+  const handleSave = () => {
+    const editor = editorRef.current;
+    const html = editor?.getContent();
+    console.log("HTML content to save:", html);
+    setContent(html!);
+    // TODO: Send HTML to backend
   };
 
-  const formats = [
-    "font", "size",
-    "bold", "italic", "underline", "strike",
-    "color", "background",
-    "script",
-    "blockquote", "code-block",
-    "list", "bullet", "align",
-    "link", "image", "video", "formula",
-  ];
-
-
   return (
-    <>
-      <ReactQuill
-        theme="snow"
-        value={value}
-        onChange={setValue}
-        onBlur={() => console.log(value)}
-        modules={modules}
-        formats={formats}
-        placeholder="Type your response here..."
+    <div>
+      <Editor
+        apiKey={import.meta.env.VITE_TINY_API}
+        onInit={(_, editor) => (editorRef.current = editor)}
+        value={content}
+        init={{
+          height: 400,
+          menubar: true,
+          plugins: [
+            'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+            'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+          ],
+          toolbar:
+            'undo redo | fontselect fontsizeselect | ' +
+            'bold italic underline strikethrough | forecolor backcolor | alignleft aligncenter ' +
+            'alignright alignjustify | bullist numlist outdent indent | ' +
+            'blockquote subscript superscript | link image media table code | ' +
+            'removeformat | help',
+          content_style:
+            'body { font-family: Poppins, sans-serif; }',
+        }}
+        onEditorChange={(newValue: string) => setContent(newValue)}
       />
-      <div
-        className="ql-editor"
-        dangerouslySetInnerHTML={{ __html: value }}
+
+      <button
+        onClick={handleSave}
+        className="mt-4 px-4 py-2 bg-blue-600 text-white rounded"
       >
-        {/* value : {value} */}
-      </div>
-    </>
+        Save Lesson
+      </button>
+
+      <h2 className="mt-6 text-lg font-semibold">Preview:</h2>
+      <div
+        className="border p-4 mt-2"
+        dangerouslySetInnerHTML={{ __html: content }}
+      />
+    </div>
   );
 }

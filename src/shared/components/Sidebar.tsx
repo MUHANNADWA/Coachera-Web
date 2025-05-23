@@ -1,65 +1,59 @@
 import {
-  Squares2X2Icon,
+  VideoCameraIcon,
+  DocumentTextIcon,
   BookOpenIcon,
-  UserGroupIcon,
-  UserCircleIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  VideoCameraIcon
-} from '@heroicons/react/24/outline'
-import SearchBar from './SearchBar'
+  Bars3Icon
+} from '@heroicons/react/24/outline';
+import { Week } from '../types/types';
 
 interface SidebarProps {
-  collapsed: boolean
-  toggleCollapse: () => void
+  collapsed: boolean;
+  toggleCollapse: () => void;
+  weeks: Week[];
+  currentVideo: number;
+  setCurrentVideo: (index: number) => void;
 }
 
-export default function Sidebar({ collapsed, toggleCollapse }: SidebarProps) {
-  const menuItems = [
-    { icon: VideoCameraIcon, label: 'learn', href: '/learn/1' },
-    { icon: Squares2X2Icon, label: 'Dashboard', href: '/dashboard' },
-    { icon: BookOpenIcon, label: 'Courses', href: '/courses' },
-    { icon: UserGroupIcon, label: 'Students', href: '/students' },
-    { icon: UserCircleIcon, label: 'User Profile', href: '/profile' },
-  ]
+export default function Sidebar({ collapsed, toggleCollapse, weeks, currentVideo, setCurrentVideo }: SidebarProps) {
 
   return (
-    <div className={`h-full bg-white shadow-md fixed top-0 left-0 transition-all duration-300 z-10 ${collapsed ? 'w-16' : 'w-64'
-      }`}>
-      <div className="p-4 flex items-center justify-between border-b">
-        {!collapsed &&
-          <h1 className="text-xl font-bold text-blue-950">Coachera</h1>
-        }
-        <button
-          onClick={toggleCollapse}
-          className="text-gray-500 hover:text-gray-700"
-        >
-          {collapsed ? (
-            <div className="flex justify-between">
-              <ChevronRightIcon className="h-5 w-5" />
-            </div>) : (
-            <ChevronLeftIcon className="h-5 w-5" />
-          )}
+    <div className={`h-full bg-white pl-8 pr-4 py-4 top-0 left-0 shadow-sm transition-all duration-300 overflow-x-hidden ${collapsed ? 'overflow-y-hidden w-12' : 'overflow-y-scroll w-70'}`}>
+      <div className={`flex items-center justify-between bg-white ${!collapsed && 'p-4'}`}>
+        {!collapsed && <h1 className="font-bold">Week 1</h1>}
+        <button onClick={toggleCollapse} className="text-gray-500 hover:text-gray-700">
+          <Bars3Icon className="h-6 w-6" />
         </button>
       </div>
 
-      <nav className="p-2">
-        <ul className="space-y-1">
-          {!collapsed && <SearchBar />}
-          {menuItems.map((item, index) => (
-            <li key={index}>
-              <a
-                href={item.href}
-                className={`flex items-center p-3 rounded-lg hover:bg-gray-100 transition-colors ${collapsed ? 'justify-center' : ''
-                  }`}
-              >
-                <item.icon className={`h-6 w-6 text-gray-600 ${collapsed ? '' : 'mr-3'}`} />
-                {!collapsed && <span>{item.label}</span>}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
+      {/* Course Content Sidebar */}
+      <div className={`${collapsed && 'hidden'}`}>
+        {weeks.map((week) => (
+          <div key={week.id}>
+            <h4 className="font-semibold p-2">{week.title}</h4>
+
+            <ul>
+              {week.sections.flatMap((section) => section.videos.map((video, index) => (
+                <li
+                  key={video.id}
+                  className={`p-4 cursor-pointer hover:bg-gray-50 ${currentVideo === index ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''}`}
+                  onClick={() => setCurrentVideo(index)}
+                >
+                  <div className="flex items-center">
+                    <div className={`w-4 h-4 rounded-full flex items-center justify-center mr-3 ${currentVideo === index ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-600'}`}>
+                      {/* {index + 1} */}
+                      {Math.random() > 0.5 ? <DocumentTextIcon /> : Math.random() > 0.5 ? <VideoCameraIcon /> : <BookOpenIcon />}
+                    </div>
+                    <div>
+                      <p className={`text-sm ${currentVideo === index ? 'font-medium text-blue-600' : 'text-gray-700'}`}>{video.title}</p>
+                      <p className="text-xs text-gray-500">{video.duration}</p>
+                    </div>
+                  </div>
+                </li>
+              )))}
+            </ul>
+          </div>
+        ))}
+      </div>
     </div>
-  )
+  );
 }

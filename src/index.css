@@ -5,134 +5,27 @@
   --color-primary: #2EC4B6;
 }
 
-
-html, body, #root {
-  height: 100%;
-  font-family: 'Poppins', sans-serif;
-}
-
-
-.main-content {
-  transition: margin-left 0.3s ease;
-}
-
-
 body {
-  overflow-x: hidden;
+  @apply h-full font-['poppins',sans-serif] overflow-x-hidden
 }
 
-body {
-  @apply bg-gray-50;
+hr{
+  @apply text-gray-300
 }
 
-
-.course-progress {
-  @apply w-full bg-gray-200 rounded-full h-2.5;
+.header-element{
+  @apply hover:text-primary focus:text-primary focus:before:block before:bg-primary before:w-full before:h-0.5 before:hidden before:relative before:top-8 before:left-0;
 }
 
-.course-progress-bar {
-  @apply bg-primary h-2.5 rounded-full;
+/* To delete the logo of tinymce */
+.tox .tox-statusbar__branding a, .tox-promotion{
+  display: none !important;
 }
 
-
-.sidebar-transition {
-  transition: margin-left 0.3s ease;
-}
-
-
-.main-content {
-  margin-left: 4rem; 
-}
-
-@media (min-width: 768px) {
-  .main-content {
-    margin-left: 16rem; 
-  }
-}
-
-
-.breadcrumb {
-  background-color: #f9fafb;
-  padding: 0.75rem 1.5rem;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.breadcrumb-item {
-  display: flex;
-  align-items: center;
-}
-
-.breadcrumb-separator {
-  color: #9ca3af;
-  margin: 0 0.5rem;
-}
-
-.breadcrumb-link {
-  color: #6b7280;
-  font-size: 0.875rem;
-  font-weight: 500;
-  text-decoration: none;
-}
-
-.breadcrumb-link:hover {
-  color: #374151;
-}
-
-.breadcrumb-current {
-  color: #374151;
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-
-.video-container {
-  aspect-ratio: 16/9;
-}
-
-
-.course-sidebar::-webkit-scrollbar {
-  width: 6px;
-}
-
-.course-sidebar::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-.course-sidebar::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 3px;
-}
-
-.course-sidebar::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
-}
-
-.ql-editor{
-  & .ql-video{
-    display: flex;
-    justify-self: center;
-    width: 800px;
-    height: 450px;
-    border-radius: 10px;
-    margin-top: 10px;
-  }
-  & img{
-    border-radius: 10px;
-    margin-top: 10px;
-  }
-  p{
-    &.ql-align-center img{
-      display: flex;
-      justify-self: center;
-    }
-    &.ql-align-right{
-      display: flex;
-      justify-self: end;
-    }
-    &.ql-align-justify{
-      display: flex;
-      justify-self: center;
-      height: 100%;
-    }
+/* Video player */
+.plyr{
+  @apply h-full rounded-3xl;
+  video{
+    @apply bg-[#ecf1f3]
   }
 }

@@ -11,7 +11,10 @@ export const courses: Course[] = [
     ratingCount: 50,
     image: 'https://placehold.co/300x200?text=React',
     duration: '6 weeks',
-    level: 'Beginner'
+    level: 'Beginner',
+    org: 'Acme Inc.',
+    category: 'Health',
+    weeks:[]
   },
   {
     id: 2,
@@ -23,7 +26,10 @@ export const courses: Course[] = [
     ratingCount: 50,
     image: 'https://placehold.co/300x200?text=TypeScript',
     duration: '8 weeks',
-    level: 'Advanced'
+    level: 'Advanced',
+    org: 'Super Inc.',
+    category: 'Programming',
+    weeks:[]
   },
   {
     id: 3,
@@ -35,7 +41,10 @@ export const courses: Course[] = [
     ratingCount: 50,
     image: 'https://placehold.co/300x200?text=Algorithms',
     duration: '10 weeks',
-    level: 'Intermediate'
+    level: 'Intermediate',
+    org: 'Tech Inc.',
+    category: 'Sport',
+    weeks:[]
   },
   {
     id: 4,
@@ -47,6 +56,9 @@ export const courses: Course[] = [
     ratingCount: 50,
     image: 'https://placehold.co/300x200?text=Design',
     duration: '5 weeks',
-    level: 'Beginner'
+    level: 'Beginner',
+    org: 'Design Inc.',
+    category: 'Art',
+    weeks:[]
   }
 ]

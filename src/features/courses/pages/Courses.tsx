@@ -26,7 +26,7 @@ export default function Courses() {
               ))}
             </>
           ) : (
-            data.map((course: Course) => (
+            data?.data.map((course: Course) => (
               <CourseCard key={course.id} course={course} />
             ))
           )}

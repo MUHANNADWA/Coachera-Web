@@ -1,12 +1,13 @@
 import { useParams } from 'react-router-dom'
 import { courses } from '../../../shared/data/sampleData'
 import { CheckBadgeIcon, ClockIcon, ChartBarIcon } from '@heroicons/react/24/outline'
+import NotFound from '../../../shared/pages/NotFound'
 
 export default function CourseDetail() {
   const { id } = useParams()
   const course = courses.find(c => c.id === Number(id))
 
-  if (!course) return <div>Course not found</div>
+  if (!course) return <NotFound/>;
 
   return (
     <div className="container mx-auto py-8 px-4">

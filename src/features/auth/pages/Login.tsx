@@ -75,6 +75,7 @@ export default function Login() {
               <input
                 id="identifier"
                 name="identifier"
+                autoComplete="username"
                 required
                 value={formData.identifier}
                 onChange={(e) => setFormData({ ...formData, identifier: e.target.value })}
