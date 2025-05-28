@@ -23,10 +23,10 @@ export default function Login() {
   const redirect = sp.get("redirect") || "/";
 
   useEffect(() => {
-    if (user) {
+    if (user?.accessToken) {
       navigate(redirect);
     }
-  }, [navigate, redirect, user]);
+  }, [navigate, redirect, user?.accessToken]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,7 +34,8 @@ export default function Login() {
       await toast.promise(
         (async () => {
           const res = await login(formData).unwrap();
-          dispatch(setCredentials({ ...res }));
+          const credentials = res.data;
+          dispatch(setCredentials({ ...credentials }));
           navigate(redirect);
         })(),
         {

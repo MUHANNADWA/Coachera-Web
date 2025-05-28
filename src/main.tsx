@@ -35,7 +35,8 @@ const router = createBrowserRouter(
       <Route path="/signup" element={<Register />} />
       <Route path="/courses" element={<Courses />} />
       <Route path="/courses/:id" element={<CourseDetail />} />
-      <Route path="/learn/:id" element={<CoursePlayer />} />
+      <Route path="/learn/:courseId/:moduleId" element={<CoursePlayer />} />
+      <Route path="/public-profile/:id" element={<Profile />} />
 
       <Route element={<ProtectedRoute />}>
         <Route path="/profile" element={<Profile />} />

@@ -16,8 +16,8 @@ function AppContent() {
           <Outlet />
         </main>
 
-        <Toaster />
-
+        <Toaster containerStyle={{ top: '100px' }}/>
+        
         <Footer />
       </div>
     </div>

@@ -2,11 +2,13 @@ import { Link } from 'react-router-dom';
 import img from '../../assets/1.svg'
 import Courses from '../../features/courses/pages/Courses';
 import RichTextEditor from '../components/RichTextEditor';
+import Meta from '../components/Meta';
 export default function Home() {
 
   return (
     <>
       <section className="flex flex-col md:flex-row items-center justify-between px-6 md:px-20 py-20 bg-white">
+        <Meta/>
         {/* Text Content */}
         <div className="max-w-xl mb-10 md:mb-0">
           <p className="text-primary font-semibold tracking-wide uppercase text-sm mb-2">

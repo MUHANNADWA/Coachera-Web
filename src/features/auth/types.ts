@@ -1,13 +1,14 @@
 export interface User {
-  accessToken?: string;
-  userDTO: UserDTO;
+  accessToken?: string
+  userDTO: UserDTO
 }
 
 export interface UserDTO {
-  _id: string;
-  username: string;
-  email: string;
-  isAdmin?: boolean;
+  _id: string
+  username: string
+  email: string
+  isAdmin?: boolean
+  profileImage: string
 }
 
 

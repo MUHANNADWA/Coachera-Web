@@ -3,19 +3,25 @@ import 'plyr-react/plyr.css'; // Default styles
 
 interface VideoPlayerProps {
   src: string;
+  size?: number;
 }
 
-export default function VideoPlayer({ src }: VideoPlayerProps){
+export default function VideoPlayer({ src, size }: VideoPlayerProps) {
   return (
     <div className="absolute top-0 left-0 h-full w-full">
       <Plyr
         source={{
           type: 'video',
           sources: [
-            {
-              src: src,
-              type: 'video/mp4',
-            },
+            src.includes('youtu.be') ?
+              {
+                src: src,
+                provider: 'youtube',
+              } : {
+                src: src,
+                type: 'video/mp4',
+                size:size
+              }
           ],
         }}
         options={{

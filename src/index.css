@@ -3,13 +3,14 @@
 
 @theme {
   --color-primary: #2EC4B6;
+  --color-primary-light: #ECF1F3;
 }
 
 body {
   @apply h-full font-['poppins',sans-serif] overflow-x-hidden
 }
 
-hr{
+hr {
   @apply text-gray-300
 }
 
@@ -26,6 +27,6 @@ hr{
 .plyr{
   @apply h-full rounded-3xl;
   video{
-    @apply bg-[#ecf1f3]
+    @apply bg-primary-light
   }
 }

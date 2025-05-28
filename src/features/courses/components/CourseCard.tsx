@@ -1,16 +1,15 @@
 import { Course } from '../../../shared/types/types'
 import { FaRegHeart } from 'react-icons/fa'
-import renderStars from '../../../utils/utils'
+import renderStars from '../../../utils/RenderStars'
 import { Link } from 'react-router-dom'
 
 interface CourseCardProps {
   course: Course
 }
 
-
 export default function CourseCard({ course }: CourseCardProps) {
   return (
-    <Link to={`/courses/${course.id}`} className="bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all hover:scale-105 duration-300 w-full overflow-hidden">
+    <Link to={`/courses/${course.id}`} className="bg-white rounded-2xl relative shadow-sm hover:shadow-lg transition-all hover:scale-105 duration-300 w-full overflow-hidden">
       <img
         src={course.image ?? `https://placehold.co/300x200?text=${course.title}`}
         alt={course.title}
@@ -34,6 +33,9 @@ export default function CourseCard({ course }: CourseCardProps) {
           <div className="flex space-x-0.5">{renderStars(course.rating ?? 0)}</div>
           <span className="ml-2 text-gray-500">({course.ratingCount ?? 0})</span>
         </div>
+      </div>
+      <div>
+        <span className="text-sm absolute  top-2 right-2 text-primary bg-primary-light border-primary border-1 p-2 rounded-2xl">{course.category}</span>
       </div>
     </Link>
   )

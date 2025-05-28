@@ -24,10 +24,11 @@ export interface Course {
   level: string
   category: string
   org: string
-  weeks: Week[]
+  modules: Module[]
 }
 
-export interface Week {
+
+export interface Module {
   id: number
   title: string
   sections: Section[]

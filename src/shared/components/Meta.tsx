@@ -8,8 +8,8 @@ interface MetaProps {
 }
 
 const Meta = ({
-  title,
-  description,
+  title = "Coachera",
+  description = "Discover over 1000 courses, and meet the best teachers",
   keywords,
   canonicalUrl
 }: MetaProps) => {
@@ -23,12 +23,6 @@ const Meta = ({
       <meta property="og:description" content={description} />
     </Helmet>
   );
-};
-
-Meta.defaultProps = {
-  title: "Welcome To Coachera",
-  description: "We sell the best products for cheap",
-  keywords: "electronics, buy electronics, cheap electronics",
 };
 
 export default Meta;

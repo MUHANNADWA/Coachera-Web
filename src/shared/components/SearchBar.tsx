@@ -5,7 +5,8 @@ export default function SearchBar() {
   const [query, setQuery] = useState('')
 
   return (
-    <div className="relative w-full max-w-md">
+    <div className="relative w-4/12 max-w-md">
+      <form action={`/search/${query}`} method="get">
       <input
         type="text"
         placeholder="Search for courses..."
@@ -13,6 +14,7 @@ export default function SearchBar() {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
       />
+      </form>
       <MagnifyingGlassIcon className="h-5 w-5 text-gray-400 absolute left-3 top-2.5" />
     </div>
   )

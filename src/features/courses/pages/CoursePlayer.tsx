@@ -1,173 +1,138 @@
-import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
-import { courses } from '../../../shared/data/sampleData'
-import { DocumentTextIcon, ListBulletIcon, ChatBubbleLeftIcon } from '@heroicons/react/24/outline'
-import Sidebar from '../../../shared/components/Sidebar'
-import Breadcrumb from '../../../shared/components/Breadcrumb'
-import NotFound from '../../../shared/pages/NotFound'
-import { Week } from '../../../shared/types/types'
-import VideoPlayer from '../../../shared/components/VideoPlayer'
+import { useEffect, useMemo, useState } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { courses } from '../../../shared/data/sampleData';
+import Sidebar from '../components/Sidebar';
+import Breadcrumb from '../components/Breadcrumb';
+import VideoPlayer from '../components/VideoPlayer';
+import NotFound from '../../../shared/pages/NotFound';
+import Loader from '../../../shared/components/Loader';
+import { CurrentVideo } from '../types';
+import { getBreadcrumbs } from '../../../utils/breadcrumbs';
 
 export default function CoursePlayer() {
-  const { id } = useParams()
-  const course = courses.find(c => c.id === Number(id))
-  const [activeTab, setActiveTab] = useState('content')
-  const [currentVideo, setCurrentVideo] = useState(0)
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { courseId, moduleId } = useParams();
 
-  const [collapsed, setSidebarCollapsed] = useState(() => {
-    const saved = localStorage.getItem('sidebarCollapsed')
-    return saved === 'true'
-  })
+  const courseIndex = Number(courseId) - 1;
+  const moduleIndex = Number(moduleId);
+  const course = courses[courseIndex];
+  const module = course?.modules.find(w => w.id === moduleIndex);
 
+  const [currentVideo, setCurrentVideo] = useState<CurrentVideo | null>(null);
+
+  // Load initial or last video depending on navigation state
   useEffect(() => {
-    localStorage.setItem('sidebarCollapsed', String(collapsed))
-  }, [collapsed])
+    if (!module) return;
 
-  if (!course) return <NotFound />
+    const isNavigatedFromPrev = location.state?.fromNav === 'prev';
+    const targetSection = isNavigatedFromPrev
+      ? module.sections[module.sections.length - 1]
+      : module.sections[0];
 
-  const weeks: Week[] = [
-    {
-      id: 1,
-      title: 'Introduction',
-      sections: [{
-        id: 1,
-        title: 'section1',
-        videos: [
-          { id: 1, title: 'Welcome to the Course', duration: '2:45', url: 'https://eu3-proxy.yewtu.be/videoplayback?expire=1747946959&ei=bzkvaMvDHdmY6dsP0O3dyAY&ip=2001%3A470%3Ac8e7%3A29e7%3A8e66%3A2cf9%3Aaa3a%3A35a8&id=o-ACsaeNNAivPjVGuFNVIywpvgkuQ26BsdPX9PCoGhqAWY&itag=18&source=youtube&requiressl=yes&xpc=EgVo2aDSNQ%3D%3D&met=1747925359%2C&mh=du&mm=31%2C26&mn=sn-4g5ednkl%2Csn-5hnekn7s&ms=au%2Conr&mv=m&mvi=1&pl=48&rms=au%2Cau&initcwndbps=368750&bui=AecWEAaBDAp-DcbvOuOJ5ffGVKans5ldplyJePjcnOvWlPAP0s4AEp06KHc7f-wnwU0ZbGdhWGhP5oTW&spc=wk1kZttEKv_laTiNy71PzmErScRG1CV6KAlECPt8lTnxk9gGPkKeX3bWJ773KvfK4x_JKRnSmu4C3jvxYRfJGe8V&vprv=1&svpuc=1&mime=video%2Fmp4&ns=s7DoSEUKdP6RmwMONI3zkvMQ&rqh=1&gir=yes&clen=110839311&ratebypass=yes&dur=4803.883&lmt=1725395842223359&mt=1747925138&fvip=3&fexp=51355912&c=WEB&sefc=1&txp=4438434&n=hzd2MutQSM2GJA&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cxpc%2Cbui%2Cspc%2Cvprv%2Csvpuc%2Cmime%2Cns%2Crqh%2Cgir%2Cclen%2Cratebypass%2Cdur%2Clmt&sig=AJfQdSswRgIhALxlg9XXCnJ3-e6mYE7sEB3_ChmPj0uZhXminkYzgk5DAiEAq2BLfHL-Ur7tPBxKxuTun-sHf0VWSmiLzSLVFhnC-gw%3D&lsparams=met%2Cmh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Crms%2Cinitcwndbps&lsig=ACuhMU0wRQIhAMNxKCNbaVctk9XC-Y8hw7vYciyGBszXb3dkRUsqHEBCAiBT_9WGRxZ5DByqeXz587R9A5e5kgsBIcHJiiBrF9igzw%3D%3D&pot=Mp4BfDDd0_a-NbJ8cl4BGUgcQxGhpz0UXteR220R8dQ6HHZ9p9ylRueK-45rTKDluvJvxHgUvZfFefdw76IK4kbrBMR5ok4-o17934GYj5zuZ8qL5JDvfW41ETzz9GL8tG93cm72rbUgdzzLGkiAN6Qv8cPLv4zAM6QJFxnAEqLkJNRdxafMnikNsollGU9vH8SPZ1MEGOlYVzMKk1MkJg8%3D&cver=2.20250222.10.00&alr=no&host=rr1---sn-4g5ednkl.googlevideo.com' },
-          { id: 2, title: 'Course Introduction', duration: '2:45', url: 'https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.mp4' },
-          { id: 3, title: 'Course Overview', duration: '4:30', url: 'https://youtu.be/dQw4w9WgXcQ' }
-        ]
-      }],
-    },
-    {
-      id: 2,
-      title: 'Getting Started',
-      sections: [{
-        id: 1,
-        title: 'section1',
-        videos: [
-          { id: 3, title: 'Installation Guide', duration: '6:15', url: 'https://youtu.be/dQw4w9WgXcQ' },
-          { id: 4, title: 'First Project Setup', duration: '8:20', url: 'https://youtu.be/dQw4w9WgXcQ' }
-        ]
-      }]
+    const targetVideo = isNavigatedFromPrev
+      ? targetSection?.videos[targetSection.videos.length - 1]
+      : targetSection?.videos[0];
+
+    if (targetSection && targetVideo) {
+      setCurrentVideo({ sectionId: targetSection.id, videoId: targetVideo.id });
     }
-  ]
+  }, [module, location.state]);
 
-  const allVideos = weeks.flatMap(m => m.sections.flatMap(s => s.videos))
-  const video = allVideos[currentVideo]
+  const activeSection = module?.sections.find(s => s.id === currentVideo?.sectionId);
+  const video = activeSection?.videos.find(v => v.id === currentVideo?.videoId);
+
+  const allVideos = useMemo(() => (
+    module?.sections.flatMap(section =>
+      section.videos.map(video => ({ ...video, sectionId: section.id }))
+    ) || []
+  ), [module]);
+
+  const currentIndex = useMemo(() => (
+    allVideos.findIndex(v => v.id === currentVideo?.videoId && v.sectionId === currentVideo?.sectionId)
+  ), [allVideos, currentVideo]);
+
+  const handleNavigateToModule = (newModuleIndex: number, from: 'prev' | 'next') => {
+    navigate(`/learn/${courseId}/${newModuleIndex}`, { state: { fromNav: from } });
+  };
+
+  const handleNext = () => {
+    if (!module || !course || currentIndex === -1) return;
+
+    const isLastVideoInModule = currentIndex === allVideos.length - 1;
+    const isLastModule = module.id === course.modules[course.modules.length - 1].id;
+
+    if (isLastVideoInModule && !isLastModule) {
+      handleNavigateToModule(moduleIndex + 1, 'next');
+    } else if (currentIndex < allVideos.length - 1) {
+      const nextVideo = allVideos[currentIndex + 1];
+      setCurrentVideo({ sectionId: nextVideo.sectionId, videoId: nextVideo.id });
+    }
+  };
+
+  const handlePrev = () => {
+    if (!module || !course || currentIndex === -1) return;
+
+    const isFirstVideoInModule = currentIndex === 0;
+    const isFirstModule = module.id === course.modules[0].id;
+
+    if (isFirstVideoInModule && !isFirstModule) {
+      handleNavigateToModule(moduleIndex - 1, 'prev');
+    } else if (currentIndex > 0) {
+      const prevVideo = allVideos[currentIndex - 1];
+      setCurrentVideo({ sectionId: prevVideo.sectionId, videoId: prevVideo.id });
+    }
+  };
+
+  const nextExists = module && course && (
+    (module.id !== course.modules[course.modules.length - 1].id && currentIndex === allVideos.length - 1)
+    || currentIndex < allVideos.length - 1
+  );
+
+  const prevExists = module && course && (
+    (module.id !== course.modules[0].id && currentIndex === 0)
+    || currentIndex > 0
+  );
+
+  if (!course || !module) return <NotFound />;
+  if (!video || !currentVideo) {
+    return (
+      <div className="flex items-center justify-center h-screen text-lg text-gray-500">
+        <Loader />
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen overflow-hidden">
-      {/* Sidebar */}
       <Sidebar
-        weeks={weeks}
+        module={module}
         currentVideo={currentVideo}
         setCurrentVideo={setCurrentVideo}
-        collapsed={collapsed}
-        toggleCollapse={() => setSidebarCollapsed(prev => !prev)}
       />
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col mx-8">
-        {/* Header */}
-        <div className="bg-white flex items-center my-4">
-          <Breadcrumb items={getBreadcrumbs()} />
-        </div>
+      <main className="flex-1 flex flex-col mx-8">
+        <header className="flex items-center justify-between my-4">
+          <button onClick={handlePrev} disabled={!prevExists} className="cursor-pointer disabled:text-gray-400 px-6 py-3 hover:text-primary">
+            {'< Previous'}
+          </button>
 
-        {/* Video Player */}
-        <div className="relative w-full" style={{ paddingTop: '400px' }}>
+          <Breadcrumb items={getBreadcrumbs(currentVideo.videoId)} />
+
+          <button onClick={handleNext} disabled={!nextExists} className="cursor-pointer disabled:text-gray-400 px-6 py-3 hover:text-primary">
+            {'Next >'}
+          </button>
+        </header>
+
+        <section className="relative w-full" style={{ paddingTop: '400px' }}>
           <VideoPlayer src={video.url} />
-        </div>
+        </section>
 
-        {/* Video Info Tabs */}
-        <div className="bg-white m-4">
+        <section className="bg-white m-4">
           <h1 className="text-2xl mb-4 font-semibold">{video.title}</h1>
           <hr />
-          <div className="flex space-x-4 my-2">
-            <button
-              className={`flex items-center px-3 py-1 rounded ${activeTab === 'content' ? 'bg-blue-100 text-blue-600' : 'text-gray-600'}`}
-              onClick={() => setActiveTab('content')}
-            >
-              <DocumentTextIcon className="h-4 w-4 mr-1" />
-              Content
-            </button>
-            <button
-              className={`flex items-center px-3 py-1 rounded ${activeTab === 'resources' ? 'bg-blue-100 text-blue-600' : 'text-gray-600'}`}
-              onClick={() => setActiveTab('resources')}
-            >
-              <ListBulletIcon className="h-4 w-4 mr-1" />
-              Resources
-            </button>
-            <button
-              className={`flex items-center px-3 py-1 rounded ${activeTab === 'comments' ? 'bg-blue-100 text-blue-600' : 'text-gray-600'}`}
-              onClick={() => setActiveTab('comments')}
-            >
-              <ChatBubbleLeftIcon className="h-4 w-4 mr-1" />
-              comments
-            </button>
-          </div>
-          <hr />
-        </div>
-      </div>
+        </section>
+      </main>
     </div>
-  )
-}
-
-
-const getBreadcrumbs = () => {
-  const paths = location.pathname.split('/').filter(Boolean)
-  const breadcrumbs = [{ label: 'Home', path: '/' }]
-
-  const courseId = Number(paths[1])
-  const lessonId = Number(paths[3])
-
-  const course = courses.find(c => c.id === courseId)
-
-  if (course) {
-    breadcrumbs.push({
-      label: course.title,
-      path: `/courses/${course.id}`
-    })
-
-    const allWeeks = [
-      {
-        id: 1,
-        title: 'Introduction',
-        videos: [
-          { id: 1, title: 'Welcome to the Course', duration: '2:45', url: 'https://youtu.be/dQw4w9WgXcQ' },
-          { id: 2, title: 'Course Overview', duration: '4:30', url: 'https://youtu.be/dQw4w9WgXcQ' }
-        ]
-      },
-      {
-        id: 2,
-        title: 'Getting Started',
-        videos: [
-          { id: 3, title: 'Installation Guide', duration: '6:15', url: 'https://youtu.be/dQw4w9WgXcQ' },
-          { id: 4, title: 'First Project Setup', duration: '8:20', url: 'https://youtu.be/dQw4w9WgXcQ' }
-        ]
-      }
-    ]
-
-    const week = allWeeks.find(m =>
-      m.videos.some(v => v.id === lessonId)
-    )
-
-    const video = week?.videos.find(v => v.id === lessonId)
-
-    if (week) {
-      breadcrumbs.push({
-        label: week.title,
-        path: ''
-      })
-    }
-
-    if (video) {
-      breadcrumbs.push({
-        label: video.title,
-        path: ''
-      })
-    }
-  }
-
-  return breadcrumbs
+  );
 }

@@ -27,10 +27,10 @@ export default function Register() {
   const redirect = sp.get("redirect") || "/";
 
   useEffect(() => {
-    if (user) {
+    if (user?.accessToken) {
       navigate(redirect);
     }
-  }, [navigate, redirect, user]);
+  }, [navigate, redirect, user?.accessToken]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,7 +46,8 @@ export default function Register() {
         (async () => {
           await register(formData);
           const res = await login(loginFormData).unwrap();
-          dispatch(setCredentials({ ...res }));
+          const credentials = res.data;
+          dispatch(setCredentials({ ...credentials }));
           navigate(redirect);
         })(),
         {
