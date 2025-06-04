@@ -1,10 +1,10 @@
 export interface User {
-  accessToken?: string
+  accessToken: string
   userDTO: UserDTO
 }
 
 export interface UserDTO {
-  _id: string
+  id: string
   username: string
   email: string
   isAdmin?: boolean

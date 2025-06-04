@@ -1,14 +1,10 @@
-import { courses } from "../shared/data/sampleData"
+import { Course } from "../../../shared/types/types"
 
-export const getBreadcrumbs = (currentVideoId: Number) => {
+export const getBreadcrumbs = (course:Course,currentMaterialId: Number) => {
   const paths = location.pathname.split('/').filter(Boolean)
   const breadcrumbs = [{ label: 'Home', path: '/' }]
-
-  const courseId = Number(paths[1])
-  // const { data: course } = (useGetCourseDetailsQuery(Number(courseId))).data;
-  const course = courses.find(c => c.id === courseId)
   const module = course?.modules.find(w => w.id === Number(paths[2]))
-  const video = module?.sections.flatMap(s => s.videos).find(v => v.id === currentVideoId);;
+  const material = module?.sections.flatMap(s => s.materials).find(v => v.id === currentMaterialId);;
 
   if (course) {
     breadcrumbs.push({
@@ -20,9 +16,9 @@ export const getBreadcrumbs = (currentVideoId: Number) => {
         label: module.title,
         path: '#'
       })
-      if (video) {
+      if (material) {
         breadcrumbs.push({
-          label: video.title,
+          label: material.title,
           path: '#'
         })
       }

@@ -1,32 +1,41 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap");
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #2EC4B6;
-  --color-primary-light: #ECF1F3;
+  --color-primary: #2ec4b6;
+  --color-primary-light: #ecf1f3;
 }
 
 body {
-  @apply h-full font-['poppins',sans-serif] overflow-x-hidden
+  @apply h-full font-['poppins',sans-serif] overflow-x-hidden;
 }
 
 hr {
-  @apply text-gray-300
+  @apply text-gray-300;
 }
 
-.header-element{
+.header-element {
   @apply hover:text-primary focus:text-primary focus:before:block before:bg-primary before:w-full before:h-0.5 before:hidden before:relative before:top-8 before:left-0;
 }
 
 /* To delete the logo of tinymce */
-.tox .tox-statusbar__branding a, .tox-promotion{
+.tox .tox-statusbar__branding a,
+.tox-promotion {
   display: none !important;
 }
 
 /* Video player */
-.plyr{
+.plyr {
   @apply h-full rounded-3xl;
-  video{
-    @apply bg-primary-light
+  video {
+    @apply bg-primary-light;
   }
+}
+
+.h-full-s {
+  @apply h-[calc(100vh-75px)];
+}
+
+.max-h-full-s {
+  @apply max-h-[calc(100vh-75px)];
 }

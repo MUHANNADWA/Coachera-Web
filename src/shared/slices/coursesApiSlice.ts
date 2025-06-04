@@ -4,9 +4,14 @@ import { apiSlice } from "./apiSlice";
 export const coursesApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getCourses: builder.query({
-      query: ({ keyword, pageNumber }) => ({
+      query: ({
+        page = 0,
+        size = 10,
+        sortBy = "id",
+        sortDirection = "desc",
+      }) => ({
         url: COURSES_URL,
-        params: { keyword, pageNumber },
+        params: { page, size, sortBy, sortDirection },
       }),
       keepUnusedDataFor: 5,
     }),

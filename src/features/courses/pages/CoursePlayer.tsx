@@ -1,136 +1,184 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { courses } from '../../../shared/data/sampleData';
-import Sidebar from '../components/Sidebar';
-import Breadcrumb from '../components/Breadcrumb';
-import VideoPlayer from '../components/VideoPlayer';
-import NotFound from '../../../shared/pages/NotFound';
-import Loader from '../../../shared/components/Loader';
-import { CurrentVideo } from '../types';
-import { getBreadcrumbs } from '../../../utils/breadcrumbs';
+import { useEffect, useMemo, useState } from "react";
+import { useParams } from "react-router-dom";
+import CourseSidebar from "../components/CourseSidebar";
+import Breadcrumb from "../components/Breadcrumb";
+import VideoPlayer from "../components/VideoPlayer";
+import Loader from "../../../shared/components/Loader";
+import { CurrentMaterial } from "../types";
+import { getBreadcrumbs } from "../utils/breadcrumbs";
+import { useGetCourseDetailsQuery } from "../../../shared/slices/coursesApiSlice";
+import { Course } from "../../../shared/types/types";
+import NotFound from "../../../shared/pages/NotFound";
+import { useAppHook } from "../../../shared/hooks/useAppHook";
 
 export default function CoursePlayer() {
-  const navigate = useNavigate();
-  const location = useLocation();
+  const { navigate, location } = useAppHook();
   const { courseId, moduleId } = useParams();
 
-  const courseIndex = Number(courseId) - 1;
   const moduleIndex = Number(moduleId);
-  const course = courses[courseIndex];
-  const module = course?.modules.find(w => w.id === moduleIndex);
+  const { data, isLoading } = useGetCourseDetailsQuery(Number(courseId));
+  const course: Course = data?.data;
 
-  const [currentVideo, setCurrentVideo] = useState<CurrentVideo | null>(null);
+  const module = course?.modules.find((m) => m.id === moduleIndex);
 
-  // Load initial or last video depending on navigation state
+  const [currentMaterial, setCurrentMaterial] =
+    useState<CurrentMaterial | null>(null);
+
   useEffect(() => {
     if (!module) return;
 
-    const isNavigatedFromPrev = location.state?.fromNav === 'prev';
+    const isNavigatedFromPrev = location.state?.fromNav === "prev";
     const targetSection = isNavigatedFromPrev
       ? module.sections[module.sections.length - 1]
       : module.sections[0];
 
-    const targetVideo = isNavigatedFromPrev
-      ? targetSection?.videos[targetSection.videos.length - 1]
-      : targetSection?.videos[0];
+    const targetMaterial = isNavigatedFromPrev
+      ? targetSection?.materials[targetSection.materials.length - 1]
+      : targetSection?.materials[0];
 
-    if (targetSection && targetVideo) {
-      setCurrentVideo({ sectionId: targetSection.id, videoId: targetVideo.id });
+    if (targetSection && targetMaterial) {
+      setCurrentMaterial({
+        sectionId: targetSection.id,
+        materialId: targetMaterial.id,
+      });
     }
   }, [module, location.state]);
 
-  const activeSection = module?.sections.find(s => s.id === currentVideo?.sectionId);
-  const video = activeSection?.videos.find(v => v.id === currentVideo?.videoId);
+  const activeSection = module?.sections.find(
+    (s) => s.id === currentMaterial?.sectionId
+  );
+  const material = activeSection?.materials.find(
+    (m) => m.id === currentMaterial?.materialId
+  );
 
-  const allVideos = useMemo(() => (
-    module?.sections.flatMap(section =>
-      section.videos.map(video => ({ ...video, sectionId: section.id }))
-    ) || []
-  ), [module]);
+  const allMaterials = useMemo(
+    () =>
+      module?.sections.flatMap((section) =>
+        section.materials.map((material) => ({
+          ...material,
+          sectionId: section.id,
+        }))
+      ) || [],
+    [module]
+  );
 
-  const currentIndex = useMemo(() => (
-    allVideos.findIndex(v => v.id === currentVideo?.videoId && v.sectionId === currentVideo?.sectionId)
-  ), [allVideos, currentVideo]);
+  const currentIndex = useMemo(
+    () =>
+      allMaterials.findIndex(
+        (m) =>
+          m.id === currentMaterial?.materialId &&
+          m.sectionId === currentMaterial?.sectionId
+      ),
+    [allMaterials, currentMaterial]
+  );
 
-  const handleNavigateToModule = (newModuleIndex: number, from: 'prev' | 'next') => {
-    navigate(`/learn/${courseId}/${newModuleIndex}`, { state: { fromNav: from } });
+  const handleNavigateToModule = (
+    newModuleIndex: number,
+    from: "prev" | "next"
+  ) => {
+    navigate(`/learn/${courseId}/${newModuleIndex}`, {
+      state: { fromNav: from },
+    });
   };
 
   const handleNext = () => {
     if (!module || !course || currentIndex === -1) return;
 
-    const isLastVideoInModule = currentIndex === allVideos.length - 1;
-    const isLastModule = module.id === course.modules[course.modules.length - 1].id;
+    const isLastMaterialInModule = currentIndex === allMaterials.length - 1;
+    const isLastModule =
+      module.id === course.modules[course.modules.length - 1].id;
 
-    if (isLastVideoInModule && !isLastModule) {
-      handleNavigateToModule(moduleIndex + 1, 'next');
-    } else if (currentIndex < allVideos.length - 1) {
-      const nextVideo = allVideos[currentIndex + 1];
-      setCurrentVideo({ sectionId: nextVideo.sectionId, videoId: nextVideo.id });
+    if (isLastMaterialInModule && !isLastModule) {
+      handleNavigateToModule(moduleIndex + 1, "next");
+    } else if (currentIndex < allMaterials.length - 1) {
+      const nextMaterial = allMaterials[currentIndex + 1];
+      setCurrentMaterial({
+        sectionId: nextMaterial.sectionId,
+        materialId: nextMaterial.id,
+      });
     }
   };
 
   const handlePrev = () => {
     if (!module || !course || currentIndex === -1) return;
 
-    const isFirstVideoInModule = currentIndex === 0;
+    const isFirstMaterialInModule = currentIndex === 0;
     const isFirstModule = module.id === course.modules[0].id;
 
-    if (isFirstVideoInModule && !isFirstModule) {
-      handleNavigateToModule(moduleIndex - 1, 'prev');
+    if (isFirstMaterialInModule && !isFirstModule) {
+      handleNavigateToModule(moduleIndex - 1, "prev");
     } else if (currentIndex > 0) {
-      const prevVideo = allVideos[currentIndex - 1];
-      setCurrentVideo({ sectionId: prevVideo.sectionId, videoId: prevVideo.id });
+      const prevMaterial = allMaterials[currentIndex - 1];
+      setCurrentMaterial({
+        sectionId: prevMaterial.sectionId,
+        materialId: prevMaterial.id,
+      });
     }
   };
 
-  const nextExists = module && course && (
-    (module.id !== course.modules[course.modules.length - 1].id && currentIndex === allVideos.length - 1)
-    || currentIndex < allVideos.length - 1
-  );
+  const nextExists =
+    module &&
+    course &&
+    ((module.id !== course.modules[course.modules.length - 1].id &&
+      currentIndex === allMaterials.length - 1) ||
+      currentIndex < allMaterials.length - 1);
 
-  const prevExists = module && course && (
-    (module.id !== course.modules[0].id && currentIndex === 0)
-    || currentIndex > 0
-  );
+  const prevExists =
+    module &&
+    course &&
+    ((module.id !== course.modules[0].id && currentIndex === 0) ||
+      currentIndex > 0);
 
-  if (!course || !module) return <NotFound />;
-  if (!video || !currentVideo) {
-    return (
-      <div className="flex items-center justify-center h-screen text-lg text-gray-500">
-        <Loader />
-      </div>
-    );
+  if (isLoading) return <Loader center />;
+
+  if (!course || !module || !material || !currentMaterial) {
+    return <Loader center/>;
+  }
+
+  if (!module || !material) {
+    return <NotFound />;
   }
 
   return (
-    <div className="flex h-screen overflow-hidden">
-      <Sidebar
+    <div className="flex h-full-s overflow-x-hidden">
+      <CourseSidebar
         module={module}
-        currentVideo={currentVideo}
-        setCurrentVideo={setCurrentVideo}
+        currentMaterial={currentMaterial}
+        setCurrentMaterial={setCurrentMaterial}
       />
 
-      <main className="flex-1 flex flex-col mx-8">
+      <main className="max-h-full-s overflow-y-auto flex-1 flex flex-col ml-8 pr-8">
         <header className="flex items-center justify-between my-4">
-          <button onClick={handlePrev} disabled={!prevExists} className="cursor-pointer disabled:text-gray-400 px-6 py-3 hover:text-primary">
-            {'< Previous'}
+          <button
+            onClick={handlePrev}
+            disabled={!prevExists}
+            className="cursor-pointer disabled:text-gray-400 px-6 py-3 hover:text-primary"
+          >
+            {"< Previous"}
           </button>
 
-          <Breadcrumb items={getBreadcrumbs(currentVideo.videoId)} />
+          <Breadcrumb
+            items={getBreadcrumbs(course, currentMaterial.materialId)}
+          />
 
-          <button onClick={handleNext} disabled={!nextExists} className="cursor-pointer disabled:text-gray-400 px-6 py-3 hover:text-primary">
-            {'Next >'}
+          <button
+            onClick={handleNext}
+            disabled={!nextExists}
+            className="cursor-pointer disabled:text-gray-400 px-6 py-3 hover:text-primary"
+          >
+            {"Next >"}
           </button>
         </header>
 
-        <section className="relative w-full" style={{ paddingTop: '400px' }}>
-          <VideoPlayer src={video.url} />
-        </section>
-
+        {material.videoUrl && (
+          <section className="relative w-full" style={{ paddingTop: "400px" }}>
+            <VideoPlayer src={material.videoUrl} />
+          </section>
+        )}
         <section className="bg-white m-4">
-          <h1 className="text-2xl mb-4 font-semibold">{video.title}</h1>
+          <h1 className="text-2xl mb-4 font-semibold">{material.title}</h1>
           <hr />
+          <p className="text-l mb-4">{material.title}</p>
         </section>
       </main>
     </div>

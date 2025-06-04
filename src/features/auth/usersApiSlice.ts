@@ -1,8 +1,6 @@
 import { USERS_URL } from "../../constants/constants";
 import { apiSlice } from "../../shared/slices/apiSlice";
 
-
-
 export const usersApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation({
@@ -23,7 +21,14 @@ export const usersApiSlice = apiSlice.injectEndpoints({
       query: (data) => ({
         url: `${USERS_URL}/logout`,
         method: "post",
-        headers: {"Authorization": `Bearer ${data}`},
+        headers: { Authorization: `Bearer ${data}` },
+      }),
+    }),
+    uploadPhoto: builder.mutation({
+      query: (data) => ({
+        url: `image/upload`,
+        method: "post",
+        body: data,
       }),
     }),
     profile: builder.mutation({
@@ -67,6 +72,7 @@ export const {
   useLoginMutation,
   useLogoutMutation,
   useRegisterMutation,
+  useUploadPhotoMutation,
   useProfileMutation,
   useGetUsersQuery,
   useDeleteUserMutation,

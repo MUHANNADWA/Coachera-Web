@@ -1,6 +1,6 @@
 import { Course } from '../../../shared/types/types'
 import { FaRegHeart } from 'react-icons/fa'
-import renderStars from '../../../utils/RenderStars'
+import renderStars from '../utils/RenderStars'
 import { Link } from 'react-router-dom'
 
 interface CourseCardProps {
@@ -35,7 +35,7 @@ export default function CourseCard({ course }: CourseCardProps) {
         </div>
       </div>
       <div>
-        <span className="text-sm absolute  top-2 right-2 text-primary bg-primary-light border-primary border-1 p-2 rounded-2xl">{course.category}</span>
+        <span className="text-sm absolute  top-2 right-2 text-primary bg-primary-light border-primary border-1 p-2 rounded-2xl">{course.categories?.[0]}</span>
       </div>
     </Link>
   )

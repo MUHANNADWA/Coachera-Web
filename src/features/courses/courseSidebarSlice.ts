@@ -1,38 +1,38 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { SidebarState } from "./types";
+import { CourseSidebarState } from "./types";
 
 const getInitialCollapsedState = (): boolean => {
   try {
-    const savedState = localStorage.getItem("sidebarCollapsed");
+    const savedState = localStorage.getItem("courseSidebarCollapsed");
     return savedState ? JSON.parse(savedState) : false;
   } catch (error) {
-    console.error("Error reading sidebar state from localStorage", error);
+    console.error("Error reading courseSidebar state from localStorage", error);
     return false;
   }
 };
 
-const initialState: SidebarState = {
+const initialState: CourseSidebarState = {
   collapsed: getInitialCollapsedState(),
 };
 
-const sidebarSlice = createSlice({
-  name: "sidebar",
+const courseSidebarSlice = createSlice({
+  name: "courseSidebar",
   initialState,
   reducers: {
-    toggleSidebar: (state) => {
+    toggleCourseSidebar: (state) => {
       state.collapsed = !state.collapsed;
-      localStorage.setItem("sidebarCollapsed", JSON.stringify(state.collapsed));
+      localStorage.setItem("courseSidebarCollapsed", JSON.stringify(state.collapsed));
     },
-    setSidebarState: (state, action: { payload: boolean }) => {
+    setCourseSidebarState: (state, action: { payload: boolean }) => {
       state.collapsed = action.payload;
-      localStorage.setItem("sidebarCollapsed", JSON.stringify(action.payload));
+      localStorage.setItem("courseSidebarCollapsed", JSON.stringify(action.payload));
     },
-    resetSidebar: (state) => {
+    resetCourseSidebar: (state) => {
       state.collapsed = false;
-      localStorage.removeItem("sidebarCollapsed");
+      localStorage.removeItem("courseSidebarCollapsed");
     },
   },
 });
 
-export const { toggleSidebar, setSidebarState, resetSidebar } = sidebarSlice.actions;
-export default sidebarSlice.reducer;
+export const { toggleCourseSidebar, setCourseSidebarState, resetCourseSidebar } = courseSidebarSlice.actions;
+export default courseSidebarSlice.reducer;

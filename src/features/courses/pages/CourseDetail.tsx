@@ -1,12 +1,16 @@
-import { useParams } from 'react-router-dom'
-import { CheckBadgeIcon, ClockIcon, ChartBarIcon } from '@heroicons/react/24/outline'
+import { useParams } from "react-router-dom";
+import {
+  CheckBadgeIcon,
+  ClockIcon,
+  ChartBarIcon,
+} from "@heroicons/react/24/outline";
 
 export default function CourseDetail() {
   const { id } = useParams();
   const { data } = useGetCourseDetailsQuery(Number(id));
   const course: Course = data?.data;
 
-  if (!course) return <Loader />;
+  if (!course) return <Loader center/>;
 
   return (
     <div className="container mx-auto py-8 px-4">
@@ -50,67 +54,89 @@ export default function CourseDetail() {
             <div className="mb-8">
               <h2 className="text-xl font-bold mb-4">Skills You'll gain</h2>
               <ul className="space-y-2">
-                <li className="px-3 py-1.5 m-1 inline-block bg-primary text-white rounded-2xl text-xs">Programming</li>
-                <li className="px-3 py-1.5 m-1 inline-block bg-primary text-white rounded-2xl text-xs">React</li>
-                <li className="px-3 py-1.5 m-1 inline-block bg-primary text-white rounded-2xl text-xs">Web Design</li>
-                <li className="px-3 py-1.5 m-1 inline-block bg-primary text-white rounded-2xl text-xs">Javascript</li>
-                <li className="px-3 py-1.5 m-1 inline-block bg-primary text-white rounded-2xl text-xs">Frontend</li>
-                <li className="px-3 py-1.5 m-1 inline-block bg-primary text-white rounded-2xl text-xs">API</li>
-                <li className="px-3 py-1.5 m-1 inline-block bg-primary text-white rounded-2xl text-xs">Jest</li>
-                <li className="px-3 py-1.5 m-1 inline-block bg-primary text-white rounded-2xl text-xs">Typescript</li>
-                <li className="px-3 py-1.5 m-1 inline-block bg-primary text-white rounded-2xl text-xs">Redux</li>
+                <li className="px-3 py-1.5 m-1 inline-block bg-primary text-white rounded-2xl text-xs">
+                  Programming
+                </li>
+                <li className="px-3 py-1.5 m-1 inline-block bg-primary text-white rounded-2xl text-xs">
+                  React
+                </li>
+                <li className="px-3 py-1.5 m-1 inline-block bg-primary text-white rounded-2xl text-xs">
+                  Web Design
+                </li>
+                <li className="px-3 py-1.5 m-1 inline-block bg-primary text-white rounded-2xl text-xs">
+                  Javascript
+                </li>
+                <li className="px-3 py-1.5 m-1 inline-block bg-primary text-white rounded-2xl text-xs">
+                  Frontend
+                </li>
+                <li className="px-3 py-1.5 m-1 inline-block bg-primary text-white rounded-2xl text-xs">
+                  API
+                </li>
+                <li className="px-3 py-1.5 m-1 inline-block bg-primary text-white rounded-2xl text-xs">
+                  Jest
+                </li>
+                <li className="px-3 py-1.5 m-1 inline-block bg-primary text-white rounded-2xl text-xs">
+                  Typescript
+                </li>
+                <li className="px-3 py-1.5 m-1 inline-block bg-primary text-white rounded-2xl text-xs">
+                  Redux
+                </li>
               </ul>
             </div>
             <CourseModules
               modules={[
                 {
-                  title: 'Introduction to UX and UI design',
-                  duration: '3 hours to complete',
-                  description: 'Learn what constitutes successful UI and evaluate existing interfaces for quality.',
+                  title: "Introduction to UX and UI design",
+                  duration: "3 hours to complete",
+                  description:
+                    "Learn what constitutes successful UI and evaluate existing interfaces for quality.",
                   videos: [
-                    { title: 'Introduction to UX', duration: '3' },
-                    { title: 'UX vs UI', duration: '5' }
+                    { title: "Introduction to UX", duration: "3" },
+                    { title: "UX vs UI", duration: "5" },
                   ],
                   readings: [
-                    { title: 'Read: Design Principles', duration: '7' },
-                    { title: 'Read: User-Centered Design', duration: '6' }
+                    { title: "Read: Design Principles", duration: "7" },
+                    { title: "Read: User-Centered Design", duration: "6" },
                   ],
                   assignments: [
-                    { title: 'Assignment: Evaluate a UI', duration: '10' }
+                    { title: "Assignment: Evaluate a UI", duration: "10" },
                   ],
                   prompts: [
-                    { title: 'Discussion: What is good UX?', duration: '4' }
-                  ]
+                    { title: "Discussion: What is good UX?", duration: "4" },
+                  ],
                 },
                 {
-                  title: 'Introduction to UX and UI design',
-                  duration: '3 hours to complete',
-                  description: 'Learn what constitutes successful UI and evaluate existing interfaces for quality.',
+                  title: "Introduction to UX and UI design",
+                  duration: "3 hours to complete",
+                  description:
+                    "Learn what constitutes successful UI and evaluate existing interfaces for quality.",
                   videos: [
-                    { title: 'Introduction to UX', duration: '3' },
-                    { title: 'UX vs UI', duration: '5' }
+                    { title: "Introduction to UX", duration: "3" },
+                    { title: "UX vs UI", duration: "5" },
                   ],
                   readings: [
-                    { title: 'Read: Design Principles', duration: '7' },
-                    { title: 'Read: User-Centered Design', duration: '6' }
+                    { title: "Read: Design Principles", duration: "7" },
+                    { title: "Read: User-Centered Design", duration: "6" },
                   ],
                   assignments: [
-                    { title: 'Assignment: Evaluate a UI', duration: '10' }
+                    { title: "Assignment: Evaluate a UI", duration: "10" },
                   ],
                   prompts: [
-                    { title: 'Discussion: What is good UX?', duration: '4' }
-                  ]
-                }
+                    { title: "Discussion: What is good UX?", duration: "4" },
+                  ],
+                },
               ]}
             />
-
           </div>
 
           <div className="md:w-1/3 bg-gray-50 p-6">
             <div className="sticky top-4">
               <div className="aspect-w-16 aspect-h-9 mb-4">
                 <img
-                  src={course.image}
+                  src={
+                    course.image ??
+                    `https://placehold.co/300x200?text=${course.title}`
+                  }
                   alt={course.title}
                   className="w-full h-full object-cover rounded-lg"
                 />
@@ -118,7 +144,9 @@ export default function CourseDetail() {
 
               <div className="bg-white p-4 rounded-lg shadow-sm mb-4">
                 <div className="flex justify-between items-center mb-4">
-                  <span className="text-2xl font-bold text-blue">${course.price}</span>
+                  <span className="text-2xl font-bold text-blue">
+                    ${course.price}
+                  </span>
                   <span className="flex items-center bg-yellow-100 px-2 py-1 rounded text-sm">
                     ★ {course.rating}
                   </span>
@@ -157,36 +185,36 @@ export default function CourseDetail() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-import { useState } from 'react'
+import { useState } from "react";
 import {
   PlayCircleIcon,
   DocumentTextIcon,
   ClipboardDocumentListIcon,
   ChatBubbleOvalLeftIcon,
-} from '@heroicons/react/24/outline'
-import { useGetCourseDetailsQuery } from '../../../shared/slices/coursesApiSlice'
-import Loader from '../../../shared/components/Loader';
-import Meta from '../../../shared/components/Meta';
-import { Course } from '../../../shared/types/types';
+} from "@heroicons/react/24/outline";
+import { useGetCourseDetailsQuery } from "../../../shared/slices/coursesApiSlice";
+import Loader from "../../../shared/components/Loader";
+import Meta from "../../../shared/components/Meta";
+import { Course } from "../../../shared/types/types";
 
-type Item = { title: string; duration: string }
+type Item = { title: string; duration: string };
 
 type Module = {
-  title: string
-  duration: string
-  description: string
-  videos: Item[]
-  readings: Item[]
-  assignments: Item[]
-  prompts: Item[]
-}
+  title: string;
+  duration: string;
+  description: string;
+  videos: Item[];
+  readings: Item[];
+  assignments: Item[];
+  prompts: Item[];
+};
 
 type CourseModulesProps = {
-  modules: Module[]
-}
+  modules: Module[];
+};
 
 export function CourseModules({ modules }: CourseModulesProps) {
   return (
@@ -195,7 +223,7 @@ export function CourseModules({ modules }: CourseModulesProps) {
         <ModuleCard key={index} {...mod} />
       ))}
     </div>
-  )
+  );
 }
 
 function ModuleCard({
@@ -207,7 +235,7 @@ function ModuleCard({
   assignments,
   prompts,
 }: Module) {
-  const [expanded, setExpanded] = useState(false)
+  const [expanded, setExpanded] = useState(false);
 
   const renderList = (items: Item[], label: string, Icon: any) =>
     items.length > 0 && (
@@ -225,7 +253,7 @@ function ModuleCard({
           ))}
         </ul>
       </div>
-    )
+    );
 
   return (
     <div className="">
@@ -239,23 +267,23 @@ function ModuleCard({
           onClick={() => setExpanded(!expanded)}
           className="text-blue-600 text-sm font-medium hover:underline"
         >
-          {expanded ? 'Hide details' : 'Show module details'}
+          {expanded ? "Hide details" : "Show module details"}
         </button>
       </div>
 
       {expanded && (
         <div className="mt-6">
-          {renderList(videos, 'Videos', PlayCircleIcon)}
-          {renderList(readings, 'Readings', DocumentTextIcon)}
-          {renderList(assignments, 'Assignments', ClipboardDocumentListIcon)}
-          {renderList(prompts, 'Discussion Prompts', ChatBubbleOvalLeftIcon)}
+          {renderList(videos, "Videos", PlayCircleIcon)}
+          {renderList(readings, "Readings", DocumentTextIcon)}
+          {renderList(assignments, "Assignments", ClipboardDocumentListIcon)}
+          {renderList(prompts, "Discussion Prompts", ChatBubbleOvalLeftIcon)}
         </div>
       )}
       <hr />
     </div>
-  )
+  );
 }
 
 function totalDuration(items: Item[]): number {
-  return items.reduce((sum, item) => sum + parseInt(item.duration), 0)
+  return items.reduce((sum, item) => sum + parseInt(item.duration), 0);
 }

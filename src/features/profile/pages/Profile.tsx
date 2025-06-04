@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Tab } from '@headlessui/react';
 import { VideoCameraIcon, ClipboardDocumentListIcon, ChatBubbleOvalLeftIcon } from '@heroicons/react/24/outline';
-import { useAppSelector } from '../../../shared/hooks/hooks';
+import { useAppHook } from '../../../shared/hooks/useAppHook';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
@@ -9,7 +9,7 @@ function classNames(...classes: string[]) {
 
 export default function StudentProfilePage() {
 
-  const { user } = useAppSelector((state) => state.auth);
+  const { user } = useAppHook();
 
   const [student] = useState({
     name: 'John Doe',
@@ -38,8 +38,8 @@ export default function StudentProfilePage() {
       <div className="flex items-center space-x-6">
         <img src={student.avatar} alt="Avatar" className="w-24 h-24 rounded-full" />
         <div>
-          <h1 className="text-3xl font-bold">{user?.userDTO.username}</h1>
-          <p className="text-gray-500">{user?.userDTO.email}</p>
+          <h1 className="text-3xl font-bold">{user?.username}</h1>
+          <p className="text-gray-500">{user?.email}</p>
         </div>
       </div>
 

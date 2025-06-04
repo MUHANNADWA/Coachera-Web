@@ -1,9 +1,9 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useAppSelector } from '../hooks/hooks';
+import { useAppHook } from "../hooks/useAppHook";
 
 const AdminRoute = () => {
-  const { user } = useAppSelector((state) => state.auth);
-  return user && user.userDTO.isAdmin ? (
+  const { user } = useAppHook();
+  return user?.isAdmin ? (
     <Outlet />
   ) : (
     <Navigate to="/login" replace />

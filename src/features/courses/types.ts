@@ -1,8 +1,8 @@
-export interface SidebarState {
+export interface CourseSidebarState {
   collapsed: boolean
 }
 
-export interface CurrentVideo {
+export interface CurrentMaterial {
   sectionId: number
-  videoId: number
+  materialId: number
 };
