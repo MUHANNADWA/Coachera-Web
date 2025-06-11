@@ -1,4 +1,4 @@
-import { Course } from "../types/types";
+import { Course, Skill } from "../types/types";
 
 const videos: string[] = [
   "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4",
@@ -297,4 +297,16 @@ export const courses: Course[] = [
     categories: ["Art"],
     modules: [],
   },
+];
+
+export const skills: Skill[] = [
+  { id: 0, name: "React" },
+  { id: 1, name: "Web" },
+  { id: 2, name: "Design" },
+  { id: 3, name: "Javascript" },
+  { id: 6, name: "Frontend" },
+  { id: 7, name: "API" },
+  { id: 8, name: "Jest" },
+  { id: 9, name: "Typescript" },
+  { id: 4, name: "Redux" },
 ];

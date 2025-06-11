@@ -11,7 +11,7 @@ const Meta = ({
   title = "Coachera",
   description = "Discover over 1000 courses, and meet the best teachers",
   keywords,
-  canonicalUrl
+  canonicalUrl,
 }: MetaProps) => {
   return (
     <Helmet>

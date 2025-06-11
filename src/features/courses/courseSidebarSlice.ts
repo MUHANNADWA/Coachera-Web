@@ -21,11 +21,17 @@ const courseSidebarSlice = createSlice({
   reducers: {
     toggleCourseSidebar: (state) => {
       state.collapsed = !state.collapsed;
-      localStorage.setItem("courseSidebarCollapsed", JSON.stringify(state.collapsed));
+      localStorage.setItem(
+        "courseSidebarCollapsed",
+        JSON.stringify(state.collapsed)
+      );
     },
     setCourseSidebarState: (state, action: { payload: boolean }) => {
       state.collapsed = action.payload;
-      localStorage.setItem("courseSidebarCollapsed", JSON.stringify(action.payload));
+      localStorage.setItem(
+        "courseSidebarCollapsed",
+        JSON.stringify(action.payload)
+      );
     },
     resetCourseSidebar: (state) => {
       state.collapsed = false;
@@ -34,5 +40,9 @@ const courseSidebarSlice = createSlice({
   },
 });
 
-export const { toggleCourseSidebar, setCourseSidebarState, resetCourseSidebar } = courseSidebarSlice.actions;
+export const {
+  toggleCourseSidebar,
+  setCourseSidebarState,
+  resetCourseSidebar,
+} = courseSidebarSlice.actions;
 export default courseSidebarSlice.reducer;

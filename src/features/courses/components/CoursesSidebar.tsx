@@ -28,18 +28,15 @@ export default function CoursesSidebar(props: CoursesSidebarProps) {
     <aside
       className={`h-full pl-8 pr-4 py-4 top-0 left-0 shadow-sm transition-all duration-300 overflow-x-hidden overflow-y-auto ${
         collapsed ? "w-12" : "w-70"
-      }`}
-    >
+      }`}>
       <header
         className={`flex items-center justify-between transition-all duration-300 ${
           !collapsed ? "p-4" : "ml-[-20px]"
-        }`}
-      >
+        }`}>
         {!collapsed && <h1 className=" text-xl font-bold">Filters</h1>}
         <button
           onClick={toggleCollapse}
-          className="text-gray-500 hover:text-gray-700"
-        >
+          className="text-gray-500 hover:text-gray-700">
           <Bars3Icon className="h-6 w-6" />
         </button>
       </header>
@@ -62,8 +59,7 @@ export default function CoursesSidebar(props: CoursesSidebarProps) {
               onChange={(e) => {
                 props.setSize(Number(e.target.value));
                 props.setPage(0);
-              }}
-            >
+              }}>
               {[3, 6, 9, 12].map((s) => (
                 <option key={s} value={s}>
                   {s}
@@ -85,8 +81,7 @@ export default function CoursesSidebar(props: CoursesSidebarProps) {
               onChange={(e) => {
                 props.setSortBy(e.target.value);
                 props.setPage(0);
-              }}
-            >
+              }}>
               {SORT_FIELDS.map((field) => (
                 <option key={field.value} value={field.value}>
                   {field.label}
@@ -108,8 +103,7 @@ export default function CoursesSidebar(props: CoursesSidebarProps) {
               onChange={(e) => {
                 props.setSortDirection(e.target.value as "asc" | "desc");
                 props.setPage(0);
-              }}
-            >
+              }}>
               <option value="asc">Ascending</option>
               <option value="desc">Descending</option>
             </select>

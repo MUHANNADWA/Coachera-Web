@@ -56,13 +56,19 @@ export interface Quiz {
 
 export interface Question {
   id: number;
+  content: string;
   answer1: string;
   answer2: string;
-  answer3: string;
-  answer4: string;
+  answer3?: string;
+  answer4?: string;
 }
 
 export interface Category {
+  id: number;
+  name: string;
+}
+
+export interface Skill {
   id: number;
   name: string;
 }

@@ -1,46 +1,16 @@
-import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { useLoginMutation } from "../usersApiSlice";
-import { setCredentials } from "../authSlice";
-import toastPromise from "../../../utils/toast";
-import { useAppHook } from "../../../shared/hooks/useAppHook";
+import { Link } from "react-router-dom";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+import { useLogin } from "../hooks/useLogin";
 
-export default function Login() {
-  const [formData, setFormData] = useState({
-    identifier: "",
-    password: "",
-  });
-
-  const [showPassword, setShowPassword] = useState(false);
-
-  const { navigate, dispatch, token } = useAppHook();
-
-  const [login, { isLoading }] = useLoginMutation();
-
-  const { search } = useLocation();
-  const sp = new URLSearchParams(search);
-  const redirect = sp.get("redirect") || "/";
-
-  useEffect(() => {
-    if (token) {
-      navigate(redirect);
-    }
-  }, [navigate, redirect, token]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    await toastPromise(login(formData).unwrap(), {
-      loadingMessage: "Logging in...",
-      successMessage: "Logged in successfully!",
-      errorMessage: "Login failed",
-      onSuccess: (res) => {
-        dispatch(setCredentials(res.data));
-        navigate(redirect);
-      },
-    });
-  };
+export default function LoginPage() {
+  const {
+    formData,
+    setFormData,
+    isPasswordVisible,
+    togglePassword,
+    isLoading,
+    handleSubmit,
+  } = useLogin();
 
   return (
     <div className="h-full-s flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -53,8 +23,7 @@ export default function Login() {
             Or{" "}
             <Link
               to="/signup"
-              className="font-medium text-blue-600 hover:text-blue-500"
-            >
+              className="font-medium text-blue-600 hover:text-blue-500">
               create a new account
             </Link>
           </p>
@@ -65,8 +34,7 @@ export default function Login() {
             <div>
               <label
                 htmlFor="identifier"
-                className="block text-sm font-medium text-gray-700"
-              >
+                className="block text-sm font-medium text-gray-700">
                 Email address or username
               </label>
               <input
@@ -86,14 +54,13 @@ export default function Login() {
             <div className="relative">
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
-              >
+                className="block text-sm font-medium text-gray-700">
                 Password
               </label>
               <input
                 id="password"
                 name="password"
-                type={showPassword ? "text" : "password"}
+                type={isPasswordVisible ? "text" : "password"}
                 autoComplete="new-password"
                 placeholder="********"
                 required
@@ -107,11 +74,10 @@ export default function Login() {
               {/* Toggle Icon */}
               <button
                 type="button"
-                onClick={() => setShowPassword((prev) => !prev)}
+                onClick={togglePassword}
                 className="absolute right-3 top-9 text-gray-500 hover:text-gray-700"
-                tabIndex={-1}
-              >
-                {showPassword ? (
+                tabIndex={-1}>
+                {isPasswordVisible ? (
                   <EyeSlashIcon className="h-5 w-5" />
                 ) : (
                   <EyeIcon className="h-5 w-5" />
@@ -130,17 +96,15 @@ export default function Login() {
               />
               <label
                 htmlFor="remember-me"
-                className="ml-2 block text-sm text-gray-900"
-              >
+                className="ml-2 block text-sm text-gray-900">
                 Remember me
               </label>
             </div>
 
             <div className="text-sm">
               <Link
-                to="/forgot-password"
-                className="font-medium text-blue-600 hover:text-blue-500"
-              >
+                to={"/forgot-password"}
+                className="font-medium text-blue-600 hover:text-blue-500">
                 Forgot your password?
               </Link>
             </div>
@@ -150,9 +114,8 @@ export default function Login() {
             <button
               onSubmit={handleSubmit}
               disabled={isLoading}
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isLoading ? "Loging in..." : "Log in"}
+              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed">
+              {isLoading ? "Logging in..." : "Log in"}
             </button>
           </div>
         </form>

@@ -1,17 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import CourseSidebar from "../components/CourseSidebar";
-import Breadcrumb from "../components/Breadcrumb";
-import VideoPlayer from "../components/VideoPlayer";
-import Loader from "../../../shared/components/Loader";
-import { CurrentMaterial } from "../types";
-import { getBreadcrumbs } from "../utils/breadcrumbs";
-import { useGetCourseDetailsQuery } from "../../../shared/slices/coursesApiSlice";
-import { Course } from "../../../shared/types/types";
-import NotFound from "../../../shared/pages/NotFound";
 import { useAppHook } from "../../../shared/hooks/useAppHook";
+import { useGetCourseDetailsQuery } from "../coursesApiSlice";
+import { Course } from "../../../shared/types/types";
+import { useEffect, useMemo, useState } from "react";
+import { CurrentMaterial } from "../types";
 
-export default function CoursePlayer() {
+export default function useCoursePlayer() {
   const { navigate, location } = useAppHook();
   const { courseId, moduleId } = useParams();
 
@@ -117,70 +111,30 @@ export default function CoursePlayer() {
   };
 
   const nextExists =
-    module &&
-    course &&
-    ((module.id !== course.modules[course.modules.length - 1].id &&
-      currentIndex === allMaterials.length - 1) ||
-      currentIndex < allMaterials.length - 1);
+    (module &&
+      course &&
+      ((module.id !== course.modules[course.modules.length - 1].id &&
+        currentIndex === allMaterials.length - 1) ||
+        currentIndex < allMaterials.length - 1)) ??
+    false;
 
   const prevExists =
-    module &&
-    course &&
-    ((module.id !== course.modules[0].id && currentIndex === 0) ||
-      currentIndex > 0);
+    (module &&
+      course &&
+      ((module.id !== course.modules[0].id && currentIndex === 0) ||
+        currentIndex > 0)) ??
+    false;
 
-  if (isLoading) return <Loader center />;
-
-  if (!course || !module || !material || !currentMaterial) {
-    return <Loader center/>;
-  }
-
-  if (!module || !material) {
-    return <NotFound />;
-  }
-
-  return (
-    <div className="flex h-full-s overflow-x-hidden">
-      <CourseSidebar
-        module={module}
-        currentMaterial={currentMaterial}
-        setCurrentMaterial={setCurrentMaterial}
-      />
-
-      <main className="max-h-full-s overflow-y-auto flex-1 flex flex-col ml-8 pr-8">
-        <header className="flex items-center justify-between my-4">
-          <button
-            onClick={handlePrev}
-            disabled={!prevExists}
-            className="cursor-pointer disabled:text-gray-400 px-6 py-3 hover:text-primary"
-          >
-            {"< Previous"}
-          </button>
-
-          <Breadcrumb
-            items={getBreadcrumbs(course, currentMaterial.materialId)}
-          />
-
-          <button
-            onClick={handleNext}
-            disabled={!nextExists}
-            className="cursor-pointer disabled:text-gray-400 px-6 py-3 hover:text-primary"
-          >
-            {"Next >"}
-          </button>
-        </header>
-
-        {material.videoUrl && (
-          <section className="relative w-full" style={{ paddingTop: "400px" }}>
-            <VideoPlayer src={material.videoUrl} />
-          </section>
-        )}
-        <section className="bg-white m-4">
-          <h1 className="text-2xl mb-4 font-semibold">{material.title}</h1>
-          <hr />
-          <p className="text-l mb-4">{material.title}</p>
-        </section>
-      </main>
-    </div>
-  );
+  return {
+    isLoading,
+    course,
+    module,
+    material,
+    currentMaterial,
+    setCurrentMaterial,
+    prevExists,
+    handlePrev,
+    nextExists,
+    handleNext,
+  };
 }

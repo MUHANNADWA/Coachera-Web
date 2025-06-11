@@ -15,7 +15,6 @@ const initialState: AuthState = {
   user: getUserFromStorage(),
 };
 
-
 const authSlice = createSlice({
   name: "auth",
   initialState,

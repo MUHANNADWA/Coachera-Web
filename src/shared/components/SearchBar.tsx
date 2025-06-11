@@ -24,7 +24,7 @@ export default function SearchBar() {
 
   return (
     <div className="relative w-4/12 max-w-md group">
-      <form action={`/search/${query}`} method="get">
+      <form action={`/courses?query=${query}`} method="get">
         <input
           ref={inputRef}
           type="text"

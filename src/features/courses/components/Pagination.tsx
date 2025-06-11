@@ -1,4 +1,3 @@
-
 interface CoursesPaginationProps {
   setPage: React.Dispatch<React.SetStateAction<number>>;
   page: number;
@@ -7,9 +6,7 @@ interface CoursesPaginationProps {
   isError: boolean;
 }
 
-export default function Pagination(props:CoursesPaginationProps) {
-
-
+export default function Pagination(props: CoursesPaginationProps) {
   return (
     <>
       {!props.isLoading && !props.isError && props.totalPages > 1 && (
@@ -17,8 +14,7 @@ export default function Pagination(props:CoursesPaginationProps) {
           <button
             disabled={props.page === 0}
             onClick={() => props.setPage((prev) => Math.max(prev - 1, 0))}
-            className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
-          >
+            className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50">
             Previous
           </button>
 
@@ -30,8 +26,7 @@ export default function Pagination(props:CoursesPaginationProps) {
                 i === props.page
                   ? "bg-blue-600 text-white"
                   : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-              }`}
-            >
+              }`}>
               {i + 1}
             </button>
           ))}
@@ -41,8 +36,7 @@ export default function Pagination(props:CoursesPaginationProps) {
             onClick={() =>
               props.setPage((prev) => Math.min(prev + 1, props.totalPages - 1))
             }
-            className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
-          >
+            className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50">
             Next
           </button>
         </div>

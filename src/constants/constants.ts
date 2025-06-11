@@ -1,14 +1,14 @@
 export const BASE_URL = "http://158.101.248.180:8080/api";
 // export const BASE_URL = "http://172.26.1.30:8080/api";
-export const USERS_URL = "/auth";
+export const AUTH_URL = "/auth";
 export const COURSES_URL = "/courses";
 export const PROFILE_URL = "/profile";
 export const UPLOAD_URL = "/upload";
 export const MODULES_URL = "/modules";
-export const VIDEOS_URL = "/videos";
+export const MATERIALS_URL = "/materials";
 export const ENROLLMENTS_URL = "/enrollments";
 export const PAYMENTS_URL = "/payments";
-export const ORDERS_URL = "/orders";
+export const SKILLS_URL = "/skills";
 export const REVIEWS_URL = "/reviews";
 export const USER_REVIEWS_URL = "/user-reviews";
 export const COURSE_REVIEWS_URL = "/course-reviews";

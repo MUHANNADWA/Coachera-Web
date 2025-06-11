@@ -3,7 +3,7 @@ import { Module } from "../../../shared/types/types";
 import { CurrentMaterial } from "../types";
 import { toggleCourseSidebar } from "../courseSidebarSlice";
 import { useState } from "react";
-import getMateialIcon from "../utils/MaterialIcon";
+import { getMateialIcon } from "../utils/Utils";
 import { useAppHook } from "../../../shared/hooks/useAppHook";
 
 interface CourseSidebarProps {
@@ -40,20 +40,17 @@ export default function CourseSidebar({
     <aside
       className={`h-full pl-8 pr-4 py-4 top-0 left-0 shadow-sm transition-all duration-300 overflow-x-hidden overflow-y-auto ${
         courseSidebarCollapsed ? "w-12" : "w-70"
-      }`}
-    >
+      }`}>
       <header
         className={`flex items-center justify-between transition-all duration-300 ${
           !courseSidebarCollapsed ? "p-4" : "ml-[-20px]"
-        }`}
-      >
+        }`}>
         {!courseSidebarCollapsed && (
           <h1 className="font-bold">{module.title}</h1>
         )}
         <button
           onClick={toggleCollapse}
-          className="text-gray-500 hover:text-gray-700"
-        >
+          className="text-gray-500 hover:text-gray-700">
           <Bars3Icon className="h-6 w-6" />
         </button>
       </header>
@@ -64,8 +61,7 @@ export default function CourseSidebar({
           <section key={section.id}>
             <button
               onClick={() => toggleSectionCollapse(section.id)}
-              className="cursor-pointer w-full"
-            >
+              className="cursor-pointer w-full">
               <h4 className="hover:bg-primary-light font-semibold p-2">
                 <hr />
                 {section.title}
@@ -88,16 +84,14 @@ export default function CourseSidebar({
                         sectionId: section.id,
                         materialId: material.id,
                       })
-                    }
-                  >
+                    }>
                     <div className="flex items-center relative">
                       <div
                         className={`w-4 h-4 flex items-center justify-center mr-5 before:absolute before:top-[3] before:left-[-10] before:w-7 before:h-7 before:rounded-lg [&>*:first-child]:z-45 ${
                           isCurrentMaterial(section.id, material.id)
                             ? "before:bg-blue-500 text-white"
                             : "before:bg-gray-200 text-gray-600"
-                        }`}
-                      >
+                        }`}>
                         {getMateialIcon(material.type)}
                       </div>
                       <div>
@@ -106,8 +100,7 @@ export default function CourseSidebar({
                             isCurrentMaterial(section.id, material.id)
                               ? "font-medium text-blue-600"
                               : "text-gray-700"
-                          }`}
-                        >
+                          }`}>
                           {material.title}
                         </p>
                         <p className="text-xs text-gray-500">

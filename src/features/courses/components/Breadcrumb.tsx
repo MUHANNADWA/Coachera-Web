@@ -1,12 +1,12 @@
-import { Link } from 'react-router-dom'
+import { Link } from "react-router-dom";
 
 interface BreadcrumbItem {
-  label: string
-  path?: string
+  label: string;
+  path?: string;
 }
 
 interface BreadcrumbProps {
-  items: BreadcrumbItem[]
+  items: BreadcrumbItem[];
 }
 
 export default function Breadcrumb({ items }: BreadcrumbProps) {
@@ -17,13 +17,18 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
           {items.map((item, index) => (
             <li key={index}>
               <div className="flex items-center">
-                {index > 0 && '>'}
-                <Link to={item.path ?? "#"} className="pl-2 text-sm font-medium min-w-8 max-w-32 truncate hover:text-gray-700"> {item.label} </Link>
+                {index > 0 && ">"}
+                <Link
+                  to={item.path ?? "#"}
+                  className="pl-2 text-sm font-medium min-w-8 max-w-32 truncate hover:text-gray-700">
+                  {" "}
+                  {item.label}{" "}
+                </Link>
               </div>
             </li>
           ))}
         </ol>
       </nav>
     </div>
-  )
+  );
 }

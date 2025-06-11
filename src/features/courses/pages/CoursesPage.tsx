@@ -1,13 +1,13 @@
 import CourseCard from "../components/CourseCard";
 import { Course } from "../../../shared/types/types";
-import { useGetCoursesQuery } from "../../../shared/slices/coursesApiSlice";
+import { useGetCoursesQuery } from "../coursesApiSlice";
 import CourseCardSkeleton from "../components/CourseCardSkeleton";
 import Message from "../../../shared/components/Message";
 import { useState } from "react";
 import CoursesSidebar from "../components/CoursesSidebar";
 import Pagination from "../components/Pagination";
 
-export default function Courses() {
+export default function CoursesPage() {
   const [page, setPage] = useState(0);
   const [size, setSize] = useState(6);
   const [sortBy, setSortBy] = useState("createdAt");
@@ -47,8 +47,7 @@ export default function Courses() {
                   !error
                     ? `grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8`
                     : ""
-                }
-              >
+                }>
                 {isLoading ? (
                   Array(size)
                     .fill(0)

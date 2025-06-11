@@ -1,25 +1,25 @@
-import { USERS_URL } from "../../constants/constants";
+import { AUTH_URL } from "../../constants/constants";
 import { apiSlice } from "../../shared/slices/apiSlice";
 
 export const usersApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (data) => ({
-        url: `${USERS_URL}/login`,
+        url: `${AUTH_URL}/login`,
         method: "post",
         body: data,
       }),
     }),
     register: builder.mutation({
       query: (data) => ({
-        url: `${USERS_URL}/register`,
+        url: `${AUTH_URL}/register`,
         method: "post",
         body: data,
       }),
     }),
     logout: builder.mutation({
       query: (data) => ({
-        url: `${USERS_URL}/logout`,
+        url: `${AUTH_URL}/logout`,
         method: "post",
         headers: { Authorization: `Bearer ${data}` },
       }),
@@ -33,27 +33,27 @@ export const usersApiSlice = apiSlice.injectEndpoints({
     }),
     profile: builder.mutation({
       query: (data) => ({
-        url: `${USERS_URL}/profile`,
+        url: `${AUTH_URL}/profile`,
         method: "PUT",
         body: data,
       }),
     }),
     getUsers: builder.query({
       query: () => ({
-        url: USERS_URL,
+        url: AUTH_URL,
       }),
       providesTags: ["User"],
       keepUnusedDataFor: 5,
     }),
     deleteUser: builder.mutation({
       query: (userId) => ({
-        url: `${USERS_URL}/${userId}`,
+        url: `${AUTH_URL}/${userId}`,
         method: "DELETE",
       }),
     }),
     updateUser: builder.mutation({
       query: (data) => ({
-        url: `${USERS_URL}/${data.userId}`,
+        url: `${AUTH_URL}/${data.userId}`,
         method: "PUT",
         body: data,
       }),
@@ -61,9 +61,30 @@ export const usersApiSlice = apiSlice.injectEndpoints({
     }),
     getUserDetails: builder.query({
       query: (id) => ({
-        url: `${USERS_URL}/${id}`,
+        url: `${AUTH_URL}/${id}`,
       }),
       keepUnusedDataFor: 5,
+    }),
+    forgotPassword: builder.mutation({
+      query: (email) => ({
+        url: `${AUTH_URL}/forgot-password`,
+        method: "post",
+        params: { email },
+      }),
+    }),
+    validateOtp: builder.mutation({
+      query: ({ email, otp }) => ({
+        url: `${AUTH_URL}/validate-otp`,
+        method: "post",
+        params: { email, otp },
+      }),
+    }),
+    resetPassword: builder.mutation({
+      query: ({ email, otp, newPassword }) => ({
+        url: `${AUTH_URL}/reset-password`,
+        method: "post",
+        params: { email, otp, newPassword },
+      }),
     }),
   }),
 });
@@ -78,4 +99,7 @@ export const {
   useDeleteUserMutation,
   useGetUserDetailsQuery,
   useUpdateUserMutation,
+  useForgotPasswordMutation,
+  useValidateOtpMutation,
+  useResetPasswordMutation,
 } = usersApiSlice;
