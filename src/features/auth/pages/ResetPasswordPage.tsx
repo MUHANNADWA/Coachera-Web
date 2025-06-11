@@ -9,7 +9,6 @@ export default function ResetPasswordPage() {
     setConfirmPasswordVisibility,
     formData,
     setFormData,
-    isLoading,
     handleReset,
   } = useResetPassword();
 

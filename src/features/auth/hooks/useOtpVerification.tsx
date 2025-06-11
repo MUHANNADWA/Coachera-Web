@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { useAppHook } from "../../../shared/hooks/useAppHook";
-import toast from "react-hot-toast";
 import { useValidateOtpMutation } from "../authApiSlice";
 import toastPromise from "../../../utils/toast";
 
@@ -88,6 +87,7 @@ export default function useOtpVerification() {
     email,
     timer,
     inputsRef,
+    isLoading,
     handleChange,
     handleKeyDown,
     handleResend,
