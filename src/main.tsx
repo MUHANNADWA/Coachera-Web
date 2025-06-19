@@ -17,7 +17,7 @@ import RegisterPage from "./features/auth/pages/RegisterPage";
 import HomePage from "./shared/pages/HomePage";
 import CoursesPage from "./features/courses/pages/CoursesPage";
 import CourseDetailsPage from "./features/courses/pages/CourseDetailsPage";
-import CoursePage from "./features/courses/pages/CoursePage";
+import LearnPage from "./features/courses/pages/LearnPage";
 import ProtectedRoute from "./shared/routes/ProtectedRoute";
 import AdminRoute from "./shared/routes/AdminRoute";
 import NotFoundPage from "./shared/pages/NotFoundPage";
@@ -26,6 +26,8 @@ import DashboardPage from "./features/dashboard/pages/DashboardPage";
 import ForgotPasswordPage from "./features/auth/pages/FogotPasswordPage";
 import ResetPasswordPage from "./features/auth/pages/ResetPasswordPage";
 import OtpVerificationPage from "./features/auth/pages/OtpVerificationPage";
+import SearchPage from "./shared/pages/SearchPage";
+import CategoriesPage from "./features/courses/pages/CategoriesPage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -36,12 +38,14 @@ const router = createBrowserRouter(
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/otp-verification" element={<OtpVerificationPage />} />
       <Route path="/reset-password" element={<ResetPasswordPage />} />
+      <Route path="/search/:query" element={<SearchPage />} />
+      <Route path="/categories" element={<CategoriesPage />} />
       <Route path="/courses" element={<CoursesPage />} />
       <Route path="/courses/:id" element={<CourseDetailsPage />} />
       <Route path="/public-profile/:id" element={<Profile />} />
 
       <Route element={<ProtectedRoute />}>
-        <Route path="/learn/:courseId/:moduleId" element={<CoursePage />} />
+        <Route path="/learn/:courseId/:moduleId" element={<LearnPage />} />
         <Route path="/profile" element={<Profile />} />
       </Route>
 

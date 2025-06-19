@@ -1,5 +1,5 @@
 import Plyr from "plyr-react";
-import "plyr-react/plyr.css"; // Default styles
+import "plyr-react/plyr.css";
 
 interface VideoPlayerProps {
   src: string;

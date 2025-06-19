@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import useRegister from "../hooks/useRegister";
+import { Button } from "../../../shared/components/Button";
 
 export default function RegisterPage() {
   const {
@@ -37,7 +38,7 @@ export default function RegisterPage() {
           <div className="rounded-md space-y-4">
             {/* Username & Email */}
             <div className="flex">
-              <div className="w-[-webkit-fill-available] mr-4">
+              <div className="fill-available mr-4">
                 <label
                   htmlFor="username"
                   className="block text-sm font-medium text-gray-700">
@@ -58,7 +59,7 @@ export default function RegisterPage() {
                 />
               </div>
 
-              <div className="w-[-webkit-fill-available] ml-4">
+              <div className="fill-available ml-4">
                 <label
                   htmlFor="email"
                   className="block text-sm font-medium text-gray-700">
@@ -82,7 +83,7 @@ export default function RegisterPage() {
 
             {/* Password & Role */}
             <div className="flex">
-              <div className="w-[-webkit-fill-available] mr-4 relative">
+              <div className="fill-available mr-4 relative">
                 <label
                   htmlFor="password"
                   className="block text-sm font-medium text-gray-700">
@@ -95,7 +96,7 @@ export default function RegisterPage() {
                   autoComplete="new-password"
                   placeholder="********"
                   required
-                  minLength={6}
+                  minLength={8}
                   value={formData.password}
                   onChange={(e) =>
                     setFormData({ ...formData, password: e.target.value })
@@ -103,50 +104,23 @@ export default function RegisterPage() {
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm pr-10"
                 />
                 {/* Toggle Icon */}
-                <button
-                  type="button"
+
+                <Button
                   onClick={() => setPasswordVisibility((prev) => !prev)}
                   className="absolute right-3 top-9 text-gray-500 hover:text-gray-700"
-                  tabIndex={-1}>
+                  type="button">
                   {isPasswordVisible ? (
                     <EyeSlashIcon className="h-5 w-5" />
                   ) : (
                     <EyeIcon className="h-5 w-5" />
                   )}
-                </button>
+                </Button>
                 <p className="mt-1 text-xs text-gray-500">
                   Password must be at least 6 characters
                 </p>
               </div>
 
-              <div className="w-[-webkit-fill-available] ml-4">
-                <label
-                  htmlFor="role"
-                  className="block text-sm font-medium text-gray-700">
-                  Role
-                </label>
-                <select
-                  id="role"
-                  name="role"
-                  required
-                  value={formData.role}
-                  onChange={(e) =>
-                    setFormData({ ...formData, role: e.target.value })
-                  }
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
-                  <option value="" disabled>
-                    Select your role
-                  </option>
-                  <option value="student">Student</option>
-                  <option value="instructor">Instructor</option>
-                  <option value="organization">Organization</option>
-                </select>
-              </div>
-            </div>
-
-            {/* Password Confirmation */}
-            <div className="flex">
-              <div className="w-[-webkit-fill-available] mr-4">
+              <div className="fill-available ml-4">
                 <label
                   htmlFor="confirmPassword"
                   className="block text-sm font-medium text-gray-700">
@@ -160,7 +134,7 @@ export default function RegisterPage() {
                     autoComplete="new-password"
                     placeholder="********"
                     required
-                    minLength={6}
+                    minLength={8}
                     value={formData.confirmPassword}
                     onChange={(e) =>
                       setFormData({
@@ -170,31 +144,33 @@ export default function RegisterPage() {
                     }
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm pr-10"
                   />
-                  <button
-                    type="button"
+                  <Button
                     onClick={() =>
                       setConfirmPasswordVisibility((prev) => !prev)
                     }
-                    className="absolute right-3 top-2.5 text-gray-500 hover:text-gray-700"
-                    tabIndex={-1}>
+                    className="absolute right-3 top-3 text-gray-500 hover:text-gray-700"
+                    type="button">
                     {isConfirmPasswordVisible ? (
                       <EyeSlashIcon className="h-5 w-5" />
                     ) : (
                       <EyeIcon className="h-5 w-5" />
                     )}
-                  </button>
+                  </Button>
                 </div>
                 <p className="mt-1 text-xs text-gray-500">
                   Please re-enter your password
                 </p>
               </div>
+            </div>
 
+            {/* Password Confirmation */}
+            <div className="flex">
               {/* Profile Image URL */}
               <div
                 className={
                   !formData.profileImageUrl
-                    ? "w-[-webkit-fill-available] ml-4"
-                    : `w-[calc(80%-2rem)] mr-4 ml-4`
+                    ? "fill-available"
+                    : `w-[calc(80%-2rem)] mr-4`
                 }>
                 <label
                   htmlFor="profileImage"
@@ -229,31 +205,11 @@ export default function RegisterPage() {
             </div>
           </div>
 
-          {/* Terms */}
-          <div className="flex items-center">
-            <input
-              id="terms"
-              name="terms"
-              type="checkbox"
-              required
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-            />
-            <label htmlFor="terms" className="ml-2 block text-sm text-gray-900">
-              I agree to the{" "}
-              <Link to="/terms" className="text-blue-600 hover:text-blue-500">
-                Terms and Conditions
-              </Link>
-            </label>
-          </div>
-
           {/* Submit */}
           <div>
-            <button
-              type="submit"
-              disabled={isLoading || isUploading}
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 cursor-pointer">
-              {isLoading ? "Creating account..." : "Create Account"}
-            </button>
+            <Button full variant="primary" isLoading={isLoading || isUploading}>
+              Create Account
+            </Button>
           </div>
         </form>
       </div>

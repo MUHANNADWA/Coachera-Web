@@ -1,9 +1,12 @@
-import { Link } from "react-router-dom";
 import img from "../../assets/1.svg";
 import CoursesPage from "../../features/courses/pages/CoursesPage";
 import RichTextEditor from "../components/RichTextEditor";
 import Meta from "../components/Meta";
+import { Button } from "../components/Button";
+import { useAppHook } from "../hooks/useAppHook";
 export default function HomePage() {
+  const { navigate } = useAppHook();
+
   return (
     <>
       <section className="flex flex-col md:flex-row items-center justify-between px-6 md:px-20 py-20 bg-white">
@@ -17,11 +20,9 @@ export default function HomePage() {
             Expand your career opportunities with <br />{" "}
             <span className="text-primary">Learning</span>.
           </h1>
-          <Link to="/get-started">
-            <button className="bg-primary text-white px-6 py-3 rounded-full hover:bg-blue-700 transition">
-              Get Started →
-            </button>
-          </Link>
+          <Button variant="primary" onClick={() => navigate("/get-started")}>
+            Get Started →
+          </Button>
         </div>
 
         {/* Image */}

@@ -1,3 +1,4 @@
+import { Button } from "../../../shared/components/Button";
 import useOtpVerification from "../hooks/useOtpVerification";
 
 export default function OtpVerificationPage() {
@@ -40,16 +41,14 @@ export default function OtpVerificationPage() {
               value={digit}
               onChange={(e) => handleChange(index, e.target.value)}
               onKeyDown={(e) => handleKeyDown(index, e)}
-              className="w-12 h-12 sm:w-14 sm:h-14 text-center border-2 border-gray-300 rounded-xl focus:outline-none focus:border-blue-600 text-lg"
+              className="w-12 h-12 sm:w-14 sm:h-14 text-center border-2 border-gray-300 rounded-xl text-lg"
             />
           ))}
         </div>
 
-        <button
-          type="submit"
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-full transition">
+        <Button full variant="primary">
           Confirm
-        </button>
+        </Button>
 
         <div className="text-sm text-gray-500">
           {!expired ? (
@@ -58,12 +57,13 @@ export default function OtpVerificationPage() {
               {formatTime(timer.second)}
             </>
           ) : (
-            <button
+            <Button
+              full
               type="button"
               onClick={handleResend}
               className="text-blue-600 font-medium hover:underline">
               Resend code
-            </button>
+            </Button>
           )}
         </div>
 

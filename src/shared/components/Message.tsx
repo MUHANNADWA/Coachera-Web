@@ -6,6 +6,7 @@ import {
   XCircleIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
+import { Button } from "./Button";
 
 type MessageVariant = "info" | "success" | "warning" | "danger" | "dark";
 
@@ -75,13 +76,13 @@ const Message = ({
         />
         <div className="flex-1">{children}</div>
         {dismissible && (
-          <button
+          <Button
             type="button"
             onClick={handleDismiss}
-            className={`ml-2 p-1 rounded-full hover:bg-opacity-30 focus:outline-none focus:ring-2 focus:ring-offset-2 ${variantIconColors[variant]} focus:ring-current`}
+            className={`ml-2 p-1 rounded-full hover:bg-opacity-30 ${variantIconColors[variant]}`}
             aria-label="Dismiss">
             <XMarkIcon className="h-5 w-5" />
-          </button>
+          </Button>
         )}
       </div>
     </div>

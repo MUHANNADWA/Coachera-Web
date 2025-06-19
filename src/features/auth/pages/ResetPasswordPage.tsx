@@ -1,5 +1,6 @@
-import { EyeIcon, EyeSlashIcon } from "@heroicons/react/16/solid";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { useResetPassword } from "../hooks/useResetPassword";
+import { Button } from "../../../shared/components/Button";
 
 export default function ResetPasswordPage() {
   const {
@@ -18,42 +19,47 @@ export default function ResetPasswordPage() {
         onSubmit={handleReset}
         className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow">
         <h2 className="text-2xl font-bold mb-4 text-center">Reset Password</h2>
+
+        {/* New Password */}
         <div>
           <label
             htmlFor="password"
             className="block text-sm font-medium text-gray-700">
             Password
           </label>
-          <input
-            id="password"
-            name="password"
-            type={isPasswordVisible ? "text" : "password"}
-            autoComplete="new-password"
-            placeholder="********"
-            required
-            minLength={6}
-            value={formData.password}
-            onChange={(e) =>
-              setFormData({ ...formData, password: e.target.value })
-            }
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm pr-10"
-          />
-          {/* Toggle Icon */}
-          <button
-            type="button"
-            onClick={() => setPasswordVisibility((prev) => !prev)}
-            className="absolute right-3 top-9 text-gray-500 hover:text-gray-700"
-            tabIndex={-1}>
-            {isPasswordVisible ? (
-              <EyeSlashIcon className="h-5 w-5" />
-            ) : (
-              <EyeIcon className="h-5 w-5" />
-            )}
-          </button>
+          <div className="relative">
+            <input
+              id="password"
+              name="password"
+              type={isPasswordVisible ? "text" : "password"}
+              autoComplete="new-password"
+              placeholder="********"
+              required
+              minLength={8}
+              value={formData.password}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm pr-10"
+            />
+            <Button
+              type="button"
+              onClick={() => setPasswordVisibility((prev) => !prev)}
+              className="absolute right-3 top-3 text-gray-500 hover:text-gray-700"
+              tabIndex={-1}>
+              {isPasswordVisible ? (
+                <EyeSlashIcon className="h-5 w-5" />
+              ) : (
+                <EyeIcon className="h-5 w-5" />
+              )}
+            </Button>
+          </div>
           <p className="mt-1 text-xs text-gray-500">
             Password must be at least 6 characters
           </p>
         </div>
+
+        {/* New Password Confirmation*/}
         <div>
           <label
             htmlFor="confirmPassword"
@@ -68,7 +74,7 @@ export default function ResetPasswordPage() {
               autoComplete="new-password"
               placeholder="********"
               required
-              minLength={6}
+              minLength={8}
               value={formData.confirmPassword}
               onChange={(e) =>
                 setFormData({
@@ -78,7 +84,7 @@ export default function ResetPasswordPage() {
               }
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm pr-10"
             />
-            <button
+            <Button
               type="button"
               onClick={() => setConfirmPasswordVisibility((prev) => !prev)}
               className="absolute right-3 top-2.5 text-gray-500 hover:text-gray-700"
@@ -88,17 +94,13 @@ export default function ResetPasswordPage() {
               ) : (
                 <EyeIcon className="h-5 w-5" />
               )}
-            </button>
+            </Button>
           </div>
           <p className="mt-1 text-xs text-gray-500">
             Please re-enter your password
           </p>
         </div>
-        <button
-          type="submit"
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-full transition">
-          Confirm
-        </button>
+        <Button full variant="primary">Confirm</Button>
       </form>
     </div>
   );

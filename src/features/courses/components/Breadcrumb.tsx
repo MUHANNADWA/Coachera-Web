@@ -11,7 +11,7 @@ interface BreadcrumbProps {
 
 export default function Breadcrumb({ items }: BreadcrumbProps) {
   return (
-    <div className="px-3 py-3">
+    <div className="px-3 py-3 hidden lg:block">
       <nav className="flex" aria-label="Breadcrumb">
         <ol className="flex items-center space-x-2">
           {items.map((item, index) => (

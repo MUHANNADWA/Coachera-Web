@@ -5,7 +5,7 @@ export function useAppHook() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const user = useAppSelector((state) => state.auth.user?.userDTO);
+  const user = useAppSelector((state) => state.auth.user?.user);
   const token = useAppSelector((state) => state.auth.user?.accessToken);
   const courseSidebarCollapsed = useAppSelector(
     (state) => state.courseSidebar.collapsed

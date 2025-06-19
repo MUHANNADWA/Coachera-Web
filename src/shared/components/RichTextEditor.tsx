@@ -1,6 +1,7 @@
 import { Editor } from "@tinymce/tinymce-react";
 import { useRef, useState } from "react";
 import type { Editor as TinyMCEEditor } from "tinymce";
+import { Button } from "./Button";
 
 export default function RichTextEditor() {
   const editorRef = useRef<TinyMCEEditor | null>(null);
@@ -54,11 +55,9 @@ export default function RichTextEditor() {
         onEditorChange={(newValue: string) => setContent(newValue)}
       />
 
-      <button
-        onClick={handleSave}
-        className="mt-4 px-4 py-2 bg-blue-600 text-white rounded">
+      <Button onClick={handleSave} variant="primary">
         Save Lesson
-      </button>
+      </Button>
 
       <h2 className="mt-6 text-lg font-semibold">Preview:</h2>
       <div

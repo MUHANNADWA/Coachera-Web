@@ -4,7 +4,7 @@ import CourseCard from "../../courses/components/CourseCard";
 
 export default function DashboardPage() {
   const enrolledCourses = courses.slice(0, 2);
-  const wishlistCourses = courses.slice(2, 4);
+  const favoritesCourses = courses.slice(2, 4);
 
   return (
     <div className="container mx-auto py-8 px-4">
@@ -40,9 +40,9 @@ export default function DashboardPage() {
       </section>
 
       <section>
-        <h2 className="text-2xl font-bold mb-6">Wishlist</h2>
+        <h2 className="text-2xl font-bold mb-6">Favorites</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {wishlistCourses.map((course) => (
+          {favoritesCourses.map((course) => (
             <CourseCard key={course.id} course={course} />
           ))}
         </div>

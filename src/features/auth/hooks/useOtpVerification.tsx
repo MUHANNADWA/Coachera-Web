@@ -52,8 +52,8 @@ export default function useOtpVerification() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e?: React.FormEvent) => {
+    e!.preventDefault();
     const code = otp.join("");
     console.log("Verifying OTP:", code);
 

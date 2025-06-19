@@ -23,16 +23,15 @@ export const renderStars = (rating: number) => {
 // ---------------------------------------------------------------
 
 import {
-  BookOpenIcon,
-  QuestionMarkCircleIcon,
-  VideoCameraIcon,
+  PlayIcon,
+  DocumentTextIcon,
+  ClipboardDocumentCheckIcon,
 } from "@heroicons/react/16/solid";
-
-export const getMateialIcon = (type: string) => {
+export const getMaterialIcon = (type: string) => {
   {
-    if (type == "ARTICLE") return <BookOpenIcon />;
-    else if (type == "VIDEO") return <VideoCameraIcon />;
-    else return <QuestionMarkCircleIcon />;
+    if (type == "ARTICLE") return <DocumentTextIcon />;
+    else if (type == "VIDEO") return <PlayIcon />;
+    else return <ClipboardDocumentCheckIcon />;
   }
 };
 

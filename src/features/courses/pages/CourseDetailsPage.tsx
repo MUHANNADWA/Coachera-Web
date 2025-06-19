@@ -5,18 +5,25 @@ import {
   ChartBarIcon,
 } from "@heroicons/react/24/outline";
 import { useGetCourseDetailsQuery } from "../coursesApiSlice";
-import { Course } from "../../../shared/types/types";
+import { Course, Review as ReviewType } from "../../../shared/types/types";
 import Loader from "../../../shared/components/Loader";
 import Meta from "../../../shared/components/Meta";
 import Skills from "../../../shared/components/Skills";
 import { skills } from "../../../shared/data/sampleData";
 import { CourseModules } from "../components/CourseModules";
 import { placeholderImage } from "../utils/Utils";
+import Review from "../components/Review";
+import { useGetCourseReviewsQuery } from "../reviewsApiSlice";
+import { Button } from "../../../shared/components/Button";
 
 export default function CourseDetailsPage() {
   const { id } = useParams();
+
   const { data } = useGetCourseDetailsQuery(Number(id));
   const course: Course = data?.data;
+
+  const { data: reviewsData } = useGetCourseReviewsQuery(Number(id));
+  const reviews: ReviewType[] = reviewsData?.data;
 
   if (!course) return <Loader center />;
 
@@ -24,19 +31,19 @@ export default function CourseDetailsPage() {
     <div className="container mx-auto py-8 px-4">
       <Meta title={course.title} description={course.description} />
       <div className="rounded-lg overflow-hidden">
-        <div className="md:flex">
-          <div className="md:w-2/3 p-6">
+        <div className="flex max-lg:flex-col-reverse">
+          <div className="lg:w-2/3 p-6">
             <h1 className="text-3xl font-bold mb-4">{course.title}</h1>
             <p className="text-gray-600 mb-6">{course.instructor}</p>
 
             <div className="flex flex-wrap gap-4 mb-6">
               <div className="flex items-center text-sm">
                 <ClockIcon className="h-5 w-5 mr-1" />
-                <span>{course.duration}</span>
+                <span>{course.durationHours}</span>
               </div>
               <div className="flex items-center text-sm">
                 <ChartBarIcon className="h-5 w-5 mr-1" />
-                <span>{course.level}</span>
+                <span>{course.level ?? "Begginner"}</span>
               </div>
               <div className="flex items-center text-sm">
                 <CheckBadgeIcon className="h-5 w-5 mr-1" />
@@ -64,10 +71,17 @@ export default function CourseDetailsPage() {
               <Skills skills={skills} />
             </div>
 
-            <CourseModules modules={[]} />
+            <CourseModules modules={course.modules} />
+
+            <div className="mb-8">
+              <h2 className="text-xl font-bold mb-4">Reviews</h2>
+              {reviews.map((_, i) => (
+                <Review review={reviews[i] as ReviewType} />
+              ))}
+            </div>
           </div>
 
-          <div className="md:w-1/3 bg-gray-50 p-6">
+          <div className="lg:w-1/3 bg-gray-50 p-6">
             <div className="sticky top-4">
               <div className="aspect-w-16 aspect-h-9 mb-4">
                 <img
@@ -86,12 +100,12 @@ export default function CourseDetailsPage() {
                     ★ {course.rating}
                   </span>
                 </div>
-                <button className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-500-700 transition mb-2">
+                <Button full variant="primary" className="mb-2">
                   Enroll Now
-                </button>
-                <button className="w-full border border-blue text-blue py-3 rounded-lg hover:bg-blue-500-50 transition">
-                  Add to Wishlist
-                </button>
+                </Button>
+                <Button full variant="secondary">
+                  Add to Favorites
+                </Button>
               </div>
 
               <div className="bg-white p-4 rounded-lg shadow-sm">

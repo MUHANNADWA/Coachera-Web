@@ -19,12 +19,13 @@ export interface Course {
   price: number;
   rating: number;
   image: string;
-  duration: string;
+  durationHours: string;
   ratingCount: number;
   level: string;
   categories: string[];
   org: string;
   modules: Module[];
+  reviews?: Review[];
 }
 
 export interface Module {
@@ -71,4 +72,26 @@ export interface Category {
 export interface Skill {
   id: number;
   name: string;
+}
+
+export interface Review {
+  id: number;
+  studentId: number;
+  rating: number;
+  comment: string;
+}
+
+export interface Student {
+  id: number;
+  userId: number;
+  firstName: string;
+  lastName: string;
+  birthDate: string;
+  gender: string;
+  education: string;
+  wallet: number;
+  phoneNumber: string;
+  address: string;
+  certificateIds: number[];
+  skills: Skill[];
 }

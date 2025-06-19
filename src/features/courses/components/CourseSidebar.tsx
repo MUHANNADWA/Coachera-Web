@@ -1,10 +1,9 @@
 import { Bars3Icon } from "@heroicons/react/24/outline";
 import { Module } from "../../../shared/types/types";
 import { CurrentMaterial } from "../types";
-import { toggleCourseSidebar } from "../courseSidebarSlice";
-import { useState } from "react";
-import { getMateialIcon } from "../utils/Utils";
-import { useAppHook } from "../../../shared/hooks/useAppHook";
+import { getMaterialIcon } from "../utils/Utils";
+import { Button } from "../../../shared/components/Button";
+import useCourseSidebar from "../hooks/useCourseSidebar";
 
 interface CourseSidebarProps {
   module: Module;
@@ -17,29 +16,21 @@ export default function CourseSidebar({
   currentMaterial,
   setCurrentMaterial,
 }: CourseSidebarProps) {
-  const { dispatch, courseSidebarCollapsed } = useAppHook();
-
-  const toggleCollapse = () => dispatch(toggleCourseSidebar());
-
-  const [collapsedSections, setCollapsedSections] = useState<Set<number>>(
-    new Set()
-  );
-  const toggleSectionCollapse = (sectionId: number) => {
-    setCollapsedSections((prev) => {
-      const newSet = new Set(prev);
-      newSet.has(sectionId) ? newSet.delete(sectionId) : newSet.add(sectionId);
-      return newSet;
-    });
-  };
-
-  const isCurrentMaterial = (sectionId: number, materialId: number) =>
-    sectionId === currentMaterial.sectionId &&
-    materialId === currentMaterial.materialId;
+  const {
+    toggleCollapse,
+    sidebarRef,
+    materialRefs,
+    collapsedSections,
+    toggleSectionCollapse,
+    isCurrentMaterial,
+    courseSidebarCollapsed,
+  } = useCourseSidebar(currentMaterial);
 
   return (
     <aside
-      className={`h-full pl-8 pr-4 py-4 top-0 left-0 shadow-sm transition-all duration-300 overflow-x-hidden overflow-y-auto ${
-        courseSidebarCollapsed ? "w-12" : "w-70"
+      ref={sidebarRef}
+      className={`bg-white max-sm:absolute max-sm:h-15 max-sm:top-2.5 block h-full pl-8 pr-4 py-4 top-0 left-0 max-sm:shadow-none shadow-sm transition-all duration-300 overflow-x-hidden overflow-y-auto z-45 ${
+        courseSidebarCollapsed ? "w-12" : "w-70 max-sm:w-full max-sm:h-full"
       }`}>
       <header
         className={`flex items-center justify-between transition-all duration-300 ${
@@ -48,43 +39,47 @@ export default function CourseSidebar({
         {!courseSidebarCollapsed && (
           <h1 className="font-bold">{module.title}</h1>
         )}
-        <button
+        <Button
           onClick={toggleCollapse}
           className="text-gray-500 hover:text-gray-700">
           <Bars3Icon className="h-6 w-6" />
-        </button>
+        </Button>
       </header>
 
       {/* Course Content */}
       {!courseSidebarCollapsed &&
         module.sections.map((section) => (
           <section key={section.id}>
-            <button
-              onClick={() => toggleSectionCollapse(section.id)}
-              className="cursor-pointer w-full">
-              <h4 className="hover:bg-primary-light font-semibold p-2">
+            <Button full onClick={() => toggleSectionCollapse(section.id)}>
+              <h4 className="hover:bg-primary-light font-semibold p-2 w-full">
                 <hr />
                 {section.title}
                 <hr />
               </h4>
-            </button>
+            </Button>
 
             {!collapsedSections.has(section.id) && (
               <ul>
                 {section.materials.map((material) => (
                   <li
                     key={material.id}
+                    ref={(el) => {
+                      materialRefs.current.set(
+                        `${section.id}-${material.id}`,
+                        el
+                      );
+                    }}
                     className={`p-4 cursor-pointer hover:bg-primary-light ${
-                      isCurrentMaterial(section.id, material.id)
-                        ? "bg-blue-50 border-l-4 border-l-blue-500"
-                        : ""
+                      isCurrentMaterial(section.id, material.id) &&
+                      "bg-blue-50 border-l-4 border-l-blue-500"
                     }`}
-                    onClick={() =>
+                    onClick={() => {
                       setCurrentMaterial({
                         sectionId: section.id,
                         materialId: material.id,
-                      })
-                    }>
+                      });
+                      window.innerWidth <= 768 && toggleCollapse();
+                    }}>
                     <div className="flex items-center relative">
                       <div
                         className={`w-4 h-4 flex items-center justify-center mr-5 before:absolute before:top-[3] before:left-[-10] before:w-7 before:h-7 before:rounded-lg [&>*:first-child]:z-45 ${
@@ -92,7 +87,7 @@ export default function CourseSidebar({
                             ? "before:bg-blue-500 text-white"
                             : "before:bg-gray-200 text-gray-600"
                         }`}>
-                        {getMateialIcon(material.type)}
+                        {getMaterialIcon(material.type)}
                       </div>
                       <div>
                         <p
@@ -104,7 +99,7 @@ export default function CourseSidebar({
                           {material.title}
                         </p>
                         <p className="text-xs text-gray-500">
-                          {material.duration}
+                          {material.duration ?? "0:00"}
                         </p>
                       </div>
                     </div>

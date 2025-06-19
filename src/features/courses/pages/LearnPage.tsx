@@ -7,7 +7,7 @@ import ArticlePage from "./ArticlePage";
 import VideoPage from "./VideoPage";
 import CourseHeader from "../components/CourseHeader";
 
-export default function CoursePage() {
+export default function LearnPage() {
   const {
     isLoading,
     course,
@@ -32,7 +32,7 @@ export default function CoursePage() {
   }
 
   return (
-    <div className="flex h-full-s overflow-x-hidden">
+    <div className="flex h-full-s overflow-x-hidden relative">
       <CourseSidebar
         module={module}
         currentMaterial={currentMaterial}

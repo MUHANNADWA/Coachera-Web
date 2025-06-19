@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { useLogin } from "../hooks/useLogin";
+import { Button } from "../../../shared/components/Button";
 
 export default function LoginPage() {
   const {
@@ -47,7 +48,7 @@ export default function LoginPage() {
                 onChange={(e) =>
                   setFormData({ ...formData, identifier: e.target.value })
                 }
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
               />
             </div>
 
@@ -61,7 +62,7 @@ export default function LoginPage() {
                 id="password"
                 name="password"
                 type={isPasswordVisible ? "text" : "password"}
-                autoComplete="new-password"
+                autoComplete="current-password"
                 placeholder="********"
                 required
                 minLength={6}
@@ -72,17 +73,16 @@ export default function LoginPage() {
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm pr-10"
               />
               {/* Toggle Icon */}
-              <button
+              <Button
                 type="button"
                 onClick={togglePassword}
-                className="absolute right-3 top-9 text-gray-500 hover:text-gray-700"
-                tabIndex={-1}>
+                className="absolute right-3 top-9 text-gray-500 hover:text-gray-700">
                 {isPasswordVisible ? (
                   <EyeSlashIcon className="h-5 w-5" />
                 ) : (
                   <EyeIcon className="h-5 w-5" />
                 )}
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -92,7 +92,7 @@ export default function LoginPage() {
                 id="remember-me"
                 name="remember-me"
                 type="checkbox"
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                className="h-4 w-4 text-blue-600 border-gray-300 rounded"
               />
               <label
                 htmlFor="remember-me"
@@ -111,12 +111,9 @@ export default function LoginPage() {
           </div>
 
           <div>
-            <button
-              onSubmit={handleSubmit}
-              disabled={isLoading}
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed">
-              {isLoading ? "Logging in..." : "Log in"}
-            </button>
+            <Button full variant="primary" isLoading={isLoading}>
+              Log in
+            </Button>
           </div>
         </form>
       </div>

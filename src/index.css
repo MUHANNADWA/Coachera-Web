@@ -4,6 +4,7 @@
 @theme {
   --color-primary: #2ec4b6;
   --color-primary-light: #ecf1f3;
+  --color-secondary: #203c47;
 }
 
 body {
@@ -38,4 +39,12 @@ hr {
 
 .max-h-full-s {
   @apply max-h-[calc(100vh-75px)];
+}
+
+.fill-available {
+  @apply w-[-webkit-fill-available] w-[-moz-available];
+}
+
+.dropdown {
+  @apply absolute right-0 z-50 w-56 origin-top-right rounded-xl bg-white shadow-lg p-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-200 border border-gray-300;
 }

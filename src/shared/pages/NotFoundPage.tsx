@@ -1,3 +1,4 @@
+import { Button } from "../components/Button";
 import { useAppHook } from "../hooks/useAppHook";
 
 export default function NotFoundPage() {
@@ -10,11 +11,9 @@ export default function NotFoundPage() {
       <p className="mt-4 text-gray-600">
         The page you were looking for does not exist
       </p>
-      <button
-        onClick={() => navigate(-1)}
-        className="mt-6 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
+      <Button onClick={() => navigate(-1)} variant="secondary">
         Go Back
-      </button>
+      </Button>
     </div>
   );
 }

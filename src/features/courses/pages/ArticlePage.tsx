@@ -9,7 +9,7 @@ export default function ArticlePage({ material }: ArticlePageProps) {
   if (!article) return <p>No article found.</p>;
 
   return (
-    <div>
+    <div className="p-4">
       <h1 className="text-2xl mb-4 font-semibold">{material.title}</h1>
       <hr className="mb-4" />
       <p>{article}</p>

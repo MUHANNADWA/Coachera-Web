@@ -1,3 +1,4 @@
+import { Button } from "../../../shared/components/Button";
 import { useForgotPassword } from "../hooks/useForgotPassword";
 
 export default function ForgotPasswordPage() {
@@ -23,14 +24,12 @@ export default function ForgotPasswordPage() {
             placeholder="johndoe@example.com"
             required
             onChange={(e) => setEmail(e.target.value)}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
           />
         </div>
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded">
-          {isLoading ? "Loading..." : "Send OTP"}
-        </button>
+        <Button full variant="primary" isLoading={isLoading}>
+          Send OTP
+        </Button>
       </form>
     </div>
   );

@@ -1,9 +1,9 @@
 export interface User {
   accessToken: string;
-  userDTO: UserDTO;
+  user: Userinfo;
 }
 
-export interface UserDTO {
+export interface Userinfo {
   id: string;
   username: string;
   email: string;

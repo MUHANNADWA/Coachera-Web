@@ -18,7 +18,7 @@ export default function useRegister() {
     email: "",
     password: "",
     confirmPassword: "",
-    role: "",
+    role: "student",
     profileImageUrl: "",
   });
 

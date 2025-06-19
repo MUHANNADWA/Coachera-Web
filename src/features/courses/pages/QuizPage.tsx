@@ -1,5 +1,8 @@
 import { useState } from "react";
-import { Material } from "../../../shared/types/types"; // Adjust path as needed
+import { Material } from "../../../shared/types/types";
+import { Button } from "../../../shared/components/Button";
+import Modal from "../../../shared/components/Modal";
+import { useModal } from "../../../shared/hooks/useModal";
 
 interface QuizPageProps {
   material: Material;
@@ -10,6 +13,7 @@ export default function QuizPage({ material }: QuizPageProps) {
 
   const [answers, setAnswers] = useState<{ [questionId: number]: number }>({});
   const [submitted, setSubmitted] = useState(false);
+  const { isOpen, open, close } = useModal();
 
   if (!quiz) return <p>No quiz found.</p>;
 
@@ -23,20 +27,19 @@ export default function QuizPage({ material }: QuizPageProps) {
       (q) => answers[q.id] !== undefined
     );
     if (!allAnswered) {
-      alert("Please answer all questions.");
+      open();
       return;
     }
 
-    // Submit logic here
     setSubmitted(true);
   };
 
   return (
-    <div>
+    <div className="p-4">
       <h1 className="text-2xl mb-4 font-semibold">{material.title}</h1>
       <hr className="mb-4" />
 
-      <form className="space-y-12">
+      <form className="space-y-12" onSubmit={(e) => e.preventDefault()}>
         {quiz.questions.map((question, qIndex) => {
           const answerOptions = [
             question.answer1,
@@ -72,14 +75,23 @@ export default function QuizPage({ material }: QuizPageProps) {
           );
         })}
 
-        <button
+        <Button
+          full
           type="button"
           onClick={handleSubmit}
-          className="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded disabled:opacity-50"
+          variant="primary"
           disabled={submitted}>
           {submitted ? "Submitted" : "Submit Quiz"}
-        </button>
+        </Button>
       </form>
+
+      <Modal
+        isOpen={isOpen}
+        onClose={close}
+        title="Incomplete Quiz"
+        message="Please answer all questions before submitting the quiz."
+        variant="info"
+      />
     </div>
   );
 }

@@ -1,31 +1,31 @@
 import CourseCard from "../components/CourseCard";
 import { Course } from "../../../shared/types/types";
-import { useGetCoursesQuery } from "../coursesApiSlice";
 import CourseCardSkeleton from "../components/CourseCardSkeleton";
-import Message from "../../../shared/components/Message";
-import { useState } from "react";
-import CoursesSidebar from "../components/CoursesSidebar";
+import FiltersSidebar from "../components/FiltersSidebar";
 import Pagination from "../components/Pagination";
+import { showErrorMessage } from "../../../utils/errorMessage";
+import useCourses from "../hooks/useCourses";
 
 export default function CoursesPage() {
-  const [page, setPage] = useState(0);
-  const [size, setSize] = useState(6);
-  const [sortBy, setSortBy] = useState("createdAt");
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
-
-  const { data, isLoading, error } = useGetCoursesQuery({
+  const {
     page,
+    setPage,
     size,
+    setSize,
     sortBy,
+    setSortBy,
     sortDirection,
-  });
-  const courses: Course[] = data?.data.content || [];
-  const totalPages = data?.data.totalPages || 1;
+    setSortDirection,
+    courses,
+    totalPages,
+    isLoading,
+    error,
+  } = useCourses();
 
   return (
     <div className="flex h-full-s overflow-x-hidden">
-      {/* CoursesSidebar Filters */}
-      <CoursesSidebar
+      {/* FiltersSidebar */}
+      <FiltersSidebar
         setPage={setPage}
         size={size}
         setSize={setSize}
@@ -43,26 +43,16 @@ export default function CoursesPage() {
             {/* Courses Grid */}
             <div className="flex-1">
               <div
-                className={
-                  !error
-                    ? `grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8`
-                    : ""
-                }>
-                {isLoading ? (
-                  Array(size)
-                    .fill(0)
-                    .map((_, index) => <CourseCardSkeleton key={index} />)
-                ) : error ? (
-                  <Message variant="danger">
-                    {(error as any)?.data?.message ??
-                      (error as any)?.message ??
-                      `An unexpected error occurred`}
-                  </Message>
-                ) : (
-                  courses.map((course: Course) => (
-                    <CourseCard key={course.id} course={course} />
-                  ))
-                )}
+                className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8`}>
+                {isLoading
+                  ? Array(size)
+                      .fill(0)
+                      .map((_, index) => <CourseCardSkeleton key={index} />)
+                  : error
+                  ? showErrorMessage(error)
+                  : courses.map((course: Course) => (
+                      <CourseCard key={course.id} course={course} />
+                    ))}
               </div>
               <Pagination
                 setPage={setPage}

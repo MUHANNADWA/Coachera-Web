@@ -23,13 +23,13 @@ export default function SearchBar() {
   }, []);
 
   return (
-    <div className="relative w-4/12 max-w-md group">
-      <form action={`/courses?query=${query}`} method="get">
+    <div className="relative max-w-xs w-full font-normal">
+      <form action={`/search/${query}`} method="get">
         <input
           ref={inputRef}
           type="text"
           placeholder="Search for courses..."
-          className="w-full pl-10 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full pl-10 pr-4 py-2 rounded-full border border-gray-300"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />

@@ -2,6 +2,7 @@ import { Course } from "../../../shared/types/types";
 import { FaRegHeart } from "react-icons/fa";
 import { placeholderImage, renderStars } from "../utils/Utils";
 import { Link } from "react-router-dom";
+import { Button } from "../../../shared/components/Button";
 
 interface CourseCardProps {
   course: Course;
@@ -25,9 +26,9 @@ export default function CourseCard({ course }: CourseCardProps) {
           <span className="text-emerald-600 font-bold text-lg">
             ${course.price ?? 0}
           </span>
-          <button className="text-emerald-400 hover:text-emerald-600">
+          <Button className="text-primary hover:text-emerald-600">
             <FaRegHeart size={18} />
-          </button>
+          </Button>
         </div>
 
         <div className="flex items-center mt-2 text-sm">
