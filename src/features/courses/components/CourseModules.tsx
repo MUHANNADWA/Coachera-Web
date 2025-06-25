@@ -3,20 +3,78 @@ import {
   PlayCircleIcon,
   DocumentTextIcon,
   ClipboardDocumentListIcon,
+  RectangleStackIcon,
+  ListBulletIcon,
 } from "@heroicons/react/24/outline";
 import { Button } from "../../../shared/components/Button";
-import { Material, Module } from "../../../shared/types/types";
+import { Course, Material, Module } from "../../../shared/types/types";
 
 type CourseModulesProps = {
-  modules: Module[];
+  course: Course;
 };
 
-export function CourseModules({ modules }: CourseModulesProps) {
+export function CourseModules({ course }: CourseModulesProps) {
+  const modules = course.modules;
+
+  const allSections = modules.flatMap((m) => m.sections);
+  const allMaterials = allSections.flatMap((s) => s.materials);
+
+  const countByType = (type: Material["type"]) =>
+    allMaterials.filter((m) => m.type === type).length;
+
   return (
-    <div className="space-y-6 border rounded-lg shadow p-6 bg-white">
+    <div className="space-y-6 border border-gray-300 rounded-lg shadow p-6 bg-white">
+      <p className="text-xl font-semibold">{course.title}</p>
+
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 text-sm text-gray-700 mt-4">
+        <SummaryItem
+          icon={RectangleStackIcon}
+          label="Modules"
+          value={modules.length}
+        />
+        <SummaryItem
+          icon={ListBulletIcon}
+          label="Sections"
+          value={allSections.length}
+        />
+        <SummaryItem
+          icon={PlayCircleIcon}
+          label="Videos"
+          value={countByType("VIDEO")}
+        />
+        <SummaryItem
+          icon={DocumentTextIcon}
+          label="Articles"
+          value={countByType("ARTICLE")}
+        />
+        <SummaryItem
+          icon={ClipboardDocumentListIcon}
+          label="Quizzes"
+          value={countByType("QUIZ")}
+        />
+      </div>
+
       {modules.map((mod) => (
         <ModuleCard key={mod.id} module={mod} />
       ))}
+    </div>
+  );
+}
+
+function SummaryItem({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: React.ElementType;
+  label: string;
+  value: number;
+}) {
+  return (
+    <div className="flex items-center gap-2">
+      <Icon className="h-5 w-5 text-blue-500" />
+      <span className="font-medium">{value}</span>
+      <span className="text-gray-500">{label}</span>
     </div>
   );
 }
@@ -62,7 +120,7 @@ function ModuleCard({ module }: { module: Module }) {
         </div>
         <Button
           onClick={() => setExpanded(!expanded)}
-          className="text-blue-600 text-sm font-medium hover:underline">
+          className="text-primary text-sm font-medium hover:underline">
           {expanded ? "Hide details" : "Show module details"}
         </Button>
       </div>
@@ -91,5 +149,8 @@ function ModuleCard({ module }: { module: Module }) {
 }
 
 function totalDuration(materials: Material[]): number {
-  return materials.reduce((sum, item) => sum + parseInt(item.duration), 0);
+  return materials.reduce(
+    (sum, item) => sum + parseInt(item.duration || "0"),
+    0
+  );
 }

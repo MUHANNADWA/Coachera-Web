@@ -1,3 +1,4 @@
+import RichTextEditor from "../../../shared/components/RichTextEditor";
 import { courses } from "../../../shared/data/sampleData";
 import { Course } from "../../../shared/types/types";
 import CourseCard from "../../courses/components/CourseCard";
@@ -46,6 +47,19 @@ export default function DashboardPage() {
             <CourseCard key={course.id} course={course} />
           ))}
         </div>
+      </section>
+
+      <section className="px-6 md:px-20 py-20 bg-white">
+        {/* Text Content */}
+        <div className="mb-10 md:mb-0">
+          <p className="text-primary font-semibold tracking-wide uppercase text-sm mb-2">
+            Courses Categories
+          </p>
+          <h1 className="text-4xl md:text-5xl font-semibold text-gray-900 mb-6 leading-tight">
+            Expand your career opportunities with Learning
+          </h1>
+        </div>
+        <RichTextEditor />
       </section>
     </div>
   );

@@ -28,6 +28,7 @@ import ResetPasswordPage from "./features/auth/pages/ResetPasswordPage";
 import OtpVerificationPage from "./features/auth/pages/OtpVerificationPage";
 import SearchPage from "./shared/pages/SearchPage";
 import CategoriesPage from "./features/courses/pages/CategoriesPage";
+import EditProfilePage from "./features/profile/pages/EditProfilePage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -46,7 +47,9 @@ const router = createBrowserRouter(
 
       <Route element={<ProtectedRoute />}>
         <Route path="/learn/:courseId/:moduleId" element={<LearnPage />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile" element={<EditProfilePage />}>
+          {/* <Route path="/close-account" element={<LearnPage />} /> */}
+        </Route>
       </Route>
 
       <Route element={<AdminRoute />}>

@@ -6,6 +6,7 @@ import {
   ChatBubbleOvalLeftIcon,
 } from "@heroicons/react/24/outline";
 import { useAppHook } from "../../../shared/hooks/useAppHook";
+import { PROFILE_IMAGE } from "../../../constants/constants";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -17,8 +18,7 @@ export default function StudentProfilePage() {
   const [student] = useState({
     name: "John Doe",
     email: "john@example.com",
-    avatar:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    avatar: PROFILE_IMAGE,
     enrolledCourses: [
       { id: 1, title: "React Fundamentals", progress: "75%" },
       { id: 2, title: "Spring Boot Essentials", progress: "40%" },
@@ -58,7 +58,7 @@ export default function StudentProfilePage() {
               classNames(
                 "flex items-center px-4 py-2 text-sm font-medium rounded",
                 selected
-                  ? "bg-blue-100 text-blue-700"
+                  ? "bg-blue-100 text-secondary"
                   : "text-gray-600 hover:bg-gray-100"
               )
             }>
@@ -69,7 +69,7 @@ export default function StudentProfilePage() {
               classNames(
                 "flex items-center px-4 py-2 text-sm font-medium rounded",
                 selected
-                  ? "bg-blue-100 text-blue-700"
+                  ? "bg-blue-100 text-secondary"
                   : "text-gray-600 hover:bg-gray-100"
               )
             }>
@@ -80,7 +80,7 @@ export default function StudentProfilePage() {
               classNames(
                 "flex items-center px-4 py-2 text-sm font-medium rounded",
                 selected
-                  ? "bg-blue-100 text-blue-700"
+                  ? "bg-blue-100 text-secondary"
                   : "text-gray-600 hover:bg-gray-100"
               )
             }>

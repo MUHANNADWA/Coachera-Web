@@ -19,7 +19,7 @@ export default function useRegister() {
     password: "",
     confirmPassword: "",
     role: "student",
-    profileImageUrl: "",
+    // profileImageUrl: "",
   });
 
   const [isPasswordVisible, setPasswordVisibility] = useState(false);

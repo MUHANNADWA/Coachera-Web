@@ -79,6 +79,7 @@ export interface Review {
   studentId: number;
   rating: number;
   comment: string;
+  createdAt: string;
 }
 
 export interface Student {

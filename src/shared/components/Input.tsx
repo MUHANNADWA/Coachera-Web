@@ -1,0 +1,102 @@
+import { forwardRef } from "react";
+import { IconProps } from "@tabler/icons-react";
+
+interface InputProps {
+  name?: string;
+  value?: string;
+  label?: string;
+  type?: React.HTMLInputTypeAttribute;
+  placeholder?: string;
+  autoComplete?: React.HTMLInputAutoCompleteAttribute;
+  minLength?: number;
+  maxLength?: number;
+  required?: boolean;
+  onChange?: React.ChangeEventHandler<HTMLInputElement>;
+  onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>; // ✅ optional now
+  inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"];
+  prefixIcon?: React.FC<IconProps>;
+  suffixIcon?: React.ReactNode;
+  helperText?: string;
+  className?: string;
+  error?: string;
+}
+
+const Input = forwardRef<HTMLInputElement, InputProps>(
+  (
+    {
+      label,
+      name,
+      value,
+      type = "text",
+      placeholder = "",
+      autoComplete = "off",
+      minLength,
+      maxLength,
+      required = false,
+      onChange,
+      onKeyDown,
+      inputMode,
+      className = "",
+      prefixIcon: PrefixIcon,
+      suffixIcon,
+      helperText,
+      error,
+    },
+    ref
+  ) => {
+    return (
+      <div className="mb-4 relative">
+        {label && (
+          <label
+            htmlFor={name}
+            className="block text-sm font-medium text-gray-700 mb-1">
+            {label} {required && <span className="text-red-500">*</span>}
+          </label>
+        )}
+
+        <div className="relative">
+          <input
+            id={name}
+            name={name}
+            type={type}
+            ref={ref}
+            value={value}
+            placeholder={placeholder}
+            autoComplete={autoComplete}
+            minLength={minLength}
+            maxLength={maxLength}
+            required={required}
+            onChange={onChange}
+            onKeyDown={onKeyDown}
+            inputMode={inputMode}
+            className={`peer placeholder:text-gray-400 w-full py-2 pr-10 rounded-2xl border focus:ring-1 focus:ring-primary focus:border-primary outline-none ${
+              PrefixIcon ? "pl-10" : "pl-3"
+            } ${error ? "border-red-500" : "border-gray-300"} ${className}`}
+          />
+
+          {PrefixIcon && (
+            <PrefixIcon className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 peer-focus:text-primary transition-colors duration-150" />
+          )}
+
+          {suffixIcon && (
+            <div className="absolute right-3 top-1/2 -translate-y-1/2">
+              {suffixIcon}
+            </div>
+          )}
+        </div>
+
+        {error ? (
+          <p className="mt-1 text-xs text-red-500">{error}</p>
+        ) : (
+          helperText && (
+            <p className="mt-1 text-xs text-gray-500">{helperText}</p>
+          )
+        )}
+      </div>
+    );
+  }
+);
+
+Input.displayName = "Input";
+
+export default Input;

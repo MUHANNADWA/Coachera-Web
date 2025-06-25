@@ -1,4 +1,5 @@
 import { Button } from "../../../shared/components/Button";
+import Input from "../../../shared/components/Input";
 import useOtpVerification from "../hooks/useOtpVerification";
 
 export default function OtpVerificationPage() {
@@ -24,24 +25,25 @@ export default function OtpVerificationPage() {
           <h2 className="text-2xl font-bold text-gray-900">Check your email</h2>
           <p className="text-gray-600 mt-2">
             Please enter the six-digit verification code we sent to{" "}
-            <strong>{email ?? "Your Email"}</strong>
+            <strong className="text-primary">{email ?? "Your Email"}</strong>
           </p>
         </div>
 
         <div className="flex justify-center space-x-2 sm:space-x-3">
           {otp.map((digit, index) => (
-            <input
+            <Input
               key={index}
               ref={(el) => {
                 inputsRef.current[index] = el;
               }}
               type="text"
               inputMode="numeric"
+              placeholder="-"
               maxLength={1}
               value={digit}
               onChange={(e) => handleChange(index, e.target.value)}
               onKeyDown={(e) => handleKeyDown(index, e)}
-              className="w-12 h-12 sm:w-14 sm:h-14 text-center border-2 border-gray-300 rounded-xl text-lg"
+              className="w-12 h-12 !p-0 !m-0 sm:w-14 sm:h-14 text-center text-lg"
             />
           ))}
         </div>
@@ -61,7 +63,7 @@ export default function OtpVerificationPage() {
               full
               type="button"
               onClick={handleResend}
-              className="text-blue-600 font-medium hover:underline">
+              className="text-primary font-medium hover:underline">
               Resend code
             </Button>
           )}

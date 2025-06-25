@@ -40,7 +40,7 @@ export default function Modal({
   if (!isOpen) return null;
 
   const colorMap = {
-    info: "text-blue-600",
+    info: "text-primary",
     success: "text-green-600",
     danger: "text-red-600",
     confirm: "text-gray-700",

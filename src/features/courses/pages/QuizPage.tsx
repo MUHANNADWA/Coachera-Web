@@ -66,7 +66,7 @@ export default function QuizPage({ material }: QuizPageProps) {
                     name={`question-${question.id}`}
                     checked={answers[question.id] === idx}
                     onChange={() => handleSelect(question.id, idx)}
-                    className="form-radio text-blue-600"
+                    className="form-radio text-primary"
                   />
                   <span>{answer}</span>
                 </label>

@@ -1,6 +1,7 @@
-import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { useResetPassword } from "../hooks/useResetPassword";
 import { Button } from "../../../shared/components/Button";
+import { IconEye, IconEyeOff, IconLock } from "@tabler/icons-react";
+import Input from "../../../shared/components/Input";
 
 export default function ResetPasswordPage() {
   const {
@@ -28,8 +29,7 @@ export default function ResetPasswordPage() {
             Password
           </label>
           <div className="relative">
-            <input
-              id="password"
+            <Input
               name="password"
               type={isPasswordVisible ? "text" : "password"}
               autoComplete="new-password"
@@ -40,35 +40,31 @@ export default function ResetPasswordPage() {
               onChange={(e) =>
                 setFormData({ ...formData, password: e.target.value })
               }
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm pr-10"
+              helperText="Password must be at least 8 characters"
+              prefixIcon={IconLock}
+              className="mt-1 block w-full pr-10"
+              suffixIcon={
+                <Button
+                  type="button"
+                  onClick={() => setPasswordVisibility((prev) => !prev)}
+                  className="text-gray-500 hover:text-primary"
+                  tabIndex={-1}>
+                  {isPasswordVisible ? (
+                    <IconEyeOff className="h-5 w-5" />
+                  ) : (
+                    <IconEye className="h-5 w-5" />
+                  )}
+                </Button>
+              }
             />
-            <Button
-              type="button"
-              onClick={() => setPasswordVisibility((prev) => !prev)}
-              className="absolute right-3 top-3 text-gray-500 hover:text-gray-700"
-              tabIndex={-1}>
-              {isPasswordVisible ? (
-                <EyeSlashIcon className="h-5 w-5" />
-              ) : (
-                <EyeIcon className="h-5 w-5" />
-              )}
-            </Button>
           </div>
-          <p className="mt-1 text-xs text-gray-500">
-            Password must be at least 6 characters
-          </p>
         </div>
 
         {/* New Password Confirmation*/}
         <div>
-          <label
-            htmlFor="confirmPassword"
-            className="block text-sm font-medium text-gray-700">
-            Confirm Password
-          </label>
           <div className="relative">
-            <input
-              id="confirmPassword"
+            <Input
+              label="Confirm Password"
               name="confirmPassword"
               type={isConfirmPasswordVisible ? "text" : "password"}
               autoComplete="new-password"
@@ -82,25 +78,28 @@ export default function ResetPasswordPage() {
                   confirmPassword: e.target.value,
                 })
               }
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm pr-10"
+              helperText="Please re-enter your password"
+              prefixIcon={IconLock}
+              className="mt-1 block w-full pr-10"
+              suffixIcon={
+                <Button
+                  type="button"
+                  onClick={() => setConfirmPasswordVisibility((prev) => !prev)}
+                  className="text-gray-500 hover:text-primary"
+                  tabIndex={-1}>
+                  {isConfirmPasswordVisible ? (
+                    <IconEyeOff className="h-5 w-5" />
+                  ) : (
+                    <IconEye className="h-5 w-5" />
+                  )}
+                </Button>
+              }
             />
-            <Button
-              type="button"
-              onClick={() => setConfirmPasswordVisibility((prev) => !prev)}
-              className="absolute right-3 top-2.5 text-gray-500 hover:text-gray-700"
-              tabIndex={-1}>
-              {isConfirmPasswordVisible ? (
-                <EyeSlashIcon className="h-5 w-5" />
-              ) : (
-                <EyeIcon className="h-5 w-5" />
-              )}
-            </Button>
           </div>
-          <p className="mt-1 text-xs text-gray-500">
-            Please re-enter your password
-          </p>
         </div>
-        <Button full variant="primary">Confirm</Button>
+        <Button full variant="primary">
+          Confirm
+        </Button>
       </form>
     </div>
   );

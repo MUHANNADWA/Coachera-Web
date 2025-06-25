@@ -1,7 +1,14 @@
 import { Link } from "react-router-dom";
-import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import useRegister from "../hooks/useRegister";
 import { Button } from "../../../shared/components/Button";
+import Input from "../../../shared/components/Input";
+import {
+  IconEye,
+  IconEyeOff,
+  IconLock,
+  IconMail,
+  IconUser,
+} from "@tabler/icons-react";
 
 export default function RegisterPage() {
   const {
@@ -14,7 +21,6 @@ export default function RegisterPage() {
     isUploading,
     isLoading,
     handleSubmit,
-    handleFileChange,
   } = useRegister();
 
   return (
@@ -25,12 +31,7 @@ export default function RegisterPage() {
             Create a new account
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            Or{" "}
-            <Link
-              to="/login"
-              className="font-medium text-blue-600 hover:text-blue-500">
-              log in to existing account
-            </Link>
+            Already have an account? <Link to="/login">login</Link>
           </p>
         </div>
 
@@ -39,13 +40,8 @@ export default function RegisterPage() {
             {/* Username & Email */}
             <div className="flex">
               <div className="fill-available mr-4">
-                <label
-                  htmlFor="username"
-                  className="block text-sm font-medium text-gray-700">
-                  Username
-                </label>
-                <input
-                  id="username"
+                <Input
+                  label="Username"
                   name="username"
                   type="text"
                   autoComplete="username"
@@ -55,18 +51,14 @@ export default function RegisterPage() {
                   onChange={(e) =>
                     setFormData({ ...formData, username: e.target.value })
                   }
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+                  prefixIcon={IconUser}
+                  className="mt-1 block w-full"
                 />
               </div>
 
               <div className="fill-available ml-4">
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-gray-700">
-                  Email address
-                </label>
-                <input
-                  id="email"
+                <Input
+                  label="Email address"
                   name="email"
                   type="email"
                   autoComplete="email"
@@ -76,7 +68,8 @@ export default function RegisterPage() {
                   onChange={(e) =>
                     setFormData({ ...formData, email: e.target.value })
                   }
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+                  prefixIcon={IconMail}
+                  className="mt-1 block w-full"
                 />
               </div>
             </div>
@@ -84,13 +77,8 @@ export default function RegisterPage() {
             {/* Password & Role */}
             <div className="flex">
               <div className="fill-available mr-4 relative">
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium text-gray-700">
-                  Password
-                </label>
-                <input
-                  id="password"
+                <Input
+                  label="Password"
                   name="password"
                   type={isPasswordVisible ? "text" : "password"}
                   autoComplete="new-password"
@@ -101,34 +89,29 @@ export default function RegisterPage() {
                   onChange={(e) =>
                     setFormData({ ...formData, password: e.target.value })
                   }
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm pr-10"
+                  prefixIcon={IconLock}
+                  helperText="Password must be at least 8 characters"
+                  className="mt-1 block w-full pr-10"
+                  suffixIcon={
+                    <Button
+                      onClick={() => setPasswordVisibility((prev) => !prev)}
+                      className="text-gray-500 hover:text-primary"
+                      type="button">
+                      {isPasswordVisible ? (
+                        <IconEyeOff className="h-5 w-5" />
+                      ) : (
+                        <IconEye className="h-5 w-5" />
+                      )}
+                    </Button>
+                  }
                 />
-                {/* Toggle Icon */}
-
-                <Button
-                  onClick={() => setPasswordVisibility((prev) => !prev)}
-                  className="absolute right-3 top-9 text-gray-500 hover:text-gray-700"
-                  type="button">
-                  {isPasswordVisible ? (
-                    <EyeSlashIcon className="h-5 w-5" />
-                  ) : (
-                    <EyeIcon className="h-5 w-5" />
-                  )}
-                </Button>
-                <p className="mt-1 text-xs text-gray-500">
-                  Password must be at least 6 characters
-                </p>
               </div>
 
+              {/* Password Confirmation */}
               <div className="fill-available ml-4">
-                <label
-                  htmlFor="confirmPassword"
-                  className="block text-sm font-medium text-gray-700">
-                  Confirm Password
-                </label>
                 <div className="relative">
-                  <input
-                    id="confirmPassword"
+                  <Input
+                    label="Confirm Password"
                     name="confirmPassword"
                     type={isConfirmPasswordVisible ? "text" : "password"}
                     autoComplete="new-password"
@@ -142,75 +125,33 @@ export default function RegisterPage() {
                         confirmPassword: e.target.value,
                       })
                     }
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm pr-10"
-                  />
-                  <Button
-                    onClick={() =>
-                      setConfirmPasswordVisibility((prev) => !prev)
+                    prefixIcon={IconLock}
+                    helperText="Please re-enter your password"
+                    className="mt-1 block w-full pr-10"
+                    suffixIcon={
+                      <Button
+                        onClick={() =>
+                          setConfirmPasswordVisibility((prev) => !prev)
+                        }
+                        className="text-gray-500 hover:text-primary"
+                        type="button">
+                        {isConfirmPasswordVisible ? (
+                          <IconEyeOff className="h-5 w-5" />
+                        ) : (
+                          <IconEye className="h-5 w-5" />
+                        )}
+                      </Button>
                     }
-                    className="absolute right-3 top-3 text-gray-500 hover:text-gray-700"
-                    type="button">
-                    {isConfirmPasswordVisible ? (
-                      <EyeSlashIcon className="h-5 w-5" />
-                    ) : (
-                      <EyeIcon className="h-5 w-5" />
-                    )}
-                  </Button>
+                  />
                 </div>
-                <p className="mt-1 text-xs text-gray-500">
-                  Please re-enter your password
-                </p>
               </div>
-            </div>
-
-            {/* Password Confirmation */}
-            <div className="flex">
-              {/* Profile Image URL */}
-              <div
-                className={
-                  !formData.profileImageUrl
-                    ? "fill-available"
-                    : `w-[calc(80%-2rem)] mr-4`
-                }>
-                <label
-                  htmlFor="profileImage"
-                  className="block text-sm font-medium text-gray-700">
-                  Profile Image
-                </label>
-                <input
-                  id="profileImage"
-                  name="profileImage"
-                  type="file"
-                  accept="image/*"
-                  required
-                  onDragOver={() => handleFileChange}
-                  onChange={handleFileChange}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm cursor-pointer"
-                />
-                {isUploading ? (
-                  <p className="text-xs text-blue-500 mt-1">Uploading...</p>
-                ) : (
-                  <p className="mt-1 text-xs text-gray-500">
-                    Choose a file or drag it here
-                  </p>
-                )}
-              </div>
-              {formData.profileImageUrl && (
-                <img
-                  src={formData.profileImageUrl}
-                  alt="Preview"
-                  className="mt-2 h-20 w-20 object-cover rounded-full"
-                />
-              )}
             </div>
           </div>
 
           {/* Submit */}
-          <div>
-            <Button full variant="primary" isLoading={isLoading || isUploading}>
-              Create Account
-            </Button>
-          </div>
+          <Button full variant="primary" isLoading={isLoading || isUploading}>
+            Create Account
+          </Button>
         </form>
       </div>
     </div>

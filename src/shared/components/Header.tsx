@@ -1,10 +1,4 @@
-import {
-  Cog8ToothIcon,
-  ArrowLeftEndOnRectangleIcon,
-  ArrowRightStartOnRectangleIcon,
-  Bars3Icon,
-  XMarkIcon,
-} from "@heroicons/react/16/solid";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/16/solid";
 import { useLogoutMutation } from "../../features/auth/authApiSlice";
 import { logout } from "../../features/auth/authSlice";
 import { Link } from "react-router-dom";
@@ -20,21 +14,8 @@ import { useAppHook } from "../hooks/useAppHook";
 import { useState } from "react";
 
 export default function Header() {
-  const { navigate, dispatch, token } = useAppHook();
-  const [logoutApiCall] = useLogoutMutation();
   const [menuOpen, setMenuOpen] = useState(false);
-
-  const logoutHandler = async () => {
-    await toastPromise(logoutApiCall(token), {
-      loadingMessage: "Logging out...",
-      successMessage: "Logged out successfully!",
-      errorMessage: "Logging out failed",
-      onSuccess: () => {
-        dispatch(logout());
-        navigate("/login");
-      },
-    });
-  };
+  const { navigate, token } = useAppHook();
 
   return (
     <header className="sticky top-0 bg-white z-50 border-b border-gray-300">
@@ -80,22 +61,37 @@ export default function Header() {
 
           {/* Desktop User */}
           <div className="hidden lg:flex lg:items-center">
-            <Button className="p-2">
-              <p>Become an instructor</p>
-            </Button>
-            <Button>
-              <IconHeart className="px-2 w-8 h-8" />
-            </Button>
-            <NotificationsDropdown />
+            {token ? (
+              <>
+                <Button className="p-2">
+                  <p>Teach on coachera</p>
+                </Button>
 
-            <UserDropdown logoutHandler={logoutHandler} />
+                <Button>
+                  <IconHeart className="px-2 w-8 h-8" />
+                </Button>
+
+                <Notifications />
+
+                <UserDropdown />
+              </>
+            ) : (
+              <div className="flex gap-2">
+                <Button onClick={() => navigate("/login")} variant="secondary">
+                  Login
+                </Button>
+                <Button onClick={() => navigate("/signup")} variant="primary">
+                  Sign up
+                </Button>
+              </div>
+            )}
           </div>
         </div>
 
         {/* Mobile Menu */}
         {menuOpen && (
           <div className="lg:hidden mt-4 space-y-4 font-medium">
-            <UserDropdown logoutHandler={logoutHandler} />
+            <UserDropdown />
             <nav className="flex flex-col items-start space-y-2">
               <Link to="/learn/1/1" onClick={() => setMenuOpen(false)}>
                 Learn
@@ -119,56 +115,138 @@ export default function Header() {
 
 import { IconBell, IconHeart } from "@tabler/icons-react";
 import { Button } from "./Button";
+import {
+  ArrowRightStartOnRectangleIcon,
+  BellIcon,
+  UserGroupIcon,
+  UserCircleIcon,
+  HeartIcon,
+  AcademicCapIcon,
+  RectangleStackIcon,
+  PresentationChartLineIcon,
+} from "@heroicons/react/24/outline";
 
-interface UserMenuProps {
-  logoutHandler: () => void;
-}
+export function UserDropdown() {
+  const { navigate, dispatch, user, token } = useAppHook();
 
-export function UserDropdown({ logoutHandler }: UserMenuProps) {
-  const { navigate, user, token } = useAppHook();
+  const [logoutApiCall] = useLogoutMutation();
+
+  const logoutHandler = async () => {
+    await toastPromise(logoutApiCall(token), {
+      loadingMessage: "Logging out...",
+      successMessage: "Logged out successfully!",
+      errorMessage: "Logging out failed",
+      onSuccess: () => {
+        dispatch(logout());
+        navigate("/login");
+      },
+    });
+  };
 
   return (
     <div className="relative max-md:hidden group inline-block text-left">
       {/* Trigger */}
-      <Button className="group inline-flex items-center justify-center gap-2 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-50">
-        Hi {user?.username ?? "there"}!
+      <Button className="group inline-flex items-center justify-center gap-2 px-3 py-2">
+        Hi {user?.username || "there"}!
         <img
-          src={user?.profileImage ?? PROFILE_IMAGE}
+          src={user?.profileImage || PROFILE_IMAGE}
           alt="profile"
           className="h-6 w-6 rounded-full"
         />
       </Button>
 
       {/* Dropdown */}
-      <div className="dropdown">
-        <Button
-          onClick={() => navigate("/profile")}
-          className="group flex w-full items-center justify-start gap-2 rounded-lg px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">
-          <Cog8ToothIcon className="h-4 w-4 text-gray-400 group-hover:text-gray-700" />
-          Account Settings
-        </Button>
+      <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-200 absolute right-0 z-50 mt-2 w-64 rounded-xl bg-white shadow-lg p-1">
+        {[
+          {
+            label: "Public Profile",
+            icon: UserGroupIcon,
+            action: () => navigate(`/public-profile/${user?.id}`),
+          },
+          {
+            label: "Edit Profile",
+            icon: UserCircleIcon,
+            action: () => navigate("/profile"),
+          },
+          {
+            label: "Accomplishments",
+            icon: AcademicCapIcon,
+            action: () => navigate("/accomplishments"),
+          },
+          {
+            label: "My Learning",
+            icon: RectangleStackIcon,
+            action: () => navigate("/learning"),
+          },
+          {
+            label: "Wishlist",
+            icon: HeartIcon,
+            action: () => navigate("/wishlist"),
+          },
+          {
+            label: "Notifications",
+            icon: BellIcon,
+            action: () => navigate("/notifications"),
+          },
+          {
+            label: "Teach on Coachera",
+            icon: PresentationChartLineIcon,
+            action: () => navigate("/teach"),
+          },
+        ].map(({ label, icon: Icon, action }) => (
+          <Button
+            key={label}
+            onClick={action}
+            className="group flex w-full items-center justify-start gap-2 px-3 py-2 text-gray-700">
+            <Icon className="h-4 w-4 text-gray-400 group-hover:text-gray-700" />
+            {label}
+          </Button>
+        ))}
 
-        {token ? (
-          <Button
-            onClick={logoutHandler}
-            className="group flex w-full items-center justify-start gap-2 rounded-lg px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">
-            <ArrowRightStartOnRectangleIcon className="h-4 w-4 text-gray-400 group-hover:text-gray-700" />
-            Logout
-          </Button>
-        ) : (
-          <Button
-            onClick={() => navigate("/login")}
-            className="group flex w-full items-center justify-start gap-2 rounded-lg px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">
-            <ArrowLeftEndOnRectangleIcon className="h-4 w-4 text-gray-400 group-hover:text-gray-700" />
-            Login
-          </Button>
-        )}
+        <hr className="my-1" />
+
+        <Button
+          onClick={logoutHandler}
+          className="group flex w-full items-center justify-start gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg">
+          <ArrowRightStartOnRectangleIcon className="h-4 w-4 text-red-400 group-hover:text-red-600" />
+          Logout
+        </Button>
       </div>
     </div>
   );
 }
 
-export function NotificationsDropdown() {
+export function Notifications() {
+  return (
+    <div className="relative max-md:hidden group inline-block text-left">
+      {/* Trigger */}
+      <Button>
+        <IconBell className="px-2 w-8 h-8" />
+      </Button>
+
+      {/* Dropdown */}
+      <div className="dropdown">
+        <Button
+          onClick={() => {}}
+          className="group flex w-full justify-start px-3 py-2 text-gray-700">
+          Notification 1
+        </Button>
+        <Button
+          onClick={() => {}}
+          className="group flex w-full justify-start px-3 py-2 text-gray-700">
+          Notification 2
+        </Button>
+        <Button
+          onClick={() => {}}
+          className="group flex w-full justify-start px-3 py-2 text-gray-700">
+          Notification 3
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+export function Favorites() {
   return (
     <div className="relative max-md:hidden group inline-block text-left">
       {/* Trigger */}

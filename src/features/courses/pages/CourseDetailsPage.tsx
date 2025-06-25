@@ -71,7 +71,7 @@ export default function CourseDetailsPage() {
               <Skills skills={skills} />
             </div>
 
-            <CourseModules modules={course.modules} />
+            <CourseModules course={course} />
 
             <div className="mb-8">
               <h2 className="text-xl font-bold mb-4">Reviews</h2>

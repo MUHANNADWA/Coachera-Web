@@ -16,15 +16,16 @@ export function Button({
 }: ButtonProps) {
   const baseClasses = `cursor-pointer ${
     full && "w-full"
-  } flex justify-center rounded-md text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors`;
+  } flex justify-center rounded-xl text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors`;
 
   const variantClasses = {
     primary:
-      "bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 shadow-sm my-4",
+      "bg-primary hover:bg-secondary font-semibold text-white py-2 px-4 my-4",
     secondary:
-      "bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-4 shadow-sm my-4",
-    danger: "bg-red-600 hover:bg-red-700 text-white py-2 px-4 shadow-sm my-4",
-    custom: "hover:bg-gray-100",
+      "hover:bg-blue-100 text-primary py-2 px-4 my-4 font-semibold border border-primary",
+    danger:
+      "bg-red-600 hover:bg-red-700 font-semibold text-white py-2 px-4 my-4",
+    custom: "hover:bg-blue-50",
   };
 
   return (

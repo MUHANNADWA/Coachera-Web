@@ -4,6 +4,7 @@ import { CurrentMaterial } from "../types";
 import { getMaterialIcon } from "../utils/Utils";
 import { Button } from "../../../shared/components/Button";
 import useCourseSidebar from "../hooks/useCourseSidebar";
+import Sidebar from "../../../shared/components/Sidebar";
 
 interface CourseSidebarProps {
   module: Module;
@@ -27,11 +28,11 @@ export default function CourseSidebar({
   } = useCourseSidebar(currentMaterial);
 
   return (
-    <aside
+    <Sidebar
       ref={sidebarRef}
-      className={`bg-white max-sm:absolute max-sm:h-15 max-sm:top-2.5 block h-full pl-8 pr-4 py-4 top-0 left-0 max-sm:shadow-none shadow-sm transition-all duration-300 overflow-x-hidden overflow-y-auto z-45 ${
+      className={
         courseSidebarCollapsed ? "w-12" : "w-70 max-sm:w-full max-sm:h-full"
-      }`}>
+      }>
       <header
         className={`flex items-center justify-between transition-all duration-300 ${
           !courseSidebarCollapsed ? "p-4" : "ml-[-20px]"
@@ -69,7 +70,7 @@ export default function CourseSidebar({
                         el
                       );
                     }}
-                    className={`p-4 cursor-pointer hover:bg-primary-light ${
+                    className={`p-4 cursor-pointer rounded hover:bg-primary-light ${
                       isCurrentMaterial(section.id, material.id) &&
                       "bg-blue-50 border-l-4 border-l-blue-500"
                     }`}
@@ -93,7 +94,7 @@ export default function CourseSidebar({
                         <p
                           className={`text-sm ${
                             isCurrentMaterial(section.id, material.id)
-                              ? "font-medium text-blue-600"
+                              ? "font-medium text-primary"
                               : "text-gray-700"
                           }`}>
                           {material.title}
@@ -109,6 +110,6 @@ export default function CourseSidebar({
             )}
           </section>
         ))}
-    </aside>
+    </Sidebar>
   );
 }

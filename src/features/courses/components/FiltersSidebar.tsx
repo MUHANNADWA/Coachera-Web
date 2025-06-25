@@ -1,6 +1,7 @@
 import { Bars3Icon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { Button } from "../../../shared/components/Button";
+import Sidebar from "../../../shared/components/Sidebar";
 
 interface CoursesSidebarProps {
   setPage: React.Dispatch<React.SetStateAction<number>>;
@@ -43,10 +44,7 @@ export default function FiltersSidebar(props: CoursesSidebarProps) {
   const toggleCollapse = () => setCollapsed((prev) => !prev);
 
   return (
-    <aside
-      className={`h-full pl-8 pr-4 py-4 top-0 left-0 shadow-sm transition-all duration-300 overflow-x-hidden overflow-y-auto ${
-        collapsed ? "w-12" : "w-70"
-      }`}>
+    <Sidebar className={collapsed ? "w-12" : "w-70"}>
       <header
         className={`flex items-center justify-between transition-all duration-300 ${
           !collapsed ? "p-4" : "ml-[-20px]"
@@ -71,7 +69,7 @@ export default function FiltersSidebar(props: CoursesSidebarProps) {
 
             <input
               type="number"
-              className="w-full px-3 py-2 rounded"
+              className="w-full"
               value={props.size}
               min={5}
               max={100}
@@ -155,6 +153,6 @@ export default function FiltersSidebar(props: CoursesSidebarProps) {
           )}
         </>
       )}
-    </aside>
+    </Sidebar>
   );
 }
