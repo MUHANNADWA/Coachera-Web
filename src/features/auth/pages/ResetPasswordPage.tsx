@@ -26,7 +26,7 @@ export default function ResetPasswordPage() {
           <label
             htmlFor="password"
             className="block text-sm font-medium text-gray-700">
-            Password
+            New Password
           </label>
           <div className="relative">
             <Input

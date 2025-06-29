@@ -13,7 +13,7 @@ export default function QuizPage({ material }: QuizPageProps) {
 
   const [answers, setAnswers] = useState<{ [questionId: number]: number }>({});
   const [submitted, setSubmitted] = useState(false);
-  const { isOpen, open, close } = useModal();
+  const { isModalOpen, openModal, closeModal } = useModal();
 
   if (!quiz) return <p>No quiz found.</p>;
 
@@ -27,7 +27,7 @@ export default function QuizPage({ material }: QuizPageProps) {
       (q) => answers[q.id] !== undefined
     );
     if (!allAnswered) {
-      open();
+      openModal();
       return;
     }
 
@@ -86,8 +86,8 @@ export default function QuizPage({ material }: QuizPageProps) {
       </form>
 
       <Modal
-        isOpen={isOpen}
-        onClose={close}
+        isOpen={isModalOpen}
+        onClose={closeModal}
         title="Incomplete Quiz"
         message="Please answer all questions before submitting the quiz."
         variant="info"

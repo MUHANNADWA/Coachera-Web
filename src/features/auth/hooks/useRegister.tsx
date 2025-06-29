@@ -62,7 +62,7 @@ export default function useRegister() {
       {
         loadingMessage: "Registering...",
         successMessage: "Registered successfully!",
-        errorMessage: "Registratring failed",
+        errorMessage: "Registering failed",
         onSuccess: (res) => {
           const credentials = res.data;
           dispatch(setCredentials({ ...credentials }));

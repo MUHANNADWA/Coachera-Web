@@ -2,7 +2,14 @@ import { ButtonHTMLAttributes } from "react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   isLoading?: boolean;
-  variant?: "primary" | "secondary" | "danger" | "custom";
+  variant?:
+    | "primary"
+    | "secondary"
+    | "danger"
+    | "primaryInverted"
+    | "secondaryInverted"
+    | "dangerInverted"
+    | "custom";
   full?: boolean;
 }
 
@@ -21,11 +28,19 @@ export function Button({
   const variantClasses = {
     primary:
       "bg-primary hover:bg-secondary font-semibold text-white py-2 px-4 my-4",
+    gradiant:
+      "bg-gradient-to-tr from-[#0f766e] via-[#0e9488] to-[#22d3ee] font-semibold text-white py-2 px-4 my-4",
     secondary:
-      "hover:bg-blue-100 text-primary py-2 px-4 my-4 font-semibold border border-primary",
+      "hover:bg-primary-light text-primary py-2 px-4 my-4 font-semibold border border-primary",
     danger:
       "bg-red-600 hover:bg-red-700 font-semibold text-white py-2 px-4 my-4",
-    custom: "hover:bg-blue-50",
+    primaryInverted:
+      "bg-white hover:bg-primary-light font-semibold text-secondary py-2 px-4 my-4",
+    secondaryInverted:
+      "hover:bg-secondary text-white py-2 px-4 my-4 font-semibold border border-white",
+    dangerInverted:
+      "bg-red-600 hover:bg-red-700 font-semibold text-white py-2 px-4 my-4",
+    custom: "hover:bg-primary-light",
   };
 
   return (

@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from "react";
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import Input from "./Input";
+import { IconSearch } from "@tabler/icons-react";
 
-export default function SearchBar() {
+export default function SearchBar({ className }: { className?: string }) {
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -25,19 +26,21 @@ export default function SearchBar() {
   return (
     <div className="relative max-w-xs w-full">
       <form action={`/search/${query}`} method="get">
-        <input
+        <Input
           ref={inputRef}
-          type="text"
-          placeholder="Search for courses..."
-          className="search-input focus:outline focus:outline-primary w-full px-10 py-2 rounded-lg border border-gray-300"
+          type="search"
+          placeholder="Search for anything..."
+          prefixIcon={IconSearch}
+          className={className}
+          suffixIcon={
+            <kbd className="h-5 w-5 px-2 py-1.5 text-xs text-gray-400 bg-gray-100 rounded hidden sm:inline">
+              /
+            </kbd>
+          }
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
       </form>
-      <MagnifyingGlassIcon className="h-5 w-5 text-gray-400 absolute left-3 top-2.5" />
-      <kbd className="h-5 px-1.5 text-xs text-gray-400 absolute right-3 top-2.5 bg-gray-100 rounded hidden sm:inline group-focus-within:hidden">
-        /
-      </kbd>
     </div>
   );
 }

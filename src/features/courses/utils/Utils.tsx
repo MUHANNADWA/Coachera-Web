@@ -73,3 +73,34 @@ export const getBreadcrumbs = (course: Course, currentMaterialId: Number) => {
 
 export const placeholderImage = (text: string) =>
   `https://placehold.co/300x200?text=${text}`;
+
+// ---------------------------------------------------------------
+
+export const SORT_FIELDS = [
+  { value: "title", label: "Title" },
+  { value: "createdAt", label: "Time Created" },
+  { value: "updatedAt", label: "Time Updated" },
+  { value: "durationHours", label: "Duration Hours" },
+  { value: "price", label: "Price" },
+  { value: "rating", label: "Rating" },
+];
+
+export const SORT_DIRECTION_FIELDS = [
+  { value: "asc", label: "Ascending" },
+  { value: "desc", label: "Descending" },
+];
+
+export const ENTITY_TYPES = [
+  { value: "skills", label: "Skills" },
+  { value: "learning-paths", label: "Learning Paths" },
+  { value: "courses", label: "Courses" },
+  { value: "reviews", label: "Reviews" },
+  { value: "certificates", label: "Certificates" },
+  { value: "materials", label: "Materials" },
+  { value: "questions", label: "Questions" },
+  { value: "students", label: "Students" },
+  { value: "categories", label: "Categories" },
+  { value: "quizzes", label: "Quizzes" },
+  { value: "sections", label: "Sections" },
+  { value: "instructors", label: "Instructors" },
+];

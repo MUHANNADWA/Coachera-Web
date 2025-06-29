@@ -3,11 +3,14 @@ import { IconProps } from "@tabler/icons-react";
 
 interface InputProps {
   name?: string;
-  value?: string;
+  value?: string | number | readonly string[];
   label?: string;
   type?: React.HTMLInputTypeAttribute;
   placeholder?: string;
   autoComplete?: React.HTMLInputAutoCompleteAttribute;
+  min?: number;
+  max?: number;
+  step?: number;
   minLength?: number;
   maxLength?: number;
   required?: boolean;
@@ -30,6 +33,9 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       type = "text",
       placeholder = "",
       autoComplete = "off",
+      min,
+      max,
+      step,
       minLength,
       maxLength,
       required = false,
@@ -45,7 +51,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     ref
   ) => {
     return (
-      <div className="mb-4 relative">
+      <div className={`${type !== "search" && "mb-4"} w-full relative`}>
         {label && (
           <label
             htmlFor={name}
@@ -63,14 +69,18 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             value={value}
             placeholder={placeholder}
             autoComplete={autoComplete}
+            min={min}
+            max={max}
+            step={step}
             minLength={minLength}
             maxLength={maxLength}
             required={required}
             onChange={onChange}
             onKeyDown={onKeyDown}
             inputMode={inputMode}
-            className={`peer placeholder:text-gray-400 w-full py-2 pr-10 rounded-2xl border focus:ring-1 focus:ring-primary focus:border-primary outline-none ${
+            className={`peer placeholder:text-gray-400 w-full py-2 rounded-2xl border focus:ring-1 focus:ring-primary focus:border-primary focus:bg-primary-lightest outline-none ${
               PrefixIcon ? "pl-10" : "pl-3"
+            } ${suffixIcon ? "pr-10" : "pr-3"}
             } ${error ? "border-red-500" : "border-gray-300"} ${className}`}
           />
 

@@ -1,10 +1,10 @@
-import { Bars3Icon } from "@heroicons/react/24/outline";
 import { Module } from "../../../shared/types/types";
 import { CurrentMaterial } from "../types";
 import { getMaterialIcon } from "../utils/Utils";
 import { Button } from "../../../shared/components/Button";
 import useCourseSidebar from "../hooks/useCourseSidebar";
 import Sidebar from "../../../shared/components/Sidebar";
+import SidebarHeader from "./SidebarHeader";
 
 interface CourseSidebarProps {
   module: Module;
@@ -33,19 +33,11 @@ export default function CourseSidebar({
       className={
         courseSidebarCollapsed ? "w-12" : "w-70 max-sm:w-full max-sm:h-full"
       }>
-      <header
-        className={`flex items-center justify-between transition-all duration-300 ${
-          !courseSidebarCollapsed ? "p-4" : "ml-[-20px]"
-        }`}>
-        {!courseSidebarCollapsed && (
-          <h1 className="font-bold">{module.title}</h1>
-        )}
-        <Button
-          onClick={toggleCollapse}
-          className="text-gray-500 hover:text-gray-700">
-          <Bars3Icon className="h-6 w-6" />
-        </Button>
-      </header>
+      <SidebarHeader
+        label={module.title}
+        collapsed={courseSidebarCollapsed}
+        toggleCollapse={toggleCollapse}
+      />
 
       {/* Course Content */}
       {!courseSidebarCollapsed &&
