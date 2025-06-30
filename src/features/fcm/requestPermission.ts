@@ -6,8 +6,7 @@ export async function requestPermission(): Promise<string | null> {
     const permission = await Notification.requestPermission();
     if (permission === "granted") {
       const token = await getToken(messaging, {
-        vapidKey:
-          "BFSFgFeI2J1gWmz_w0weFfV05-P-GAbUBpTZ_HBXvZ6uS81bWJjpazp_9-Tz9Td87NTZ9h1UMb-TBbUIvka4mfI",
+        vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
       });
       console.log("FCM Token:", token);
       return token;

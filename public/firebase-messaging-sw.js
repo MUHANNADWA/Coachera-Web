@@ -8,10 +8,10 @@ importScripts(
 );
 
 firebase.initializeApp({
-  apiKey: "AIzaSyCrvsR8AF7vWJWRpQrzgTWUugsJMisLG0k",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   projectId: "coachera-notifications",
-  messagingSenderId: "690396129580",
-  appId: "1:690396129580:web:a0872287012945c017a489",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 });
 
 const messaging = firebase.messaging();

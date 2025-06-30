@@ -2,13 +2,13 @@ import { initializeApp } from "firebase/app";
 import { getMessaging } from "firebase/messaging";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCrvsR8AF7vWJWRpQrzgTWUugsJMisLG0k",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: "coachera-notifications.firebaseapp.com",
   projectId: "coachera-notifications",
   storageBucket: "coachera-notifications.firebasestorage.app",
-  messagingSenderId: "690396129580",
-  appId: "1:690396129580:web:a0872287012945c017a489",
-  measurementId: "G-LQ7G1R3RTL",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
 const app = initializeApp(firebaseConfig);
