@@ -3,6 +3,12 @@ import {
   CheckBadgeIcon,
   ClockIcon,
   ChartBarIcon,
+  UserIcon,
+  StarIcon,
+  PlayIcon,
+  DocumentTextIcon,
+  ArrowDownTrayIcon,
+  AcademicCapIcon,
 } from "@heroicons/react/24/outline";
 import { useGetCourseDetailsQuery } from "../coursesApiSlice";
 import { Course, Review as ReviewType } from "../../../shared/types/types";
@@ -28,109 +34,251 @@ export default function CourseDetailsPage() {
   if (!course) return <Loader center />;
 
   return (
-    <div className="container mx-auto py-8 px-4">
+    <div className="page">
       <Meta title={course.title} description={course.description} />
-      <div className="rounded-lg overflow-hidden">
-        <div className="flex max-lg:flex-col-reverse">
-          <div className="lg:w-2/3 p-6">
-            <h1 className="text-3xl font-bold mb-4">{course.title}</h1>
-            <p className="text-gray-600 mb-6">{course.instructor}</p>
 
-            <div className="flex flex-wrap gap-4 mb-6">
-              <div className="flex items-center text-sm">
-                <ClockIcon className="h-5 w-5 mr-1" />
-                <span>{course.durationHours}</span>
+      {/* Hero Section */}
+      <div className="gradiant py-12">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
+              {course.title}
+            </h1>
+            <p className="text-xl text-blue-100 mb-6">
+              Master new skills with expert guidance
+            </p>
+
+            {/* Course Stats */}
+            <div className="flex flex-wrap gap-6 mb-8">
+              <div className="flex items-center bg-white/10 backdrop-blur-sm px-4 py-2 rounded-xl">
+                <UserIcon className="h-5 w-5 mr-2" />
+                <span className="font-medium">
+                  {course.instructor ?? "Abo Mahmoud Org"}
+                </span>
               </div>
-              <div className="flex items-center text-sm">
-                <ChartBarIcon className="h-5 w-5 mr-1" />
-                <span>{course.level ?? "Begginner"}</span>
+              <div className="flex items-center bg-white/10 backdrop-blur-sm px-4 py-2 rounded-xl">
+                <ClockIcon className="h-5 w-5 mr-2" />
+                <span className="font-medium">
+                  {course.durationHours} hours
+                </span>
               </div>
-              <div className="flex items-center text-sm">
-                <CheckBadgeIcon className="h-5 w-5 mr-1" />
-                <span>Certificate</span>
+              <div className="flex items-center bg-white/10 backdrop-blur-sm px-4 py-2 rounded-xl">
+                <ChartBarIcon className="h-5 w-5 mr-2" />
+                <span className="font-medium">
+                  {course.level ?? "Beginner"}
+                </span>
               </div>
-            </div>
-
-            <div className="mb-8">
-              <h2 className="text-xl font-bold mb-4">About This Course</h2>
-              <p className="text-gray-700">{course.description}</p>
-            </div>
-
-            <div className="mb-8">
-              <h2 className="text-xl font-bold mb-4">What You'll Learn</h2>
-              <ul className="list-['✓'] pl-5 space-y-2">
-                <li>Master the fundamentals of the subject</li>
-                <li>Build real-world projects</li>
-                <li>Get certified upon completion</li>
-                <li>Join a community of learners</li>
-              </ul>
-            </div>
-
-            <div className="mb-8">
-              <h2 className="text-xl font-bold mb-4">Skills You'll gain</h2>
-              <Skills skills={skills} />
-            </div>
-
-            <CourseModules course={course} />
-
-            <div className="mb-8">
-              <h2 className="text-xl font-bold mb-4">Reviews</h2>
-              {reviews.map((_, i) => (
-                <Review review={reviews[i] as ReviewType} />
-              ))}
+              <div className="flex items-center bg-white/10 backdrop-blur-sm px-4 py-2 rounded-xl">
+                <StarIcon className="h-5 w-5 mr-2 text-yellow-300" />
+                <span className="font-medium">{course.rating} rating</span>
+              </div>
             </div>
           </div>
+        </div>
+      </div>
 
-          <div className="lg:w-1/3 bg-gray-50 p-6">
-            <div className="sticky top-4">
-              <div className="aspect-w-16 aspect-h-9 mb-4">
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex max-lg:flex-col gap-8">
+          {/* Main Content */}
+          <div className="lg:w-2/3">
+            {/* About Section */}
+            <section className="consect p-8 mb-8">
+              <h2 className="text-2xl font-bold mb-6 text-gray-900">
+                About This Course
+              </h2>
+              <p className="text-gray-700 leading-relaxed text-lg">
+                {course.description}
+              </p>
+            </section>
+
+            {/* Learning Objectives */}
+            <section className="consect p-8 mb-8">
+              <h2 className="text-2xl font-bold mb-6 text-gray-900">
+                What You'll Learn
+              </h2>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="flex items-start space-x-3">
+                  <div className="flex-shrink-0 w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mt-0.5">
+                    <CheckBadgeIcon className="h-4 w-4 text-green-600" />
+                  </div>
+                  <span className="text-gray-700">
+                    Master the fundamentals of the subject
+                  </span>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <div className="flex-shrink-0 w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mt-0.5">
+                    <CheckBadgeIcon className="h-4 w-4 text-green-600" />
+                  </div>
+                  <span className="text-gray-700">
+                    Build real-world projects
+                  </span>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <div className="flex-shrink-0 w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mt-0.5">
+                    <CheckBadgeIcon className="h-4 w-4 text-green-600" />
+                  </div>
+                  <span className="text-gray-700">
+                    Get certified upon completion
+                  </span>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <div className="flex-shrink-0 w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mt-0.5">
+                    <CheckBadgeIcon className="h-4 w-4 text-green-600" />
+                  </div>
+                  <span className="text-gray-700">
+                    Join a community of learners
+                  </span>
+                </div>
+              </div>
+            </section>
+
+            {/* Skills Section */}
+            <section className="consect p-8 mb-8">
+              <h2 className="text-2xl font-bold mb-6 text-gray-900">
+                Skills You'll Gain
+              </h2>
+              <Skills skills={skills} />
+            </section>
+
+            {/* Course Modules */}
+            <CourseModules course={course} />
+
+            {/* Reviews Section */}
+            <section className="consect p-8">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-gray-900">
+                  Student Reviews
+                </h2>
+                <div className="flex items-center space-x-2">
+                  <StarIcon className="h-5 w-5 text-yellow-400" />
+                  <span className="font-semibold text-gray-700">
+                    {course.rating}
+                  </span>
+                  <span className="text-gray-500">
+                    ({reviews?.length || 0} reviews)
+                  </span>
+                </div>
+              </div>
+              <div className="space-y-6">
+                {reviews?.map((review, i) => (
+                  <Review key={i} review={review as ReviewType} />
+                ))}
+              </div>
+            </section>
+          </div>
+
+          {/* Sidebar */}
+          <aside className="lg:w-1/3">
+            <nav className="sticky top-8 space-y-6">
+              {/* Course Image */}
+              <section className="relative group overflow-hidden rounded-2xl shadow-lg">
                 <img
                   src={course.image ?? placeholderImage(course.title)}
                   alt={course.title}
-                  className="w-full h-full object-cover rounded-lg"
+                  className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-105"
                 />
-              </div>
-
-              <div className="bg-white p-4 rounded-lg shadow-sm mb-4">
-                <div className="flex justify-between items-center mb-4">
-                  <span className="text-2xl font-bold text-blue">
-                    ${course.price}
-                  </span>
-                  <span className="flex items-center bg-yellow-100 px-2 py-1 rounded text-sm">
-                    ★ {course.rating}
-                  </span>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                  <div className="bg-white/20 backdrop-blur-sm rounded-full p-4">
+                    <PlayIcon className="h-8 w-8 text-white" />
+                  </div>
                 </div>
-                <Button full variant="primary" className="mb-2">
-                  Enroll Now
-                </Button>
-                <Button full variant="secondary">
-                  Add to Favorites
-                </Button>
-              </div>
+              </section>
 
-              <div className="bg-white p-4 rounded-lg shadow-sm">
-                <h3 className="font-bold mb-2">This Course Includes:</h3>
-                <ul className="space-y-2">
-                  <li className="flex items-center">
-                    <CheckBadgeIcon className="h-5 w-5 text-green-500 mr-2" />
-                    <span>10 hours on-demand video</span>
-                  </li>
-                  <li className="flex items-center">
-                    <CheckBadgeIcon className="h-5 w-5 text-green-500 mr-2" />
-                    <span>5 articles</span>
-                  </li>
-                  <li className="flex items-center">
-                    <CheckBadgeIcon className="h-5 w-5 text-green-500 mr-2" />
-                    <span>Downloadable resources</span>
-                  </li>
-                  <li className="flex items-center">
-                    <CheckBadgeIcon className="h-5 w-5 text-green-500 mr-2" />
-                    <span>Certificate of completion</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
+              {/* Pricing Card */}
+              <section className="gradiant p-6 rounded-2xl shadow-xl">
+                <div className="flex justify-between items-center mb-6">
+                  <div>
+                    <span className="text-3xl font-bold">${course.price}</span>
+                    <span className="text-blue-200 ml-2 line-through">
+                      $199
+                    </span>
+                  </div>
+                  <div className="flex items-center bg-yellow-400 text-yellow-900 px-3 py-1 rounded-full text-sm font-semibold">
+                    <StarIcon className="h-4 w-4 mr-1" />
+                    {course.rating}
+                  </div>
+                </div>
+
+                <div className="space-y-3 mb-6">
+                  <Button
+                    full
+                    variant="primaryInverted"
+                    className="bg-white text-primary hover:bg-gray-100 font-bold py-3 text-lg">
+                    Enroll Now
+                  </Button>
+                  <Button
+                    full
+                    variant="secondary"
+                    className="border-white text-white hover:bg-white/10 font-semibold py-3">
+                    Add to Wishlist
+                  </Button>
+                </div>
+
+                <div className="text-center">
+                  <p className="text-blue-200 text-sm">
+                    30-Day Money-Back Guarantee
+                  </p>
+                </div>
+              </section>
+
+              {/* Course Includes */}
+              <section className="consect p-6">
+                <h3 className="font-bold text-xl mb-4 text-gray-900">
+                  This Course Includes:
+                </h3>
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <PlayIcon className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-900">
+                        10 hours on-demand video
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        HD quality content
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="flex-shrink-0 w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                      <DocumentTextIcon className="h-5 w-5 text-green-600" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-900">5 articles</p>
+                      <p className="text-sm text-gray-500">
+                        Supplementary materials
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="flex-shrink-0 w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                      <ArrowDownTrayIcon className="h-5 w-5 text-purple-600" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-900">
+                        Downloadable resources
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        Code files & exercises
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="flex-shrink-0 w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
+                      <AcademicCapIcon className="h-5 w-5 text-yellow-600" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-900">
+                        Certificate of completion
+                      </p>
+                      <p className="text-sm text-gray-500">Share on LinkedIn</p>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </nav>
+          </aside>
         </div>
       </div>
     </div>

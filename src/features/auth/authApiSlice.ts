@@ -6,51 +6,57 @@ export const usersApiSlice = apiSlice.injectEndpoints({
     login: builder.mutation({
       query: (data) => ({
         url: `${AUTH_URL}/login`,
-        method: "post",
+        method: "POST",
         body: data,
       }),
     }),
+
     register: builder.mutation({
       query: (data) => ({
         url: `${AUTH_URL}/register`,
-        method: "post",
+        method: "POST",
         body: data,
       }),
     }),
+
     logout: builder.mutation({
-      query: (data) => ({
+      query: () => ({
         url: `${AUTH_URL}/logout`,
-        method: "post",
-        headers: { Authorization: `Bearer ${data}` },
+        method: "POST",
       }),
     }),
+
     uploadPhoto: builder.mutation({
       query: (data) => ({
         url: `image/upload`,
-        method: "post",
+        method: "POST",
         body: data,
       }),
     }),
+
     profile: builder.mutation({
       query: (data) => ({
         url: `${AUTH_URL}/profile`,
         method: "PUT",
         body: data,
       }),
+      invalidatesTags: ["User"],
     }),
+
     getUsers: builder.query({
-      query: () => ({
-        url: AUTH_URL,
-      }),
+      query: () => AUTH_URL,
       providesTags: ["User"],
       keepUnusedDataFor: 5,
     }),
+
     deleteUser: builder.mutation({
       query: (userId) => ({
         url: `${AUTH_URL}/${userId}`,
         method: "DELETE",
       }),
+      invalidatesTags: ["User"],
     }),
+
     updateUser: builder.mutation({
       query: (data) => ({
         url: `${AUTH_URL}/${data.userId}`,
@@ -59,34 +65,37 @@ export const usersApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["User"],
     }),
+
     getUserDetails: builder.query({
-      query: (id) => ({
-        url: `${AUTH_URL}/${id}`,
-      }),
+      query: (id) => `${AUTH_URL}/${id}`,
       keepUnusedDataFor: 5,
     }),
+
     forgotPassword: builder.mutation({
       query: (email) => ({
         url: `${AUTH_URL}/forgot-password`,
-        method: "post",
+        method: "POST",
         params: { email },
       }),
     }),
+
     validateOtp: builder.mutation({
       query: ({ email, otp }) => ({
         url: `${AUTH_URL}/validate-otp`,
-        method: "post",
+        method: "POST",
         params: { email, otp },
       }),
     }),
+
     resetPassword: builder.mutation({
       query: ({ email, otp, newPassword }) => ({
         url: `${AUTH_URL}/reset-password`,
-        method: "post",
+        method: "POST",
         params: { email, otp, newPassword },
       }),
     }),
   }),
+  overrideExisting: false,
 });
 
 export const {

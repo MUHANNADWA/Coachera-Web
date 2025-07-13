@@ -56,9 +56,9 @@ export default function QuizPage({ material }: QuizPageProps) {
               {answerOptions.map((answer, idx) => (
                 <label
                   key={idx}
-                  className={`flex items-center gap-3 p-2 border rounded cursor-pointer ${
+                  className={`flex items-center gap-3 p-2 border rounded-2xl cursor-pointer ${
                     answers[question.id] === idx
-                      ? "border-blue-500 bg-blue-50"
+                      ? "border-primary bg-primary-lightest"
                       : "border-gray-200"
                   }`}>
                   <input
@@ -66,7 +66,7 @@ export default function QuizPage({ material }: QuizPageProps) {
                     name={`question-${question.id}`}
                     checked={answers[question.id] === idx}
                     onChange={() => handleSelect(question.id, idx)}
-                    className="form-radio text-primary"
+                    className="form-radio accent-primary"
                   />
                   <span>{answer}</span>
                 </label>

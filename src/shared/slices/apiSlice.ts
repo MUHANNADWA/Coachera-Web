@@ -4,9 +4,17 @@ import { BASE_URL } from "../../constants/constants";
 const baseQuery = fetchBaseQuery({
   baseUrl: BASE_URL,
   credentials: "include",
+  prepareHeaders: (headers, { getState }) => {
+    const accessToken = (getState() as any).auth?.user?.accessToken;
+    const token = accessToken ? `Bearer ${accessToken}` : null;
+    if (token) {
+      headers.set("Authorization", token);
+    }
+    return headers;
+  },
 });
 export const apiSlice = createApi({
   baseQuery,
-  tagTypes: ["User", "Course"],
+  tagTypes: ["User", "Course", "Wishlist"],
   endpoints: () => ({}),
 });

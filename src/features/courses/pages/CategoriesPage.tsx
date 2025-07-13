@@ -1,9 +1,9 @@
-import CategoryForm from "../components/CategoriesForm";
+// import CategoryForm from "../components/CategoriesForm";
 
 export default function CategoriesPage() {
   return (
     <div className="flex h-full-s overflow-x-hidden">
-      <CategoryForm />
+      {/* <CategoryForm /> */}
     </div>
   );
 }

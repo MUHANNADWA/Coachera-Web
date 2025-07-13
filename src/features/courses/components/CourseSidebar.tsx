@@ -44,10 +44,8 @@ export default function CourseSidebar({
         module.sections.map((section) => (
           <section key={section.id}>
             <Button full onClick={() => toggleSectionCollapse(section.id)}>
-              <h4 className="hover:bg-primary-light font-semibold p-2 w-full">
-                <hr />
+              <h4 className="hover:bg-primary-light font-semibold w-full p-2 rounded-2xl">
                 {section.title}
-                <hr />
               </h4>
             </Button>
 
@@ -62,9 +60,9 @@ export default function CourseSidebar({
                         el
                       );
                     }}
-                    className={`p-4 cursor-pointer rounded hover:bg-primary-light ${
+                    className={`p-4 cursor-pointer rounded-2xl hover:bg-primary-light ${
                       isCurrentMaterial(section.id, material.id) &&
-                      "bg-blue-50 border-l-4 border-l-blue-500"
+                      "bg-blue-50 border-l-4 border-l-primary"
                     }`}
                     onClick={() => {
                       setCurrentMaterial({
@@ -75,9 +73,9 @@ export default function CourseSidebar({
                     }}>
                     <div className="flex items-center relative">
                       <div
-                        className={`w-4 h-4 flex items-center justify-center mr-5 before:absolute before:top-[3] before:left-[-10] before:w-7 before:h-7 before:rounded-lg [&>*:first-child]:z-45 ${
+                        className={`w-4 h-4 flex items-center justify-center mr-5 before:absolute before:top-[3] before:left-[-10] before:w-7 before:h-7 before:rounded-2xl [&>*:first-child]:z-45 ${
                           isCurrentMaterial(section.id, material.id)
-                            ? "before:bg-blue-500 text-white"
+                            ? "before:bg-primary text-white"
                             : "before:bg-gray-200 text-gray-600"
                         }`}>
                         {getMaterialIcon(material.type)}

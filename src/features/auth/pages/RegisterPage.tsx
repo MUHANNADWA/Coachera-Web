@@ -24,129 +24,113 @@ export default function RegisterPage() {
   } = useRegister();
 
   return (
-    <div className="h-full-s flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-9/12 w-full space-y-8 bg-white p-8 rounded-lg shadow">
-        <div className="text-center">
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+    <div className="min-h-full-s flex items-center justify-center bg-primary-light py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-2xl shadow-xl">
+        <div className="flex flex-col items-center space-y-3 mb-4">
+          <h2 className="text-3xl font-extrabold text-gray-900">
             Create a new account
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            Already have an account? <Link to="/login">login</Link>
+            Already have an account?{" "}
+            <Link
+              className="text-primary font-semibold hover:underline"
+              to="/login">
+              login
+            </Link>
           </p>
         </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md space-y-4">
-            {/* Username & Email */}
-            <div className="flex">
-              <div className="fill-available mr-4">
-                <Input
-                  label="Username"
-                  name="username"
-                  type="text"
-                  autoComplete="username"
-                  placeholder="johndoe"
-                  required
-                  value={formData.username}
-                  onChange={(e) =>
-                    setFormData({ ...formData, username: e.target.value })
-                  }
-                  prefixIcon={IconUser}
-                  className="mt-1 block w-full"
-                />
-              </div>
+        <form className="space-y-6" onSubmit={handleSubmit}>
+          <Input
+            label="Username"
+            name="username"
+            type="text"
+            autoComplete="username"
+            placeholder="johndoe"
+            required
+            value={formData.username}
+            onChange={(e) =>
+              setFormData({ ...formData, username: e.target.value })
+            }
+            prefixIcon={IconUser}
+            className="mt-1 block w-full"
+          />
 
-              <div className="fill-available ml-4">
-                <Input
-                  label="Email address"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  placeholder="johndoe@example.com"
-                  required
-                  value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
-                  prefixIcon={IconMail}
-                  className="mt-1 block w-full"
-                />
-              </div>
-            </div>
+          <Input
+            label="Email address"
+            name="email"
+            type="email"
+            autoComplete="email"
+            placeholder="johndoe@example.com"
+            required
+            value={formData.email}
+            onChange={(e) =>
+              setFormData({ ...formData, email: e.target.value })
+            }
+            prefixIcon={IconMail}
+            className="mt-1 block w-full"
+          />
 
-            {/* Password & Role */}
-            <div className="flex">
-              <div className="fill-available mr-4 relative">
-                <Input
-                  label="Password"
-                  name="password"
-                  type={isPasswordVisible ? "text" : "password"}
-                  autoComplete="new-password"
-                  placeholder="********"
-                  required
-                  minLength={8}
-                  value={formData.password}
-                  onChange={(e) =>
-                    setFormData({ ...formData, password: e.target.value })
-                  }
-                  prefixIcon={IconLock}
-                  helperText="Password must be at least 8 characters"
-                  className="mt-1 block w-full pr-10"
-                  suffixIcon={
-                    <Button
-                      onClick={() => setPasswordVisibility((prev) => !prev)}
-                      className="text-gray-500 hover:text-primary"
-                      type="button">
-                      {isPasswordVisible ? (
-                        <IconEyeOff className="h-5 w-5" />
-                      ) : (
-                        <IconEye className="h-5 w-5" />
-                      )}
-                    </Button>
-                  }
-                />
-              </div>
+          <Input
+            label="Password"
+            name="password"
+            type={isPasswordVisible ? "text" : "password"}
+            autoComplete="new-password"
+            placeholder="********"
+            required
+            minLength={8}
+            value={formData.password}
+            onChange={(e) =>
+              setFormData({ ...formData, password: e.target.value })
+            }
+            prefixIcon={IconLock}
+            helperText="Password must be at least 8 characters"
+            className="mt-1 block w-full pr-10"
+            suffixIcon={
+              <Button
+                onClick={() => setPasswordVisibility((prev) => !prev)}
+                className="text-gray-500 hover:text-primary"
+                type="button">
+                {isPasswordVisible ? (
+                  <IconEyeOff className="h-5 w-5" />
+                ) : (
+                  <IconEye className="h-5 w-5" />
+                )}
+              </Button>
+            }
+          />
 
-              {/* Password Confirmation */}
-              <div className="fill-available ml-4">
-                <div className="relative">
-                  <Input
-                    label="Confirm Password"
-                    name="confirmPassword"
-                    type={isConfirmPasswordVisible ? "text" : "password"}
-                    autoComplete="new-password"
-                    placeholder="********"
-                    required
-                    minLength={8}
-                    value={formData.confirmPassword}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        confirmPassword: e.target.value,
-                      })
-                    }
-                    prefixIcon={IconLock}
-                    helperText="Please re-enter your password"
-                    className="mt-1 block w-full pr-10"
-                    suffixIcon={
-                      <Button
-                        onClick={() =>
-                          setConfirmPasswordVisibility((prev) => !prev)
-                        }
-                        className="text-gray-500 hover:text-primary"
-                        type="button">
-                        {isConfirmPasswordVisible ? (
-                          <IconEyeOff className="h-5 w-5" />
-                        ) : (
-                          <IconEye className="h-5 w-5" />
-                        )}
-                      </Button>
-                    }
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
+          <Input
+            label="Confirm Password"
+            name="confirmPassword"
+            type={isConfirmPasswordVisible ? "text" : "password"}
+            autoComplete="new-password"
+            placeholder="********"
+            required
+            minLength={8}
+            value={formData.confirmPassword}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                confirmPassword: e.target.value,
+              })
+            }
+            prefixIcon={IconLock}
+            helperText="Please re-enter your password"
+            className="mt-1 block w-full pr-10"
+            suffixIcon={
+              <Button
+                onClick={() => setConfirmPasswordVisibility((prev) => !prev)}
+                className="text-gray-500 hover:text-primary"
+                type="button">
+                {isConfirmPasswordVisible ? (
+                  <IconEyeOff className="h-5 w-5" />
+                ) : (
+                  <IconEye className="h-5 w-5" />
+                )}
+              </Button>
+            }
+          />
 
           {/* Submit */}
           <Button full variant="primary" isLoading={isLoading || isUploading}>

@@ -32,14 +32,14 @@ export default function LearnPage() {
   }
 
   return (
-    <div className="flex h-full-s overflow-x-hidden relative">
+    <div className="flex">
       <CourseSidebar
         module={module}
         currentMaterial={currentMaterial}
         setCurrentMaterial={setCurrentMaterial}
       />
 
-      <main className="max-h-full-s overflow-y-auto flex-1 flex flex-col ml-8 pr-8">
+      <main className="flex-1 ml-8 pr-8">
         <CourseHeader
           course={course}
           currentMaterial={currentMaterial}

@@ -1,10 +1,12 @@
 import { useState, useRef, useEffect } from "react";
 import Input from "./Input";
 import { IconSearch } from "@tabler/icons-react";
+import { useAppHook } from "../hooks/useAppHook";
 
 export default function SearchBar({ className }: { className?: string }) {
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const { navigate } = useAppHook();
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -23,9 +25,14 @@ export default function SearchBar({ className }: { className?: string }) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    navigate(`/search/${query}`);
+  };
+
   return (
     <div className="relative max-w-xs w-full">
-      <form action={`/search/${query}`} method="get">
+      <form onSubmit={handleSubmit} method="get">
         <Input
           ref={inputRef}
           type="search"
@@ -33,7 +40,7 @@ export default function SearchBar({ className }: { className?: string }) {
           prefixIcon={IconSearch}
           className={className}
           suffixIcon={
-            <kbd className="h-5 w-5 px-2 py-1.5 text-xs text-gray-400 bg-gray-100 rounded hidden sm:inline">
+            <kbd className="h-5 w-5 px-2 py-1.5 text-xs text-gray-400 bg-gray-100 rounded-2xl hidden sm:inline">
               /
             </kbd>
           }

@@ -22,6 +22,7 @@ interface InputProps {
   helperText?: string;
   className?: string;
   error?: string;
+  autoFocus?: boolean;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -47,6 +48,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       suffixIcon,
       helperText,
       error,
+      autoFocus = false,
     },
     ref
   ) => {
@@ -65,6 +67,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             id={name}
             name={name}
             type={type}
+            autoFocus={autoFocus}
             ref={ref}
             value={value}
             placeholder={placeholder}

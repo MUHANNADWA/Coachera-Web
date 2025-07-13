@@ -18,7 +18,7 @@ export default function ResetPasswordPage() {
     <div className="h-full-s flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <form
         onSubmit={handleReset}
-        className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow">
+        className="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow">
         <h2 className="text-2xl font-bold mb-4 text-center">Reset Password</h2>
 
         {/* New Password */}

@@ -50,7 +50,7 @@ const Message = ({
 
   // Icon colors
   const variantIconColors: Record<MessageVariant, string> = {
-    info: "text-blue-500 dark:text-blue-900",
+    info: "text-primary dark:text-blue-900",
     success: "text-green-500 dark:text-green-900",
     warning: "text-yellow-500 dark:text-yellow-900",
     danger: "text-red-500 dark:text-red-900",
@@ -68,7 +68,7 @@ const Message = ({
 
   return (
     <div
-      className={`relative p-4 mb-4 rounded-lg border ${variantStyles[variant]} ${className} transition-all duration-200`}
+      className={`relative p-4 mb-4 rounded-2xl border ${variantStyles[variant]} ${className} transition-all duration-200`}
       role="alert">
       <div className="flex items-start">
         <Icon
@@ -79,7 +79,7 @@ const Message = ({
           <Button
             type="button"
             onClick={handleDismiss}
-            className={`ml-2 p-1 rounded-full hover:bg-opacity-30 ${variantIconColors[variant]}`}
+            className={`ml-2 p-1 rounded-2xl hover:bg-opacity-30 ${variantIconColors[variant]}`}
             aria-label="Dismiss">
             <XMarkIcon className="h-5 w-5" />
           </Button>

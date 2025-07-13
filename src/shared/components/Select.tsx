@@ -56,7 +56,10 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
             error ? "border-red-500" : "border-gray-300"
           } ${className}`}>
           {options.map((opt) => (
-            <option key={opt.value} value={opt.value}>
+            <option
+              className="hover:bg-primary! hover:text-white! focus:bg-primary! active:bg-primary! bg-amber-200 checked:bg-primary target:bg-primary default:bg-primary enabled:bg-primary"
+              key={opt.value}
+              value={opt.value}>
               {opt.label}
             </option>
           ))}

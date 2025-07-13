@@ -13,6 +13,7 @@ import {
   IconUserMinus,
   IconWallet,
 } from "@tabler/icons-react";
+import Input from "../../../shared/components/Input";
 
 export default function EditProfilePage() {
   const { user } = useAppHook();
@@ -25,14 +26,14 @@ export default function EditProfilePage() {
   });
 
   return (
-    <div className="flex h-full-s overflow-x-hidden">
+    <div className="flex relative overflow-x-hidden">
       {/* Sidebar */}
       <Sidebar className="w-64 border-r p-6 bg-white">
         <div className="text-center space-y-2">
           <img
             src={user?.profileImage || PROFILE_IMAGE}
             alt="profile"
-            className="h-24 w-24 justify-center mx-auto rounded-full"
+            className="h-24 w-24 justify-center mx-auto rounded-2xl"
           />
           <h2 className="font-semibold text-lg">{user?.username}</h2>
         </div>
@@ -77,7 +78,7 @@ export default function EditProfilePage() {
       </Sidebar>
 
       {/* Content */}
-      <main className="max-h-full-s overflow-y-auto flex-1 flex flex-col py-8 ml-8 pr-8">
+      <main className="flex-1 flex flex-col py-8 ml-8 pr-8">
         <h1 className="text-2xl font-bold mb-2">Public profile</h1>
         <p className="text-sm text-gray-500 mb-8">
           Add information about yourself
@@ -85,62 +86,43 @@ export default function EditProfilePage() {
 
         <form className="max-w-2xl space-y-6">
           <div>
-            <label className="block font-medium text-sm mb-1">Basics:</label>
-            <input
-              className="w-full"
+            <h2>Basics:</h2>
+            <hr />
+            <Input
+              label="First Name"
               placeholder="First Name"
               value={form.firstName}
               onChange={(e) => setForm({ ...form, firstName: e.target.value })}
             />
-            <input
-              className="w-full mt-2"
+            <Input
+              label="Last Name"
               placeholder="Last Name"
               value={form.lastName}
               onChange={(e) => setForm({ ...form, lastName: e.target.value })}
             />
             <div className="relative mt-2">
-              <input
+              <Input
+                label="Headline"
                 maxLength={60}
-                className="w-full "
                 placeholder="Headline"
                 value={form.headline}
                 onChange={(e) => setForm({ ...form, headline: e.target.value })}
+                helperText={`Add a professional headline like, "Instructor at coachera" or "Architect."`}
               />
               <span className="absolute right-2 top-2 text-xs text-gray-400">
                 {form.headline.length}/60
               </span>
             </div>
-            <p className="text-xs text-gray-500 mt-1">
-              Add a professional headline like, "Instructor at coachera" or
-              "Architect."
-            </p>
           </div>
 
-          <div>
-            <label className="block font-medium text-sm mb-1">Biography</label>
-            <div className="border rounded px-3 py-2">
-              <div className="mb-2 space-x-2 text-gray-600">
-                <button type="button" className="font-bold">
-                  B
-                </button>
-                <button type="button" className="italic">
-                  I
-                </button>
-              </div>
-              <textarea
-                rows={4}
-                className="w-full border-none outline-none"
-                placeholder="Biography"
-                value={form.biography}
-                onChange={(e) =>
-                  setForm({ ...form, biography: e.target.value })
-                }
-              />
-            </div>
-            <p className="text-xs text-gray-500 mt-1">
-              Links and coupon codes are not permitted in this section.
-            </p>
-          </div>
+          <Input
+            label="Biography"
+            className="w-full"
+            placeholder="Biography"
+            value={form.biography}
+            onChange={(e) => setForm({ ...form, biography: e.target.value })}
+            helperText="Links and coupon codes are not permitted in this section."
+          />
 
           <div>
             <select

@@ -2,7 +2,7 @@ import { Course } from "../../../shared/types/types";
 import { useState } from "react";
 import { useGetCoursesQuery } from "../coursesApiSlice";
 
-export default function useCoursePlayer() {
+export default function useCourses() {
   const [page, setPage] = useState(0);
   const [size, setSize] = useState(5);
   const [sortBy, setSortBy] = useState("createdAt");

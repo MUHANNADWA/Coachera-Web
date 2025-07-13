@@ -19,7 +19,6 @@ export default function useRegister() {
     password: "",
     confirmPassword: "",
     role: "student",
-    // profileImageUrl: "",
   });
 
   const [isPasswordVisible, setPasswordVisibility] = useState(false);
@@ -45,8 +44,11 @@ export default function useRegister() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    formData.password = formData.password.trim();
+    formData.confirmPassword = formData.confirmPassword.trim();
+
     if (formData.password !== formData.confirmPassword) {
-      return toast.error("Passwords do not match");
+      return toast.error("Passwords do not match because ${}");
     }
 
     const loginFormData = {

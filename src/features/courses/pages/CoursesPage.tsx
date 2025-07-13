@@ -5,6 +5,7 @@ import FiltersSidebar from "../components/FiltersSidebar";
 import Pagination from "../components/Pagination";
 import { showErrorMessage } from "../../../utils/errorMessage";
 import useCourses from "../hooks/useCourses";
+import { useAppHook } from "../../../shared/hooks/useAppHook";
 
 export default function CoursesPage() {
   const {
@@ -22,8 +23,12 @@ export default function CoursesPage() {
     error,
   } = useCourses();
 
+  const { favCoursesIds } = useAppHook();
+
+  console.log("favCoursesIds = " + favCoursesIds);
+
   return (
-    <div className="flex h-full-s overflow-x-hidden">
+    <div className="flex">
       {/* FiltersSidebar */}
       <FiltersSidebar
         setPage={setPage}
@@ -34,7 +39,8 @@ export default function CoursesPage() {
         sortDirection={sortDirection}
         setSortDirection={setSortDirection}
       />
-      <main className="max-h-full-s overflow-y-auto flex-1 flex flex-col py-8 ml-8 pr-8">
+
+      <main className="flex-1 py-8 ml-8 pr-8">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold mb-12 text-center">
             Featured Courses
@@ -51,7 +57,11 @@ export default function CoursesPage() {
                   : error
                   ? showErrorMessage(error)
                   : courses.map((course: Course) => (
-                      <CourseCard key={course.id} course={course} />
+                      <CourseCard
+                        key={course.id}
+                        course={course}
+                        isFav={favCoursesIds?.includes(course.id)}
+                      />
                     ))}
               </div>
               <Pagination

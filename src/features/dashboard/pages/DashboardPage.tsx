@@ -17,20 +17,20 @@ export default function DashboardPage() {
           {enrolledCourses.map((course: Course) => (
             <div
               key={course.id}
-              className="bg-white rounded-lg shadow-md p-4 flex">
+              className="bg-white rounded-2xl shadow-md p-4 flex">
               <img
                 src={course.image}
                 alt={course.title}
-                className="w-32 h-24 object-cover rounded mr-4"
+                className="w-32 h-24 object-cover rounded-2xl mr-4"
               />
               <div>
                 <h3 className="font-bold">{course.title}</h3>
                 <p className="text-sm text-gray-600 mb-2">
                   {course.instructor}
                 </p>
-                <div className="w-full bg-gray-200 rounded-full h-2.5">
+                <div className="w-full bg-gray-200 rounded-2xl h-2.5">
                   <div
-                    className="bg-blue-500 h-2.5 rounded-full"
+                    className="bg-primary h-2.5 rounded-2xl"
                     style={{ width: "30%" }}></div>
                 </div>
                 <p className="text-sm mt-1">30% complete</p>

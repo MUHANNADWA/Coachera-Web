@@ -20,7 +20,7 @@ export default function OtpVerificationPage() {
     <div className="h-full-s flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <form
         onSubmit={handleSubmit}
-        className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow text-center">
+        className="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow text-center">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Check your email</h2>
           <p className="text-gray-600 mt-2">

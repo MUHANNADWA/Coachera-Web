@@ -40,12 +40,12 @@ export function HeaderUserDropdown() {
         <img
           src={user?.profileImage || PROFILE_IMAGE}
           alt="profile"
-          className="h-6 w-6 rounded-full"
+          className="h-6 w-6 rounded-2xl"
         />
       </Button>
 
       {/* Dropdown */}
-      <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-200 absolute right-0 z-50 mt-2 w-64 rounded-xl bg-white shadow-lg p-1">
+      <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-200 absolute right-0 z-50 mt-2 w-64 rounded-2xl bg-white shadow-lg p-1">
         {[
           {
             label: "Public Profile",
@@ -96,7 +96,7 @@ export function HeaderUserDropdown() {
 
         <Button
           onClick={logoutHandler}
-          className="group flex w-full items-center justify-start gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg">
+          className="group flex w-full items-center justify-start gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-2xl">
           <ArrowRightStartOnRectangleIcon className="h-4 w-4 text-red-400 group-hover:text-red-600" />
           Logout
         </Button>

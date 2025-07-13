@@ -26,7 +26,12 @@ export default function FiltersSidebar(props: CoursesSidebarProps) {
   const toggleCollapse = () => setCollapsed((prev) => !prev);
 
   return (
-    <Sidebar className={collapsed ? "w-12" : "w-70"}>
+    <Sidebar
+      className={
+        collapsed
+          ? "w-12 max-sm:bg-transparent max-sm:h-15"
+          : "w-70 max-sm:pr-8 max-sm:w-screen"
+      }>
       <SidebarHeader
         label="Filters"
         collapsed={collapsed}

@@ -6,14 +6,14 @@ export const renderStars = (rating: number) => {
   const hasHalfStar = rating - fullStars >= 0.5;
 
   for (let i = 0; i < fullStars; i++) {
-    stars.push(<FaStar key={i} className="text-yellow-400" />);
+    stars.push(<FaStar key={i} className="text-primary-dark" />);
   }
   if (hasHalfStar) {
-    stars.push(<FaStarHalfAlt key="half" className="text-yellow-400" />);
+    stars.push(<FaStarHalfAlt key="half" className="text-primary-dark" />);
   }
   while (stars.length < 5) {
     stars.push(
-      <FaRegStar key={`empty-${stars.length}`} className="text-yellow-400" />
+      <FaRegStar key={`empty-${stars.length}`} className="text-primary-dark" />
     );
   }
 
