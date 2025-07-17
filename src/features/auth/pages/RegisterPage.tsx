@@ -3,12 +3,12 @@ import useRegister from "../hooks/useRegister";
 import { Button } from "../../../shared/components/Button";
 import Input from "../../../shared/components/Input";
 import {
-  IconEye,
-  IconEyeOff,
-  IconLock,
-  IconMail,
-  IconUser,
-} from "@tabler/icons-react";
+  EyeIcon,
+  EyeSlashIcon,
+  LockClosedIcon,
+  EnvelopeIcon,
+  UserIcon,
+} from "@heroicons/react/24/outline";
 
 export default function RegisterPage() {
   const {
@@ -52,7 +52,7 @@ export default function RegisterPage() {
             onChange={(e) =>
               setFormData({ ...formData, username: e.target.value })
             }
-            prefixIcon={IconUser}
+            prefixIcon={UserIcon}
             className="mt-1 block w-full"
           />
 
@@ -67,7 +67,7 @@ export default function RegisterPage() {
             onChange={(e) =>
               setFormData({ ...formData, email: e.target.value })
             }
-            prefixIcon={IconMail}
+            prefixIcon={EnvelopeIcon}
             className="mt-1 block w-full"
           />
 
@@ -83,7 +83,7 @@ export default function RegisterPage() {
             onChange={(e) =>
               setFormData({ ...formData, password: e.target.value })
             }
-            prefixIcon={IconLock}
+            prefixIcon={LockClosedIcon}
             helperText="Password must be at least 8 characters"
             className="mt-1 block w-full pr-10"
             suffixIcon={
@@ -92,9 +92,9 @@ export default function RegisterPage() {
                 className="text-gray-500 hover:text-primary"
                 type="button">
                 {isPasswordVisible ? (
-                  <IconEyeOff className="h-5 w-5" />
+                  <EyeSlashIcon className="h-5 w-5" />
                 ) : (
-                  <IconEye className="h-5 w-5" />
+                  <EyeIcon className="h-5 w-5" />
                 )}
               </Button>
             }
@@ -115,7 +115,7 @@ export default function RegisterPage() {
                 confirmPassword: e.target.value,
               })
             }
-            prefixIcon={IconLock}
+            prefixIcon={LockClosedIcon}
             helperText="Please re-enter your password"
             className="mt-1 block w-full pr-10"
             suffixIcon={
@@ -124,9 +124,9 @@ export default function RegisterPage() {
                 className="text-gray-500 hover:text-primary"
                 type="button">
                 {isConfirmPasswordVisible ? (
-                  <IconEyeOff className="h-5 w-5" />
+                  <EyeSlashIcon className="h-5 w-5" />
                 ) : (
-                  <IconEye className="h-5 w-5" />
+                  <EyeIcon className="h-5 w-5" />
                 )}
               </Button>
             }

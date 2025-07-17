@@ -2,7 +2,12 @@ import { Link } from "react-router-dom";
 import { useLogin } from "../hooks/useLogin";
 import { Button } from "../../../shared/components/Button";
 import Input from "../../../shared/components/Input";
-import { IconEye, IconEyeOff, IconLock, IconMail } from "@tabler/icons-react";
+import {
+  EyeIcon,
+  EyeSlashIcon,
+  LockClosedIcon,
+  EnvelopeIcon,
+} from "@heroicons/react/24/outline";
 
 export default function LoginPage() {
   const {
@@ -44,7 +49,7 @@ export default function LoginPage() {
               setFormData({ ...formData, identifier: e.target.value })
             }
             className="mt-1 block w-full"
-            prefixIcon={IconMail}
+            prefixIcon={EnvelopeIcon}
           />
 
           <Input
@@ -57,7 +62,7 @@ export default function LoginPage() {
               setFormData({ ...formData, password: e.target.value })
             }
             required
-            prefixIcon={IconLock}
+            prefixIcon={LockClosedIcon}
             suffixIcon={
               <Button
                 type="button"
@@ -68,9 +73,9 @@ export default function LoginPage() {
                   isPasswordVisible ? "Hide password" : "Show password"
                 }>
                 {isPasswordVisible ? (
-                  <IconEyeOff className="h-5 w-5" />
+                  <EyeSlashIcon className="h-5 w-5" />
                 ) : (
-                  <IconEye className="h-5 w-5" />
+                  <EyeIcon className="h-5 w-5" />
                 )}
               </Button>
             }

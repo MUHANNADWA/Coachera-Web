@@ -9,6 +9,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["User"],
     }),
 
     register: builder.mutation({
@@ -17,6 +18,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["User"],
     }),
 
     logout: builder.mutation({
@@ -24,6 +26,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         url: `${AUTH_URL}/logout`,
         method: "POST",
       }),
+      invalidatesTags: ["User"],
     }),
 
     uploadPhoto: builder.mutation({
@@ -32,6 +35,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["User"],
     }),
 
     profile: builder.mutation({
@@ -77,6 +81,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         params: { email },
       }),
+      invalidatesTags: ["User"],
     }),
 
     validateOtp: builder.mutation({
@@ -85,6 +90,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         params: { email, otp },
       }),
+      invalidatesTags: ["User"],
     }),
 
     resetPassword: builder.mutation({
@@ -93,6 +99,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         params: { email, otp, newPassword },
       }),
+      invalidatesTags: ["User"],
     }),
   }),
   overrideExisting: false,

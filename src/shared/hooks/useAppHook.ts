@@ -1,19 +1,21 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "./hooks";
-import { setWishlist } from "../../features/courses/wishlistSlice";
 
 export function useAppHook() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const user = useAppSelector((state) => state.auth.user?.user);
-  const accessToken = useAppSelector((state) => state.auth.user?.accessToken);
-  const token = accessToken ? `Bearer ${accessToken}` : null;
+  const token = useAppSelector((state) => state.auth.user?.accessToken);
   const courseSidebarCollapsed = useAppSelector(
     (state) => state.courseSidebar.collapsed
   );
-  const wishlistIds = useAppSelector((state) => state.wishlist.wishlist);
-  const setWishlistIds = (ids: number[]) => dispatch(setWishlist(ids));
+  const wishlistIds: number[] = useAppSelector(
+    (state) => state.wishlist.wishlistIds
+  );
+  const enrolledIds: number[] = useAppSelector(
+    (state) => state.enrolledCourses.enrolledCoursesIds
+  );
 
   return {
     dispatch,
@@ -23,6 +25,6 @@ export function useAppHook() {
     token,
     courseSidebarCollapsed,
     wishlistIds,
-    setWishlistIds,
+    enrolledIds,
   };
 }

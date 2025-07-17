@@ -3,7 +3,10 @@ import { useGetStudentQuery } from "../../../shared/slices/studentsApiSlice";
 import { renderStars } from "../utils/Utils";
 import { PROFILE_IMAGE } from "../../../constants/constants";
 import { StarIcon, CheckBadgeIcon } from "@heroicons/react/24/solid";
-import { IconArticle, IconMessage, IconThumbUp } from "@tabler/icons-react";
+import {
+  ChatBubbleLeftEllipsisIcon,
+  HandThumbUpIcon,
+} from "@heroicons/react/24/outline";
 
 interface ReviewProps {
   review: ReviewType;
@@ -53,11 +56,11 @@ export default function Review({ review }: ReviewProps) {
       ) : isError || !student ? (
         <div className="flex items-center space-x-3 p-4 bg-red-50 rounded-xl border border-red-200">
           <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
-            <span className="text-red-600 text-sm font-semibold">!</span>
+            <span className="text-danger text-sm font-semibold">!</span>
           </div>
           <div>
             <p className="text-red-700 font-medium">Student not found</p>
-            <p className="text-red-600 text-sm">
+            <p className="text-danger text-sm">
               Unable to load student information
             </p>
           </div>
@@ -71,7 +74,7 @@ export default function Review({ review }: ReviewProps) {
                 <img
                   src={PROFILE_IMAGE}
                   alt={`${student.firstName} ${student.lastName}`}
-                  className="w-12 h-12 rounded-full object-cover ring-2 ring-gray-100"
+                  className="w-12 h-12 rounded-full object-cover"
                 />
                 {/* Verified badge */}
                 <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-primary rounded-full flex items-center justify-center">
@@ -131,13 +134,13 @@ export default function Review({ review }: ReviewProps) {
               <div className="flex items-center space-x-2">
                 <button className="flex items-center space-x-1 text-sm text-gray-500 hover:text-primary transition-colors">
                   <span>
-                    <IconThumbUp />
+                    <HandThumbUpIcon className="w-5 h-5" />
                   </span>
                   <span>Helpful</span>
                 </button>
                 <button className="flex items-center space-x-1 text-sm text-gray-500 hover:text-primary transition-colors">
                   <span>
-                    <IconMessage />
+                    <ChatBubbleLeftEllipsisIcon className="w-5 h-5" />
                   </span>
                   <span>Reply</span>
                 </button>

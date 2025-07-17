@@ -5,6 +5,7 @@ import { Button } from "../../../shared/components/Button";
 import useCourseSidebar from "../hooks/useCourseSidebar";
 import Sidebar from "../../../shared/components/Sidebar";
 import SidebarHeader from "./SidebarHeader";
+import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
 
 interface CourseSidebarProps {
   module: Module;
@@ -43,10 +44,18 @@ export default function CourseSidebar({
       {!courseSidebarCollapsed &&
         module.sections.map((section) => (
           <section key={section.id}>
-            <Button full onClick={() => toggleSectionCollapse(section.id)}>
-              <h4 className="hover:bg-primary-light font-semibold w-full p-2 rounded-2xl">
+            <Button
+              className="flex items-center"
+              full
+              onClick={() => toggleSectionCollapse(section.id)}>
+              <h4 className="hover:bg-primary-light font-semibold p-2 rounded-2xl">
                 {section.title}
               </h4>
+              {collapsedSections.has(section.id) ? (
+                <ChevronDownIcon className="w-4 h-4" />
+              ) : (
+                <ChevronUpIcon className="w-4 h-4" />
+              )}
             </Button>
 
             {!collapsedSections.has(section.id) && (

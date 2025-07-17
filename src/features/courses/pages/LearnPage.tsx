@@ -21,10 +21,10 @@ export default function LearnPage() {
     handleNext,
   } = useCoursePlayer();
 
-  if (isLoading) return <Loader center />;
+  if (isLoading) return <Loader logo />;
 
   if (!course || !module || !material || !currentMaterial) {
-    return <Loader center />;
+    return <Loader logo />;
   }
 
   if (!module || !material) {
@@ -39,7 +39,7 @@ export default function LearnPage() {
         setCurrentMaterial={setCurrentMaterial}
       />
 
-      <main className="flex-1 ml-8 pr-8">
+      <main className="page flex-1 px-8">
         <CourseHeader
           course={course}
           currentMaterial={currentMaterial}
@@ -50,13 +50,13 @@ export default function LearnPage() {
         />
 
         {/* if Matrial is Video */}
-        {material.videoUrl && <VideoPage material={material} />}
+        {material.type === "VIDEO" && <VideoPage material={material} />}
 
         {/* if Matrial is Article */}
-        {material.article && <ArticlePage material={material} />}
+        {material.type === "ARTICLE" && <ArticlePage material={material} />}
 
         {/* if Matrial is Quiz */}
-        {material.quiz && <QuizPage material={material} />}
+        {material.type === "QUIZ" && <QuizPage material={material} />}
       </main>
     </div>
   );

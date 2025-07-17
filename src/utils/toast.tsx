@@ -20,15 +20,31 @@ export default function toastPromise<T>(
 
   return toast.promise(promise, {
     loading: loadingMessage,
-    success: (res) => {
-      console.log(res);
-      onSuccess?.(res);
-      return (
-        (res as any)?.data?.message ?? (res as any)?.message ?? successMessage
-      );
+    success: (response) => {
+      console.log("res= ", response as Map<string, string>);
+
+      const res = response as any;
+
+      const message =
+        res?.data?.message ??
+        res?.message ??
+        res?.error?.data?.message ??
+        res?.error?.message ??
+        errorMessage;
+
+      const status =
+        res?.status ??
+        res?.data?.status ??
+        res?.error?.data?.status ??
+        res?.error?.status;
+
+      if (!(status >= 200 && status < 300)) {
+        throw new Error(message);
+      }
+      onSuccess?.(response);
+      return message ?? successMessage;
     },
     error: (err) => {
-      console.error(err);
       return (err?.data?.message || err?.message) ?? errorMessage;
     },
   });

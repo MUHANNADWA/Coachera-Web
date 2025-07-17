@@ -26,7 +26,7 @@ export default function Pagination({
     const start = Math.max(1, page - delta);
     const end = Math.min(totalPages - 2, page + delta);
 
-    pages.push(0); // First page
+    pages.push(0);
 
     if (start > 1) pages.push("...");
 
@@ -36,7 +36,7 @@ export default function Pagination({
 
     if (end < totalPages - 2) pages.push("...");
 
-    pages.push(totalPages - 1); // Last page
+    pages.push(totalPages - 1);
 
     return pages;
   };
@@ -46,7 +46,7 @@ export default function Pagination({
   const pageNumbers = generatePageNumbers();
 
   return (
-    <div className="flex justify-center mt-10 flex-wrap gap-2">
+    <div className="consect p-4 flex justify-center mt-10 flex-wrap gap-2">
       <Button
         disabled={page === 0}
         onClick={() => setPage((prev) => Math.max(prev - 1, 0))}

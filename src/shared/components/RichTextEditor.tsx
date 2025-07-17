@@ -61,7 +61,7 @@ export default function RichTextEditor() {
 
       <h2 className="mt-6 text-lg font-semibold">Preview:</h2>
       <div
-        className="border p-4 mt-2"
+        className="border p-4 mt-2 bg-white rounded-md prose max-w-none"
         dangerouslySetInnerHTML={{ __html: content }}
       />
     </div>

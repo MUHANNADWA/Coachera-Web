@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { CourseSidebarState } from "./types";
+import { CourseSidebarState } from "../types";
 
 const getInitialCollapsedState = (): boolean => {
   try {

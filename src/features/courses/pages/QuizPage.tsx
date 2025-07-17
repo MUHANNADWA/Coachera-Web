@@ -3,6 +3,8 @@ import { Material } from "../../../shared/types/types";
 import { Button } from "../../../shared/components/Button";
 import Modal from "../../../shared/components/Modal";
 import { useModal } from "../../../shared/hooks/useModal";
+import { useSubmitQuizMutation } from "../apiSlices/quizApiSlice";
+import toastPromise from "../../../utils/toast";
 
 interface QuizPageProps {
   material: Material;
@@ -15,6 +17,8 @@ export default function QuizPage({ material }: QuizPageProps) {
   const [submitted, setSubmitted] = useState(false);
   const { isModalOpen, openModal, closeModal } = useModal();
 
+  const [submitQuiz, { isLoading }] = useSubmitQuizMutation();
+
   if (!quiz) return <p>No quiz found.</p>;
 
   const handleSelect = (questionId: number, answerIndex: number) => {
@@ -22,22 +26,39 @@ export default function QuizPage({ material }: QuizPageProps) {
     setAnswers((prev) => ({ ...prev, [questionId]: answerIndex }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const allAnswered = quiz.questions.every(
       (q) => answers[q.id] !== undefined
     );
+
     if (!allAnswered) {
       openModal();
       return;
     }
 
-    setSubmitted(true);
+    const data = {
+      quizId: quiz.id,
+      questions: quiz.questions.map((q) => ({
+        questionId: q.id,
+        answerIndex: answers[q.id],
+      })),
+    };
+
+    await toastPromise(submitQuiz(data).unwrap(), {
+      loadingMessage: "Submitting your quiz...",
+      successMessage: "Quiz submitted successfully!",
+      errorMessage: "Failed to submit quiz",
+      onSuccess: () => {
+        setSubmitted(true);
+      },
+    });
   };
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl mb-4 font-semibold">{material.title}</h1>
-      <hr className="mb-4" />
+      <h1 className="consect p-4 text-2xl mb-4 font-semibold">
+        {material.title}
+      </h1>
 
       <form className="space-y-12" onSubmit={(e) => e.preventDefault()}>
         {quiz.questions.map((question, qIndex) => {
@@ -49,24 +70,26 @@ export default function QuizPage({ material }: QuizPageProps) {
           ].filter((a): a is string => Boolean(a));
 
           return (
-            <div key={question.id} className="space-y-3">
+            <div key={question.id} className="consect p-4 space-y-3">
               <p className="font-medium text-lg">{`Q${qIndex + 1}: ${
                 question.content
               }`}</p>
               {answerOptions.map((answer, idx) => (
                 <label
                   key={idx}
-                  className={`flex items-center gap-3 p-2 border rounded-2xl cursor-pointer ${
-                    answers[question.id] === idx
-                      ? "border-primary bg-primary-lightest"
-                      : "border-gray-200"
-                  }`}>
+                  className={`flex items-center gap-3 p-2 border rounded-2xl cursor-pointer transition
+                    ${
+                      answers[question.id] === idx
+                        ? "border-primary bg-primary-lightest"
+                        : "border-gray-200"
+                    }`}>
                   <input
                     type="radio"
                     name={`question-${question.id}`}
                     checked={answers[question.id] === idx}
                     onChange={() => handleSelect(question.id, idx)}
                     className="form-radio accent-primary"
+                    disabled={submitted}
                   />
                   <span>{answer}</span>
                 </label>
@@ -80,8 +103,12 @@ export default function QuizPage({ material }: QuizPageProps) {
           type="button"
           onClick={handleSubmit}
           variant="primary"
-          disabled={submitted}>
-          {submitted ? "Submitted" : "Submit Quiz"}
+          disabled={submitted || isLoading}>
+          {submitted
+            ? "Submitted"
+            : isLoading
+            ? "Submitting..."
+            : "Submit Quiz"}
         </Button>
       </form>
 

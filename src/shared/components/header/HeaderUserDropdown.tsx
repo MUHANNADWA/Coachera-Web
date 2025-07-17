@@ -36,7 +36,7 @@ export function HeaderUserDropdown() {
     <div className="relative max-md:hidden group inline-block text-left">
       {/* Trigger */}
       <Button className="group inline-flex items-center justify-center gap-2 px-3 py-2">
-        Hi {user?.username || "there"}!
+        Hi {user?.username}!
         <img
           src={user?.profileImage || PROFILE_IMAGE}
           alt="profile"
@@ -96,8 +96,8 @@ export function HeaderUserDropdown() {
 
         <Button
           onClick={logoutHandler}
-          className="group flex w-full items-center justify-start gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-2xl">
-          <ArrowRightStartOnRectangleIcon className="h-4 w-4 text-red-400 group-hover:text-red-600" />
+          className="group flex w-full items-center justify-start gap-2 px-3 py-2 text-sm text-danger hover:bg-red-50 rounded-2xl">
+          <ArrowRightStartOnRectangleIcon className="h-4 w-4 text-red-400 group-hover:text-danger" />
           Logout
         </Button>
       </div>

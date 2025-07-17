@@ -1,5 +1,4 @@
 import { forwardRef } from "react";
-import { IconProps } from "@tabler/icons-react";
 
 interface InputProps {
   name?: string;
@@ -15,9 +14,9 @@ interface InputProps {
   maxLength?: number;
   required?: boolean;
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
-  onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>; // ✅ optional now
+  onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
   inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"];
-  prefixIcon?: React.FC<IconProps>;
+  prefixIcon?: React.FC<React.SVGProps<SVGSVGElement>>;
   suffixIcon?: React.ReactNode;
   helperText?: string;
   className?: string;
@@ -58,7 +57,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           <label
             htmlFor={name}
             className="block text-sm font-medium text-gray-700 mb-1">
-            {label} {required && <span className="text-red-500">*</span>}
+            {label}
           </label>
         )}
 

@@ -1,4 +1,4 @@
-import CourseCard from "../features/courses/components/CourseCard";
+import CourseCard from "../features/courses/components/courseCard/CourseCard";
 import Skills from "../shared/components/Skills";
 import { Course, Skill } from "../shared/types/types";
 

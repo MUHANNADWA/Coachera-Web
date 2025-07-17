@@ -8,7 +8,7 @@ interface VideoPlayerProps {
 
 export default function VideoPlayer({ src, size }: VideoPlayerProps) {
   return (
-    <div className="absolute top-0 left-0 h-full w-full">
+    <div className="w-full h-[400px]">
       <Plyr
         source={{
           type: "video",

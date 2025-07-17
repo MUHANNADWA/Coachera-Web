@@ -5,7 +5,7 @@ import AccessDeniedPage from "../pages/AccessDeniedPage";
 const AdminRoute = () => {
   const { user } = useAppHook();
 
-  return user?.isAdmin ? <Outlet /> : <AccessDeniedPage />;
+  return user?.role === "ADMIN" ? <Outlet /> : <AccessDeniedPage />;
 };
 
 export default AdminRoute;

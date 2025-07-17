@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { Material } from "../../../shared/types/types";
 import VideoPlayer from "../components/VideoPlayer";
 
@@ -7,19 +6,23 @@ interface VideoPageProps {
 }
 
 export default function VideoPage({ material }: VideoPageProps) {
-  const video = useMemo(() => {
-    return <VideoPlayer src={material.videoUrl!} />;
-  }, [material.videoUrl]);
+  const videoUrl =
+    material.videoUrl ??
+    "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
 
   return (
     <div className="p-4">
-      <section className="relative w-full pt-[400px] max-sm:pt-[200px]">
-        {video}
-      </section>
-      <section className="bg-white m-4">
-        <h1 className="text-2xl mb-4 font-semibold">{material.title}</h1>
-        <hr />
-        <p className="text-l mb-4">{material.title}</p>
+      {/* Sticky Video Player */}
+      <div className="consect sticky top-16 z-20 rounded-4xl overflow-hidden">
+        <VideoPlayer src={videoUrl} />
+      </div>
+
+      {/* Description Section */}
+      <section className="mt-6 rounded-2xl">
+        <h1 className="consect p-4 text-2xl font-semibold mb-4">
+          {material.title}
+        </h1>
+        <p className="consect p-4 text-lg text-gray-700">{material.title}</p>
       </section>
     </div>
   );

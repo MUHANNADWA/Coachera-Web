@@ -1,4 +1,4 @@
-import { IconMenu4 } from "@tabler/icons-react";
+import { Bars3Icon } from "@heroicons/react/24/outline";
 import { Button } from "../../../shared/components/Button";
 
 export default function SidebarHeader(props: {
@@ -15,7 +15,7 @@ export default function SidebarHeader(props: {
       <Button
         onClick={props.toggleCollapse}
         className="text-gray-500 hover:text-gray-700">
-        <IconMenu4 className="h-6 w-6" />
+        <Bars3Icon className="h-6 w-6" />
       </Button>
     </header>
   );

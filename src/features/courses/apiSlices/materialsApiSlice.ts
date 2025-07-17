@@ -1,5 +1,5 @@
-import { MATERIALS_URL } from "../../constants/constants";
-import { apiSlice } from "../../shared/slices/apiSlice";
+import { MATERIALS_URL } from "../../../constants/constants";
+import { apiSlice } from "../../../shared/slices/apiSlice";
 
 export const materialsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({

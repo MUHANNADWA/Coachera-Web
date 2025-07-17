@@ -7,8 +7,9 @@ export interface Userinfo {
   id: string;
   username: string;
   email: string;
-  isAdmin?: boolean;
+  role: "ADMIN" | "STUDENT" | "INSTRUCTOR" | "ORGANIZATION";
   profileImage: string;
+  isVerified: boolean;
 }
 
 export interface AuthState {

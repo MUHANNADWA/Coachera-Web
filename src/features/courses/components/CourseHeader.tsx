@@ -15,7 +15,7 @@ interface CourseHeaderProps {
 
 export default function CourseHeader(props: CourseHeaderProps) {
   return (
-    <header className="flex items-center justify-between my-4">
+    <header className="consect flex items-center justify-between my-4">
       <Button
         onClick={props.handlePrev}
         disabled={!props.prevExists}

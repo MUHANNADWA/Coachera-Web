@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSearchQuery } from "../slices/searchApiSlice";
 import FiltersSidebar from "../../features/courses/components/FiltersSidebar";
-import CourseCardSkeleton from "../../features/courses/components/CourseCardSkeleton";
+import CourseCardSkeleton from "../../features/skeletons/CourseCardSkeleton";
 import Message from "../components/Message";
 import Pagination from "../../features/courses/components/Pagination";
 import { showErrorMessage } from "../../utils/errorMessage";

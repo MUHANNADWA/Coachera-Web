@@ -2,8 +2,8 @@ import {
   COURSES_URL,
   ENROLLMENTS_URL,
   UPLOAD_URL,
-} from "../../constants/constants";
-import { apiSlice } from "../../shared/slices/apiSlice";
+} from "../../../constants/constants";
+import { apiSlice } from "../../../shared/slices/apiSlice";
 
 export const coursesApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -17,25 +17,35 @@ export const coursesApiSlice = apiSlice.injectEndpoints({
         url: COURSES_URL,
         params: { page, size, sortBy, sortDirection },
       }),
+      providesTags: ["Course"],
       keepUnusedDataFor: 5,
     }),
     getCourseDetails: builder.query({
       query: (courseID) => ({
         url: `${COURSES_URL}/${courseID}`,
       }),
+      providesTags: ["Course"],
       keepUnusedDataFor: 5,
     }),
-    enrollCourse: builder.mutation({
-      query: (courseID) => ({
-        url: `${ENROLLMENTS_URL}/student/${courseID}`,
-        method: "POST",
-      }),
+    getEnrolledCourses: builder.query({
+      query: () => `${ENROLLMENTS_URL}/student`,
+      providesTags: ["Enrollments"],
     }),
+    enrollCourse: builder.mutation({
+      query: (courseId: number) => ({
+        url: `${ENROLLMENTS_URL}/student/${courseId}`,
+        method: "POST",
+        body: {},
+      }),
+      invalidatesTags: ["Enrollments"],
+    }),
+
     unEnrollCourse: builder.mutation({
-      query: (courseID) => ({
-        url: `${ENROLLMENTS_URL}delete/${courseID}/student`,
+      query: (courseId: number) => ({
+        url: `${ENROLLMENTS_URL}/delete/${courseId}/student`,
         method: "DELETE",
       }),
+      invalidatesTags: ["Enrollments"],
     }),
     createCourse: builder.mutation({
       query: () => ({
@@ -89,6 +99,7 @@ export const {
   useDeleteCourseMutation,
   useCreateReviewMutation,
   useGetTopCoursesQuery,
+  useGetEnrolledCoursesQuery,
   useEnrollCourseMutation,
   useUnEnrollCourseMutation,
 } = coursesApiSlice;

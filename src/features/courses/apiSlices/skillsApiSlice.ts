@@ -1,5 +1,5 @@
-import { SKILLS_URL } from "../../constants/constants";
-import { apiSlice } from "../../shared/slices/apiSlice";
+import { SKILLS_URL } from "../../../constants/constants";
+import { apiSlice } from "../../../shared/slices/apiSlice";
 
 export const skillsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({

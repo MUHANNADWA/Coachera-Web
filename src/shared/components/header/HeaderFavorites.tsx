@@ -1,4 +1,4 @@
-import { IconHeart } from "@tabler/icons-react";
+import { HeartIcon } from "@heroicons/react/24/outline";
 import { Button } from "../Button";
 
 export function HeaderFavorites() {
@@ -6,7 +6,7 @@ export function HeaderFavorites() {
     <div className="relative max-md:hidden group inline-block text-left">
       {/* Trigger */}
       <Button>
-        <IconHeart className="px-2 w-8 h-8" />
+        <HeartIcon className="px-2 w-8 h-8" />
       </Button>
 
       {/* Dropdown */}

@@ -1,7 +1,11 @@
 import { useResetPassword } from "../hooks/useResetPassword";
 import { Button } from "../../../shared/components/Button";
-import { IconEye, IconEyeOff, IconLock } from "@tabler/icons-react";
 import Input from "../../../shared/components/Input";
+import {
+  EyeSlashIcon,
+  EyeIcon,
+  LockClosedIcon,
+} from "@heroicons/react/24/outline";
 
 export default function ResetPasswordPage() {
   const {
@@ -41,7 +45,7 @@ export default function ResetPasswordPage() {
                 setFormData({ ...formData, password: e.target.value })
               }
               helperText="Password must be at least 8 characters"
-              prefixIcon={IconLock}
+              prefixIcon={LockClosedIcon}
               className="mt-1 block w-full pr-10"
               suffixIcon={
                 <Button
@@ -50,9 +54,9 @@ export default function ResetPasswordPage() {
                   className="text-gray-500 hover:text-primary"
                   tabIndex={-1}>
                   {isPasswordVisible ? (
-                    <IconEyeOff className="h-5 w-5" />
+                    <EyeIcon className="h-5 w-5" />
                   ) : (
-                    <IconEye className="h-5 w-5" />
+                    <EyeSlashIcon className="h-5 w-5" />
                   )}
                 </Button>
               }
@@ -79,7 +83,7 @@ export default function ResetPasswordPage() {
                 })
               }
               helperText="Please re-enter your password"
-              prefixIcon={IconLock}
+              prefixIcon={LockClosedIcon}
               className="mt-1 block w-full pr-10"
               suffixIcon={
                 <Button
@@ -88,9 +92,9 @@ export default function ResetPasswordPage() {
                   className="text-gray-500 hover:text-primary"
                   tabIndex={-1}>
                   {isConfirmPasswordVisible ? (
-                    <IconEyeOff className="h-5 w-5" />
+                    <EyeSlashIcon className="h-5 w-5" />
                   ) : (
-                    <IconEye className="h-5 w-5" />
+                    <EyeIcon className="h-5 w-5" />
                   )}
                 </Button>
               }

@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useAppHook } from "../../../shared/hooks/useAppHook";
-import { useGetCourseDetailsQuery } from "../coursesApiSlice";
+import { useGetCourseDetailsQuery } from "../apiSlices/coursesApiSlice";
 import { Course } from "../../../shared/types/types";
 import { useEffect, useMemo, useState } from "react";
 import { CurrentMaterial } from "../types";

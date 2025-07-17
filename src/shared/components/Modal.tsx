@@ -41,8 +41,8 @@ export default function Modal({
 
   const colorMap = {
     info: "text-primary",
-    success: "text-green-600",
-    danger: "text-red-600",
+    success: "text-success",
+    danger: "text-danger",
     confirm: "text-gray-700",
   };
 
@@ -50,11 +50,11 @@ export default function Modal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20">
-      <div className="bg-white rounded-2xl shadow-lg w-full max-w-md mx-4 relative p-6">
+      <div className="consect border-primary rounded-2xl w-full max-w-md mx-4 relative p-6">
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-3 right-3 text-gray-400 hover:text-gray-600">
+          className="absolute top-7 right-6 text-gray-400 hover:text-gray-600">
           <XMarkIcon className="w-6 h-6" />
         </button>
 
@@ -66,21 +66,27 @@ export default function Modal({
         )}
 
         {/* Message */}
-        <p className="text-gray-700">{message}</p>
+        <p className="pr-4 text-gray-700">{message}</p>
 
         {/* Confirm buttons */}
         {showActions ? (
-          <div className="mt-6 flex justify-end space-x-2">
-            <Button variant="secondary" onClick={onCancel || onClose}>
+          <div className="mt-6 flex justify-end gap-x-2">
+            <Button
+              className="m-0!"
+              variant="secondary"
+              onClick={onCancel || onClose}>
               Cancel
             </Button>
-            <Button variant="primary" onClick={onConfirm}>
+            <Button className="m-0!" variant="primary" onClick={onConfirm}>
               Confirm
             </Button>
           </div>
         ) : (
-          <div className="mt-6 flex justify-end space-x-2">
-            <Button variant="secondary" onClick={onCancel || onClose}>
+          <div className="mt-6 flex justify-end">
+            <Button
+              className="m-0!"
+              variant="secondary"
+              onClick={onCancel || onClose}>
               Ok
             </Button>
           </div>

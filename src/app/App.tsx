@@ -8,7 +8,15 @@ import { useEffect } from "react";
 import { requestPermission } from "../features/fcm/requestPermission";
 import { listenToForegroundMessages } from "../features/fcm/onForegroundMessage";
 import Loader from "../shared/components/Loader";
-import { Icon123, IconCheck, IconX } from "@tabler/icons-react";
+import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline";
+import { useGetWishlistQuery } from "../features/courses/apiSlices/wishlistApiSlice";
+import { useAppHook } from "../shared/hooks/useAppHook";
+import { setWishlist } from "../features/courses/slices/wishlistSlice";
+import {
+  useEnrollCourseMutation,
+  useGetEnrolledCoursesQuery,
+} from "../features/courses/apiSlices/coursesApiSlice";
+import { setEnrolledCourses } from "../features/courses/slices/enrolledCoursesSlice";
 
 function AppContent() {
   return (
@@ -25,20 +33,22 @@ function AppContent() {
         <Toaster
           toastOptions={{
             success: {
-              icon: <IconCheck className="text-primary" />,
+              icon: <CheckCircleIcon className="text-success h-12 w-12" />,
+              className: "border-2 border-success",
             },
             error: {
-              icon: <IconX className="text-primary" />,
+              icon: <XCircleIcon className="text-danger h-12 w-12" />,
+              className: "border-2 border-danger",
             },
             loading: {
-              icon: <Loader className="text-primary h-6! w-6!" />,
+              icon: <Loader className="text-primary" />,
+              className: "border-2 border-primary",
             },
             style: {
-              backgroundColor: "var(--color-white)",
-              border: "1px solid var(--color-primary)",
-              borderRadius: "10px",
+              borderRadius: "15px",
               padding: "10px",
               fontSize: "16px",
+              boxShadow: "none",
             },
           }}
           containerClassName="mt-20"
@@ -50,14 +60,39 @@ function AppContent() {
 }
 
 export default function App() {
+  const { dispatch } = useAppHook();
+
+  const { data: wishlist, isSuccess: wishlistSuccess } = useGetWishlistQuery(
+    {}
+  );
+
+  const { data: enrolled, isSuccess: enrolledSuccess } =
+    useGetEnrolledCoursesQuery({});
+
   useEffect(() => {
     requestPermission().then((token) => {
       if (token) {
         // 🔁 Send this token to backend
       }
     });
-
     listenToForegroundMessages();
   }, []);
+
+  useEffect(() => {
+    if (wishlistSuccess && wishlist) {
+      const wishlistIds = wishlist.data.map((item: any) => item.courseId);
+      dispatch(setWishlist(wishlistIds));
+    }
+  }, [wishlistSuccess, wishlist, dispatch]);
+
+  useEffect(() => {
+    if (enrolledSuccess && enrolled) {
+      const enrolledCoursesIds = enrolled.data.map(
+        (item: any) => item.courseId
+      );
+      dispatch(setEnrolledCourses(enrolledCoursesIds));
+    }
+  }, [enrolledSuccess, enrolled, dispatch]);
+
   return <AppContent />;
 }

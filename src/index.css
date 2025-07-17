@@ -2,11 +2,30 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #2ec4b6;
-  --color-primary-light: #ecf1f3;
   --color-primary-lightest: #f6fbfa;
+  --color-primary-light: #ecf1f3;
+  --color-primary: #2ec4b6;
   --color-primary-dark: #1a302d;
   --color-secondary: #06756a;
+  --color-danger: #bb0701;
+  --color-success: #00b61e;
+}
+
+@tailwind utilities;
+
+@layer utilities {
+  .alternate-sections > section:nth-child(odd) {
+    @apply bg-white;
+  }
+
+  .alternate-sections > section:nth-child(even) {
+    @apply bg-fixed bg-center bg-cover text-primary-dark;
+    background-image: url("https://images.unsplash.com/photo-1723987513101-a1e2f775350b?q=80&w=387&auto=format&fit=crop");
+  }
+
+  .alternate-sections > section:nth-child(even) > :first-child {
+    @apply bg-primary-lightest/90;
+  }
 }
 
 body {
@@ -19,11 +38,13 @@ body {
   }
 
   .consect {
-    @apply bg-primary-lightest rounded-2xl relative border border-gray-300;
+    @apply bg-white rounded-2xl relative border border-gray-300;
   }
 
   .card {
-    @apply cursor-pointer bg-white rounded-2xl relative hover:shadow-md transition-all hover:scale-105 duration-300 w-full border border-gray-300;
+    @apply cursor-pointer bg-white rounded-2xl relative 
+    w-full border border-gray-300 overflow-hidden transform transition-all duration-300 
+    hover:bg-primary/2 hover:border-primary hover:shadow-md hover:-translate-y-2 hover:scale-[1.02];
   }
 
   .header-element {
@@ -35,15 +56,15 @@ body {
   }
 
   .h-full-s {
-    @apply h-[calc(100vh-73px)];
+    @apply h-[calc(100vh-63px)];
   }
 
   .max-h-full-s {
-    @apply max-h-[calc(100vh-73px)];
+    @apply max-h-[calc(100vh-63px)];
   }
 
   .min-h-full-s {
-    @apply min-h-[calc(100vh-73px)];
+    @apply min-h-[calc(100vh-63px)];
   }
   .fill-available {
     @apply w-[-webkit-fill-available] w-[-moz-available];

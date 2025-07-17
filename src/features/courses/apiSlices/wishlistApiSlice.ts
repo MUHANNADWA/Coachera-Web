@@ -1,5 +1,5 @@
-import { WISHLIST_URL } from "../../constants/constants";
-import { apiSlice } from "../../shared/slices/apiSlice";
+import { WISHLIST_URL } from "../../../constants/constants";
+import { apiSlice } from "../../../shared/slices/apiSlice";
 
 export const wishlistApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -12,7 +12,6 @@ export const wishlistApiSlice = apiSlice.injectEndpoints({
       query: (courseId: number) => ({
         url: `${WISHLIST_URL}/${courseId}/student`,
         method: "POST",
-        body: {},
       }),
       invalidatesTags: ["Wishlist"],
     }),

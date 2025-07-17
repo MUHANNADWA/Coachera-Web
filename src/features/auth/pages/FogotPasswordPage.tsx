@@ -1,4 +1,4 @@
-import { IconMail } from "@tabler/icons-react";
+import { EnvelopeIcon } from "@heroicons/react/24/outline";
 import { Button } from "../../../shared/components/Button";
 import Input from "../../../shared/components/Input";
 import { useForgotPassword } from "../hooks/useForgotPassword";
@@ -21,7 +21,7 @@ export default function ForgotPasswordPage() {
           placeholder="johndoe@example.com"
           required
           onChange={(e) => setEmail(e.target.value)}
-          prefixIcon={IconMail}
+          prefixIcon={EnvelopeIcon}
           className="mt-1 block w-full"
         />
         <Button full variant="primary" isLoading={isLoading}>

@@ -1,5 +1,5 @@
-import { REVIEWS_URL } from "../../constants/constants";
-import { apiSlice } from "../../shared/slices/apiSlice";
+import { REVIEWS_URL } from "../../../constants/constants";
+import { apiSlice } from "../../../shared/slices/apiSlice";
 
 export const reviewsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({

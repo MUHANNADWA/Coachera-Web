@@ -1,15 +1,20 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import Sidebar from "../../../shared/components/Sidebar";
 import Input from "../../../shared/components/Input";
-import Select from "../../../shared/components/Select";
+import Dropdown from "../../../shared/components/Dropdown";
 import {
   ENTITY_TYPES,
   SORT_DIRECTION_FIELDS,
   SORT_FIELDS,
 } from "../utils/Utils";
 import SidebarHeader from "./SidebarHeader";
+import {
+  ArrowPathIcon,
+  AdjustmentsHorizontalIcon,
+} from "@heroicons/react/24/outline";
+import { Button } from "../../../shared/components/Button";
 
-interface CoursesSidebarProps {
+interface FiltersSidebarProps {
   setPage: React.Dispatch<React.SetStateAction<number>>;
   size: number;
   setSize: React.Dispatch<React.SetStateAction<number>>;
@@ -19,73 +24,223 @@ interface CoursesSidebarProps {
   setSortDirection: React.Dispatch<React.SetStateAction<"asc" | "desc">>;
   entityType?: string;
   setEntityType?: React.Dispatch<React.SetStateAction<string>>;
+  onReset?: () => void;
+  className?: string;
 }
 
-export default function FiltersSidebar(props: CoursesSidebarProps) {
+export default function FiltersSidebar({
+  setPage,
+  size,
+  setSize,
+  sortBy,
+  setSortBy,
+  sortDirection,
+  setSortDirection,
+  entityType,
+  setEntityType,
+  onReset,
+  className = "",
+}: FiltersSidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
-  const toggleCollapse = () => setCollapsed((prev) => !prev);
+  const [isDirty, setIsDirty] = useState(false);
+
+  const toggleCollapse = useCallback(() => {
+    setCollapsed((prev) => !prev);
+  }, []);
+
+  const handleSizeChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newSize = Number(e.target.value);
+      if (newSize >= 5 && newSize <= 100) {
+        setSize(newSize);
+        setPage(0);
+        setIsDirty(true);
+      }
+    },
+    [setSize, setPage]
+  );
+
+  const handleReset = useCallback(() => {
+    setSize(10);
+    setSortBy("createdAt");
+    setSortDirection("desc");
+    if (setEntityType) {
+      setEntityType("courses");
+    }
+    setPage(0);
+    setIsDirty(false);
+    onReset?.();
+  }, [setSize, setSortBy, setSortDirection, setEntityType, setPage, onReset]);
+
+  const hasActiveFilters =
+    isDirty ||
+    size !== 10 ||
+    sortBy !== "createdAt" ||
+    sortDirection !== "desc" ||
+    entityType !== "courses";
 
   return (
     <Sidebar
       className={
         collapsed
-          ? "w-12 max-sm:bg-transparent max-sm:h-15"
-          : "w-70 max-sm:pr-8 max-sm:w-screen"
+          ? `max-sm:h-15! max-sm:bg-transparent w-14 ${className}`
+          : `w-70 ${className}`
       }>
       <SidebarHeader
         label="Filters"
         collapsed={collapsed}
         toggleCollapse={toggleCollapse}
       />
-      {/* Course Content */}
       {!collapsed && (
-        <>
-          <Input
-            label="Result Per Page"
-            inputMode="numeric"
-            type="number"
-            value={props.size}
-            min={5}
-            max={100}
-            step={5}
-            onChange={(e) => {
-              const newSize = Number(e.target.value);
-              if (newSize >= 1 && newSize <= 100) {
-                props.setSize(newSize);
-                props.setPage(0);
-              }
-            }}
-          />
-
-          <Select
-            label="Sort By"
-            value={props.sortBy}
-            options={SORT_FIELDS}
-            onChange={(e) => {
-              props.setSortBy(e.target.value);
-              props.setPage(0);
-            }}></Select>
-
-          <Select
-            label="Sort Direction"
-            value={props.sortDirection}
-            options={SORT_DIRECTION_FIELDS}
-            onChange={(e) => {
-              props.setSortDirection(e.target.value as "asc" | "desc");
-              props.setPage(0);
-            }}></Select>
-
-          {props.entityType && (
-            <Select
-              label="Type"
-              value={props.entityType}
-              options={ENTITY_TYPES}
-              onChange={(e) => {
-                props.setEntityType!(e.target.value);
-                props.setPage(0);
-              }}></Select>
+        <div className="space-y-8">
+          {/* Active Filters Chips */}
+          {hasActiveFilters && (
+            <div className="flex flex-wrap gap-2 mb-2">
+              {size !== 10 && (
+                <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs flex items-center gap-1">
+                  {size} per page
+                  <button
+                    onClick={() => {
+                      setSize(10);
+                      setIsDirty(true);
+                    }}
+                    className="ml-1 text-primary hover:text-red-500">
+                    ×
+                  </button>
+                </span>
+              )}
+              {sortBy !== "createdAt" && (
+                <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs flex items-center gap-1">
+                  Sort: {sortBy}
+                  <button
+                    onClick={() => {
+                      setSortBy("createdAt");
+                      setIsDirty(true);
+                    }}
+                    className="ml-1 text-primary hover:text-red-500">
+                    ×
+                  </button>
+                </span>
+              )}
+              {sortDirection !== "desc" && (
+                <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs flex items-center gap-1">
+                  {sortDirection}
+                  <button
+                    onClick={() => {
+                      setSortDirection("desc");
+                      setIsDirty(true);
+                    }}
+                    className="ml-1 text-primary hover:text-red-500">
+                    ×
+                  </button>
+                </span>
+              )}
+              {entityType && entityType !== "courses" && (
+                <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs flex items-center gap-1">
+                  {entityType}
+                  <button
+                    onClick={() => {
+                      setEntityType && setEntityType("courses");
+                      setIsDirty(true);
+                    }}
+                    className="ml-1 text-primary hover:text-red-500">
+                    ×
+                  </button>
+                </span>
+              )}
+            </div>
           )}
-        </>
+
+          {/* Filters Form */}
+          <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+            <div>
+              <Input
+                label="Results Per Page"
+                inputMode="numeric"
+                type="number"
+                value={size}
+                min={5}
+                max={100}
+                step={5}
+                onChange={handleSizeChange}
+                className="w-full"
+                aria-describedby="size-help"
+              />
+              <p id="size-help" className="text-xs text-gray-400 mt-1">
+                Choose between 5 and 100 results per page
+              </p>
+            </div>
+            <div>
+              <Dropdown
+                label="Sort By"
+                value={sortBy}
+                options={SORT_FIELDS}
+                onChange={(val) => {
+                  setSortBy(val);
+                  setPage(0);
+                  setIsDirty(true);
+                }}
+                className="w-full"
+              />
+            </div>
+            <div>
+              <Dropdown
+                label="Sort Direction"
+                value={sortDirection}
+                options={SORT_DIRECTION_FIELDS}
+                onChange={(val) => {
+                  setSortDirection(val as "asc" | "desc");
+                  setPage(0);
+                  setIsDirty(true);
+                }}
+                className="w-full"
+              />
+            </div>
+            {entityType && setEntityType && (
+              <div>
+                <Dropdown
+                  label="Content Type"
+                  value={entityType}
+                  options={ENTITY_TYPES}
+                  onChange={(val) => {
+                    setEntityType(val);
+                    setPage(0);
+                    setIsDirty(true);
+                  }}
+                  className="w-full"
+                />
+              </div>
+            )}
+          </form>
+
+          {/* Action Buttons */}
+          <div className="flex gap-2 pt-4 border-t border-gray-100">
+            {hasActiveFilters && (
+              <Button type="button" onClick={handleReset} variant="secondary">
+                <ArrowPathIcon className="w-4 h-4" />
+                Reset
+              </Button>
+            )}
+            <Button type="button" onClick={() => setPage(0)} variant="primary">
+              <AdjustmentsHorizontalIcon className="w-4 h-4" />
+              Apply
+            </Button>
+          </div>
+
+          {/* Quick Stats */}
+          <div className="pt-4 border-t border-gray-100">
+            <div className="text-xs text-gray-500 space-y-1">
+              <p>Current settings:</p>
+              <ul className="space-y-0.5 ml-2">
+                <li>• {size} results per page</li>
+                <li>
+                  • Sorted by {sortBy} ({sortDirection})
+                </li>
+                {entityType && <li>• Type: {entityType}</li>}
+              </ul>
+            </div>
+          </div>
+        </div>
       )}
     </Sidebar>
   );

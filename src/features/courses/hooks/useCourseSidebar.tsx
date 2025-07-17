@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useAppHook } from "../../../shared/hooks/useAppHook";
-import { toggleCourseSidebar } from "../courseSidebarSlice";
+import { toggleCourseSidebar } from "../slices/courseSidebarSlice";
 import { CurrentMaterial } from "../types";
 
 export default function useCourseSidebar(currentMaterial: CurrentMaterial) {

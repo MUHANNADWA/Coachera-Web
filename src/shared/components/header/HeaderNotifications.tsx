@@ -1,4 +1,4 @@
-import { IconBell } from "@tabler/icons-react";
+import { BellIcon } from "@heroicons/react/24/outline";
 import { Button } from "../Button";
 
 export default function HeaderNotifications() {
@@ -6,7 +6,7 @@ export default function HeaderNotifications() {
     <div className="relative max-md:hidden group inline-block text-left">
       {/* Trigger */}
       <Button>
-        <IconBell className="px-2 w-8 h-8" />
+        <BellIcon className="px-2 w-8 h-8" />
       </Button>
 
       {/* Dropdown */}

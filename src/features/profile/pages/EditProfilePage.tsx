@@ -4,15 +4,15 @@ import { useState } from "react";
 import { Button } from "../../../shared/components/Button";
 import { PROFILE_IMAGE } from "../../../constants/constants";
 import {
-  IconBell,
-  IconInfoCircle,
-  IconLock,
-  IconOutbound,
-  IconPhoto,
-  IconSettings,
-  IconUserMinus,
-  IconWallet,
-} from "@tabler/icons-react";
+  BellIcon,
+  InformationCircleIcon,
+  LockClosedIcon,
+  ArrowTopRightOnSquareIcon,
+  PhotoIcon,
+  Cog6ToothIcon,
+  UserMinusIcon,
+  WalletIcon,
+} from "@heroicons/react/24/outline";
 import Input from "../../../shared/components/Input";
 
 export default function EditProfilePage() {
@@ -42,17 +42,25 @@ export default function EditProfilePage() {
           {[
             {
               label: "View public profile",
-              icon: IconOutbound,
+              icon: ArrowTopRightOnSquareIcon,
               action: () => {},
             },
-            { label: "Information", icon: IconInfoCircle, action: () => {} },
-            { label: "Photo", icon: IconPhoto, action: () => {} },
-            { label: "Account Settings", icon: IconSettings, action: () => {} },
-            { label: "Payment methods", icon: IconWallet, action: () => {} },
-            { label: "Privacy", icon: IconLock, action: () => {} },
+            {
+              label: "Information",
+              icon: InformationCircleIcon,
+              action: () => {},
+            },
+            { label: "Photo", icon: PhotoIcon, action: () => {} },
+            {
+              label: "Account Settings",
+              icon: Cog6ToothIcon,
+              action: () => {},
+            },
+            { label: "Payment methods", icon: WalletIcon, action: () => {} },
+            { label: "Privacy", icon: LockClosedIcon, action: () => {} },
             {
               label: "Notification Preferences",
-              icon: IconBell,
+              icon: BellIcon,
               action: () => {},
             },
           ].map(({ label, icon: Icon, action }) => (
@@ -70,8 +78,8 @@ export default function EditProfilePage() {
             full
             key="Close account"
             onClick={() => {}}
-            className="group flex items-center justify-start gap-2 px-3 py-2 text-red-600 hover:bg-red-50">
-            <IconUserMinus className="h-4 w-4 text-red-400 group-hover:text-red-600" />
+            className="group flex items-center justify-start gap-2 px-3 py-2 text-danger hover:bg-red-50">
+            <UserMinusIcon className="h-4 w-4 text-red-400 group-hover:text-danger" />
             Close account
           </Button>
         </nav>

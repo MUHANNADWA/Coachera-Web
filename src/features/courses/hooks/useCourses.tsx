@@ -1,6 +1,6 @@
 import { Course } from "../../../shared/types/types";
 import { useState } from "react";
-import { useGetCoursesQuery } from "../coursesApiSlice";
+import { useGetCoursesQuery } from "../apiSlices/coursesApiSlice";
 
 export default function useCourses() {
   const [page, setPage] = useState(0);

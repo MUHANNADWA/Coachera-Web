@@ -10,7 +10,14 @@ import {
   ArrowDownTrayIcon,
   AcademicCapIcon,
 } from "@heroicons/react/24/outline";
-import { useGetCourseDetailsQuery } from "../coursesApiSlice";
+import {
+  useEnrollCourseMutation,
+  useGetCourseDetailsQuery,
+} from "../apiSlices/coursesApiSlice";
+import {
+  useAddToWishlistMutation,
+  useRemoveFromWishlistMutation,
+} from "../apiSlices/wishlistApiSlice";
 import { Course, Review as ReviewType } from "../../../shared/types/types";
 import Loader from "../../../shared/components/Loader";
 import Meta from "../../../shared/components/Meta";
@@ -19,11 +26,20 @@ import { skills } from "../../../shared/data/sampleData";
 import { CourseModules } from "../components/CourseModules";
 import { placeholderImage } from "../utils/Utils";
 import Review from "../components/Review";
-import { useGetCourseReviewsQuery } from "../reviewsApiSlice";
+import { useGetCourseReviewsQuery } from "../apiSlices/reviewsApiSlice";
 import { Button } from "../../../shared/components/Button";
+import toastPromise from "../../../utils/toast";
+import { useAppHook } from "../../../shared/hooks/useAppHook";
+import {
+  addToWishlistSlice,
+  removeFromWishlistSlice,
+} from "../slices/wishlistSlice";
+import { LEARN_URL } from "../../../constants/constants";
 
 export default function CourseDetailsPage() {
   const { id } = useParams();
+
+  const { wishlistIds, enrolledIds, dispatch, navigate } = useAppHook();
 
   const { data } = useGetCourseDetailsQuery(Number(id));
   const course: Course = data?.data;
@@ -31,7 +47,44 @@ export default function CourseDetailsPage() {
   const { data: reviewsData } = useGetCourseReviewsQuery(Number(id));
   const reviews: ReviewType[] = reviewsData?.data;
 
-  if (!course) return <Loader center />;
+  const [enrollCourse] = useEnrollCourseMutation();
+  const [removeFromWishlist] = useRemoveFromWishlistMutation();
+  const [addToWishlist] = useAddToWishlistMutation();
+
+  const handleEnrollment = async () => {
+    await toastPromise(enrollCourse(Number(id)), {
+      loadingMessage: "Enrolling in course...",
+      successMessage: "Enrolled!",
+      errorMessage: "Failed to enroll",
+    });
+  };
+
+  const handleToggleWishlist = async () => {
+    const promise = isInWishlist
+      ? removeFromWishlist(Number(id))
+      : addToWishlist(Number(id));
+
+    toastPromise(promise, {
+      loadingMessage: isInWishlist
+        ? "Removing from favorites..."
+        : "Adding to favorites...",
+      successMessage: isInWishlist
+        ? "Removed from favorites."
+        : "Added to favorites!",
+      onSuccess: () => {
+        if (isInWishlist) {
+          dispatch(removeFromWishlistSlice(Number(id)));
+        } else {
+          dispatch(addToWishlistSlice(Number(id)));
+        }
+      },
+    });
+  };
+
+  const isEnrolled = enrolledIds.includes(Number(id));
+  const isInWishlist = wishlistIds.includes(Number(id));
+
+  if (!course) return <Loader logo />;
 
   return (
     <div className="page">
@@ -83,7 +136,7 @@ export default function CourseDetailsPage() {
           <div className="lg:w-2/3">
             {/* About Section */}
             <section className="consect p-8 mb-8">
-              <h2 className="text-2xl font-bold mb-6 text-gray-900">
+              <h2 className="text-2xl font-bold mb-6 text-primary-dark">
                 About This Course
               </h2>
               <p className="text-gray-700 leading-relaxed text-lg">
@@ -93,7 +146,7 @@ export default function CourseDetailsPage() {
 
             {/* Learning Objectives */}
             <section className="consect p-8 mb-8">
-              <h2 className="text-2xl font-bold mb-6 text-gray-900">
+              <h2 className="text-2xl font-bold mb-6 text-primary-dark">
                 What You'll Learn
               </h2>
               <div className="grid md:grid-cols-2 gap-4">
@@ -134,10 +187,10 @@ export default function CourseDetailsPage() {
 
             {/* Skills Section */}
             <section className="consect p-8 mb-8">
-              <h2 className="text-2xl font-bold mb-6 text-gray-900">
+              <h2 className="text-2xl font-bold mb-6 text-primary-dark">
                 Skills You'll Gain
               </h2>
-              <Skills skills={skills} />
+              <Skills skills={skills} showCount variant="detailed" />
             </section>
 
             {/* Course Modules */}
@@ -146,7 +199,7 @@ export default function CourseDetailsPage() {
             {/* Reviews Section */}
             <section className="consect p-8">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">
+                <h2 className="text-2xl font-bold text-primary-dark">
                   Student Reviews
                 </h2>
                 <div className="flex items-center space-x-2">
@@ -190,7 +243,7 @@ export default function CourseDetailsPage() {
                   <div>
                     <span className="text-3xl font-bold">${course.price}</span>
                     <span className="text-blue-200 ml-2 line-through">
-                      $199
+                      ${(course.price * 1.55).toFixed(2)}
                     </span>
                   </div>
                   <div className="flex items-center bg-yellow-400 text-yellow-900 px-3 py-1 rounded-full text-sm font-semibold">
@@ -203,14 +256,19 @@ export default function CourseDetailsPage() {
                   <Button
                     full
                     variant="primaryInverted"
-                    className="bg-white text-primary hover:bg-gray-100 font-bold py-3 text-lg">
-                    Enroll Now
+                    onClick={
+                      isEnrolled
+                        ? () => navigate(`${LEARN_URL}/${id}/1`)
+                        : handleEnrollment
+                    }>
+                    {isEnrolled ? "Go To Course" : "Enroll Now"}
                   </Button>
+
                   <Button
+                    onClick={handleToggleWishlist}
                     full
-                    variant="secondary"
-                    className="border-white text-white hover:bg-white/10 font-semibold py-3">
-                    Add to Wishlist
+                    variant="secondaryInverted">
+                    {isInWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
                   </Button>
                 </div>
 
@@ -223,16 +281,16 @@ export default function CourseDetailsPage() {
 
               {/* Course Includes */}
               <section className="consect p-6">
-                <h3 className="font-bold text-xl mb-4 text-gray-900">
+                <h3 className="font-bold text-xl mb-4 text-primary-dark">
                   This Course Includes:
                 </h3>
                 <div className="space-y-4">
                   <div className="flex items-center space-x-3">
-                    <div className="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <div className="flex-shrink-0 w-10 h-10 bg-primary-light rounded-lg flex items-center justify-center">
                       <PlayIcon className="h-5 w-5 text-primary" />
                     </div>
                     <div>
-                      <p className="font-medium text-gray-900">
+                      <p className="font-medium text-primary-dark">
                         10 hours on-demand video
                       </p>
                       <p className="text-sm text-gray-500">
@@ -241,22 +299,24 @@ export default function CourseDetailsPage() {
                     </div>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <div className="flex-shrink-0 w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                      <DocumentTextIcon className="h-5 w-5 text-green-600" />
+                    <div className="flex-shrink-0 w-10 h-10 bg-primary-light rounded-lg flex items-center justify-center">
+                      <DocumentTextIcon className="h-5 w-5 text-primary" />
                     </div>
                     <div>
-                      <p className="font-medium text-gray-900">5 articles</p>
+                      <p className="font-medium text-primary-dark">
+                        5 articles
+                      </p>
                       <p className="text-sm text-gray-500">
                         Supplementary materials
                       </p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <div className="flex-shrink-0 w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                      <ArrowDownTrayIcon className="h-5 w-5 text-purple-600" />
+                    <div className="flex-shrink-0 w-10 h-10 bg-primary-light rounded-lg flex items-center justify-center">
+                      <ArrowDownTrayIcon className="h-5 w-5 text-primary" />
                     </div>
                     <div>
-                      <p className="font-medium text-gray-900">
+                      <p className="font-medium text-primary-dark">
                         Downloadable resources
                       </p>
                       <p className="text-sm text-gray-500">
@@ -265,11 +325,11 @@ export default function CourseDetailsPage() {
                     </div>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <div className="flex-shrink-0 w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
-                      <AcademicCapIcon className="h-5 w-5 text-yellow-600" />
+                    <div className="flex-shrink-0 w-10 h-10 bg-primary-light rounded-lg flex items-center justify-center">
+                      <AcademicCapIcon className="h-5 w-5 text-primary" />
                     </div>
                     <div>
-                      <p className="font-medium text-gray-900">
+                      <p className="font-medium text-primary-dark">
                         Certificate of completion
                       </p>
                       <p className="text-sm text-gray-500">Share on LinkedIn</p>
