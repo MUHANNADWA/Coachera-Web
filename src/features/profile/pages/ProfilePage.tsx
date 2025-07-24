@@ -1,17 +1,13 @@
 import { useAppHook } from "../../../shared/hooks/useAppHook";
 import { PROFILE_IMAGE } from "../../../constants/constants";
 import CourseCard from "../../courses/components/courseCard/CourseCard";
-import {
-  useGetCourseDetailsQuery,
-  useGetEnrolledCoursesQuery,
-} from "../../courses/apiSlices/coursesApiSlice";
+import { useGetEnrolledCoursesQuery } from "../../courses/apiSlices/coursesApiSlice";
 import { useGetWishlistQuery } from "../../courses/apiSlices/wishlistApiSlice";
 import { Course } from "../../../shared/types/types";
-import { Button } from "../../../shared/components/Button";
+import { Button } from "../../../shared/components/form/Button";
 import Skeleton from "react-loading-skeleton";
 import { useEffect, useState } from "react";
 import { coursesApiSlice } from "../../courses/apiSlices/coursesApiSlice";
-import { useDispatch } from "react-redux";
 
 function EnrolledCourseCard({
   course,
@@ -21,7 +17,7 @@ function EnrolledCourseCard({
   progress?: number;
 }) {
   return (
-    <div className="bg-white rounded-2xl shadow-md p-4 flex hover:shadow-lg transition-shadow">
+    <div className="page flex-1 px-8">
       <img
         src={course.image}
         alt={course.title}
@@ -114,7 +110,7 @@ export default function ProfilePage() {
             ))}
           </div>
         ) : enrolledError ? (
-          <p className="text-red-500">Failed to load enrolled courses.</p>
+          <p className="text-danger">Failed to load enrolled courses.</p>
         ) : enrolledCourses.length === 0 ? (
           <div className="text-center text-gray-500">
             <img
@@ -147,7 +143,7 @@ export default function ProfilePage() {
             ))}
           </div>
         ) : wishlistError ? (
-          <p className="text-red-500">Failed to load wishlist.</p>
+          <p className="text-danger">Failed to load wishlist.</p>
         ) : favCourses.length === 0 ? (
           <div className="text-center text-gray-500">
             <img
@@ -171,7 +167,7 @@ export default function ProfilePage() {
         <p className="text-primary font-semibold tracking-wide uppercase text-sm mb-2">
           Course Categories
         </p>
-        <h1 className="text-4xl md:text-5xl font-semibold text-gray-900 mb-4">
+        <h1 className="text-4xl md:text-5xl font-semibold mb-4">
           Expand your career opportunities with Learning
         </h1>
         <p className="text-gray-600 text-lg mb-6">

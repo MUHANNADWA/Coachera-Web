@@ -16,7 +16,7 @@ export const renderSearchResults = (results: any[], entityType: string) => {
           <thead>
             <tr>
               {Object.keys(results[0] || {}).map((key) => (
-                <th key={key} className="border px-4 py-2 capitalize">
+                <th key={key} className="border-2 px-4 py-2 capitalize">
                   {key}
                 </th>
               ))}
@@ -26,7 +26,7 @@ export const renderSearchResults = (results: any[], entityType: string) => {
             {results.map((item, index) => (
               <tr key={index} className="border">
                 {Object.values(item).map((value, idx) => (
-                  <td key={idx} className="border px-4 py-2">
+                  <td key={idx} className="border-2 px-4 py-2">
                     {typeof value === "object"
                       ? JSON.stringify(value)
                       : value?.toString() ?? "-"}

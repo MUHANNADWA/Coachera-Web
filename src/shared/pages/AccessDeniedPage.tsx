@@ -1,4 +1,4 @@
-import { Button } from "../components/Button";
+import { Button } from "../components/form/Button";
 import { useAppHook } from "../hooks/useAppHook";
 
 export default function AccessDeniedPage() {

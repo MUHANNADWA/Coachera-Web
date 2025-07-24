@@ -1,16 +1,16 @@
 import { EnvelopeIcon } from "@heroicons/react/24/outline";
-import { Button } from "../../../shared/components/Button";
-import Input from "../../../shared/components/Input";
+import { Button } from "../../../shared/components/form/Button";
+import Input from "../../../shared/components/form/Input";
 import { useForgotPassword } from "../hooks/useForgotPassword";
 
 export default function ForgotPasswordPage() {
   const { email, setEmail, isLoading, handleSubmit } = useForgotPassword();
 
   return (
-    <div className="h-full-s flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="flex items-center justify-center page py-12 px-4 sm:px-6 lg:px-8">
       <form
         onSubmit={handleSubmit}
-        className="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow">
+        className="max-w-md w-full space-y-8 p-8 consect">
         <h2 className="text-2xl font-bold mb-4 text-center">Forgot Password</h2>
         <Input
           label="Email address"

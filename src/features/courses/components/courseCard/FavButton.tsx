@@ -11,7 +11,7 @@ import {
 import Loader from "../../../../shared/components/Loader";
 import { HeartIcon as HeartOutlinedIcon } from "@heroicons/react/24/outline";
 import { HeartIcon as HeartFilledIcon } from "@heroicons/react/16/solid";
-import { Button } from "../../../../shared/components/Button";
+import { Button } from "../../../../shared/components/form/Button";
 
 export const FavButton = ({
   id,

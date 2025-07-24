@@ -3,24 +3,25 @@ import Header from "../shared/components/header/Header";
 import Footer from "../shared/components/Footer";
 import { Toaster } from "react-hot-toast";
 import AutoReturnTop from "../shared/components/AutoReturnTop";
-import ScrollToTop from "../shared/components/scrollToTop";
+import ScrollToTop from "../shared/components/ScrollToTop";
 import { useEffect } from "react";
 import { requestPermission } from "../features/fcm/requestPermission";
 import { listenToForegroundMessages } from "../features/fcm/onForegroundMessage";
-import Loader from "../shared/components/Loader";
-import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline";
 import { useGetWishlistQuery } from "../features/courses/apiSlices/wishlistApiSlice";
 import { useAppHook } from "../shared/hooks/useAppHook";
 import { setWishlist } from "../features/courses/slices/wishlistSlice";
-import {
-  useEnrollCourseMutation,
-  useGetEnrolledCoursesQuery,
-} from "../features/courses/apiSlices/coursesApiSlice";
+import { useGetEnrolledCoursesQuery } from "../features/courses/apiSlices/coursesApiSlice";
 import { setEnrolledCourses } from "../features/courses/slices/enrolledCoursesSlice";
+import HeaderThemeToggle from "../shared/components/header/HeaderThemeToggle";
+import ThemeProvider from "../shared/components/ThemeProvider";
+import { useUtils } from "../features/courses/utils/useUtils";
 
 function AppContent() {
+  const { toastOptions } = useUtils();
+
   return (
     <>
+      <ThemeProvider />
       <AutoReturnTop />
       <div className="flex min-h-screen flex-col relative">
         <Header />
@@ -29,30 +30,9 @@ function AppContent() {
           <Outlet />
         </main>
 
+        <HeaderThemeToggle />
         <ScrollToTop />
-        <Toaster
-          toastOptions={{
-            success: {
-              icon: <CheckCircleIcon className="text-success h-12 w-12" />,
-              className: "border-2 border-success",
-            },
-            error: {
-              icon: <XCircleIcon className="text-danger h-12 w-12" />,
-              className: "border-2 border-danger",
-            },
-            loading: {
-              icon: <Loader className="text-primary" />,
-              className: "border-2 border-primary",
-            },
-            style: {
-              borderRadius: "15px",
-              padding: "10px",
-              fontSize: "16px",
-              boxShadow: "none",
-            },
-          }}
-          containerClassName="mt-20"
-        />
+        <Toaster toastOptions={toastOptions} containerClassName="mt-20" />
         <Footer />
       </div>
     </>
@@ -60,19 +40,18 @@ function AppContent() {
 }
 
 export default function App() {
-  const { dispatch } = useAppHook();
+  const { user, dispatch } = useAppHook();
 
   const { data: wishlist, isSuccess: wishlistSuccess } = useGetWishlistQuery(
-    {}
+    {},
+    { skip: !user }
   );
-
   const { data: enrolled, isSuccess: enrolledSuccess } =
-    useGetEnrolledCoursesQuery({});
+    useGetEnrolledCoursesQuery({}, { skip: !user });
 
   useEffect(() => {
     requestPermission().then((token) => {
       if (token) {
-        // 🔁 Send this token to backend
       }
     });
     listenToForegroundMessages();

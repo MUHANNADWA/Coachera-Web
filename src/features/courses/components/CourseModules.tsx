@@ -25,7 +25,7 @@ export function CourseModules({ course }: CourseModulesProps) {
   return (
     <section className="consect p-8 mb-8 space-y-8">
       <header className="mb-4">
-        <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+        <h2 className="text-2xl font-bold flex items-center gap-2">
           <RectangleStackIcon className="w-6 h-6 text-primary" />
           Course Content
         </h2>
@@ -77,7 +77,7 @@ function SummaryItem({ icon: Icon, label, value }: SummaryItemProps) {
   return (
     <div className="consect flex items-center gap-2 px-3 py-2">
       <Icon className="h-5 w-5 text-primary" />
-      <span className="font-semibold text-gray-900">{value}</span>
+      <span className="font-semibold">{value}</span>
       <span className="text-gray-500">{label}</span>
     </div>
   );

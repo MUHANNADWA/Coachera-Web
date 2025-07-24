@@ -12,7 +12,7 @@ export default function CategoriesPage() {
 //   const iconComponentName = kebabToPascal(iconName); // e.g. "hand-love-you" → "IconHandLoveYou"
 //   const Icon = (TablerIcons as any)[iconComponentName];
 
-//   if (!Icon) return <span className="text-red-500">Invalid icon</span>;
+//   if (!Icon) return <span className="text-danger">Invalid icon</span>;
 
 //   return <Icon size={24} />;
 // }

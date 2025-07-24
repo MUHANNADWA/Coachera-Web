@@ -18,7 +18,7 @@ const CategoriesSection: React.FC = () => {
             className="text-4xl font-bold leading-tight mt-2 mb-4">
             Find Your Next Passion
           </h2>
-          <p className="text-gray-600 max-w-xl mx-auto">
+          <p className="text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
             Courses for all interests and skill levels.
           </p>
         </div>

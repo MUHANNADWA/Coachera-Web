@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import Input from "./Input";
+import Input from "./form/Input";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { useAppHook } from "../hooks/useAppHook";
 
@@ -40,7 +40,7 @@ export default function SearchBar({ className }: { className?: string }) {
           prefixIcon={MagnifyingGlassIcon}
           className={className}
           suffixIcon={
-            <kbd className="h-5 w-5 px-2 py-1.5 text-xs text-gray-400 bg-gray-100 rounded-2xl hidden sm:inline">
+            <kbd className="h-5 w-5 px-2 py-1.5 text-xs text-gray-400 bg-gray-100 dark:bg-gray-800 rounded-2xl hidden sm:inline">
               /
             </kbd>
           }

@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom";
+import { Button } from "../../../shared/components/form/Button";
+import { useAppHook } from "../../../shared/hooks/useAppHook";
 
 interface BreadcrumbItem {
   label: string;
@@ -10,6 +12,8 @@ interface BreadcrumbProps {
 }
 
 export default function Breadcrumb({ items }: BreadcrumbProps) {
+  const { navigate } = useAppHook();
+
   return (
     <div className="px-3 py-3 hidden lg:block">
       <nav className="flex" aria-label="Breadcrumb">
@@ -18,12 +22,12 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
             <li key={index}>
               <div className="flex items-center">
                 {index > 0 && ">"}
-                <Link
-                  to={item.path ?? "#"}
-                  className="pl-2 text-sm font-medium min-w-8 max-w-32 truncate hover:text-gray-700">
+                <Button
+                  onClick={() => navigate(item.path ?? "#")}
+                  className="ml-2 min-w-8 max-w-40 truncate hover:text-primary hover:underline hover:bg-transparent!">
                   {" "}
                   {item.label}{" "}
-                </Link>
+                </Button>
               </div>
             </li>
           ))}

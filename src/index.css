@@ -6,44 +6,50 @@
   --color-primary-light: #ecf1f3;
   --color-primary: #2ec4b6;
   --color-primary-dark: #1a302d;
+  --color-primary-darkest: #051716;
+  --color-dark: #092724;
   --color-secondary: #06756a;
   --color-danger: #bb0701;
   --color-success: #00b61e;
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+body {
+  @apply h-full font-['poppins',sans-serif] overflow-x-hidden bg-white dark:bg-dark;
 }
 
 @tailwind utilities;
 
 @layer utilities {
   .alternate-sections > section:nth-child(odd) {
-    @apply bg-white;
+    @apply bg-white dark:bg-dark dark:text-white;
   }
 
   .alternate-sections > section:nth-child(even) {
-    @apply bg-fixed bg-center bg-cover text-primary-dark;
+    @apply bg-fixed bg-center bg-cover text-primary-dark dark:text-white;
     background-image: url("https://images.unsplash.com/photo-1723987513101-a1e2f775350b?q=80&w=387&auto=format&fit=crop");
   }
 
   .alternate-sections > section:nth-child(even) > :first-child {
-    @apply bg-primary-lightest/90;
+    @apply bg-primary-lightest/90 dark:bg-dark/90;
   }
-}
-
-body {
-  @apply h-full font-['poppins',sans-serif] overflow-x-hidden;
 }
 
 @layer components {
   .page {
-    @apply min-h-screen bg-primary-light;
+    @apply bg-fixed bg-center bg-cover min-h-[calc(100vh-63px)] text-primary-dark dark:text-white
+    bg-[url("https://images.unsplash.com/photo-1723987513101-a1e2f775350b?q=80&w=387&auto=format&fit=crop")] 
+    before:absolute before:inset-0 before:z-0 before:bg-primary-lightest/90 dark:before:bg-dark/98;
   }
 
   .consect {
-    @apply bg-white rounded-2xl relative border border-gray-300;
+    @apply bg-white dark:bg-dark rounded-2xl relative border-2 border-gray-300 dark:border-primary-dark;
   }
 
   .card {
-    @apply cursor-pointer bg-white rounded-2xl relative 
-    w-full border border-gray-300 overflow-hidden transform transition-all duration-300 
+    @apply cursor-pointer bg-white dark:bg-dark rounded-2xl relative ease-in-out dark:text-white
+    w-full border-2 border-gray-300 dark:border-primary-dark overflow-hidden transform transition-all duration-300 
     hover:bg-primary/2 hover:border-primary hover:shadow-md hover:-translate-y-2 hover:scale-[1.02];
   }
 
@@ -77,6 +83,10 @@ body {
   .gradiant {
     @apply bg-gradient-to-tr from-[#0f766e] via-[#0e9488] to-[#22d3ee] text-white;
   }
+
+  .border-color {
+    @apply border-gray-300 dark:border-primary-dark;
+  }
 }
 
 hr {
@@ -91,8 +101,8 @@ hr {
 
 /* Video player */
 .plyr {
-  @apply h-full rounded-3xl;
+  @apply h-full rounded-2xl;
   video {
-    @apply bg-primary-light;
+    @apply bg-primary-light dark:bg-dark;
   }
 }

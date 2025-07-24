@@ -72,7 +72,7 @@ const Dropdown: React.FC<DropdownProps> = ({
       )}
       <button
         type="button"
-        className={`w-full placeholder:text-gray-400 py-2 rounded-2xl border focus:ring-1 focus:ring-primary focus:border-primary focus:bg-primary-lightest outline-none border-gray-300
+        className={`bg-white w-full placeholder:text-gray-400 py-2 rounded-2xl border-2 focus:ring-1 focus:ring-primary focus:border-primary focus:bg-primary-lightest outline-none border-color
           ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
         onClick={() => !disabled && setOpen((o) => !o)}
         aria-haspopup="listbox"
@@ -81,7 +81,7 @@ const Dropdown: React.FC<DropdownProps> = ({
         <span className={value ? "" : "text-gray-400"}>
           {options.find((opt) => opt.value === value)?.label || placeholder}
         </span>
-        <span className="absolute right-3 top-[44px] -translate-y-1/2 pointer-events-none">
+        <span className="bg-white absolute right-3 top-[44px] -translate-y-1/2 pointer-events-none">
           <svg
             className="w-4 h-4 text-gray-400"
             fill="none"
@@ -98,7 +98,7 @@ const Dropdown: React.FC<DropdownProps> = ({
       </button>
       {open && (
         <div
-          className="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto animate-fade-in"
+          className="absolute z-20! mt-1 w-full bg-white border-2 border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto animate-fade-in"
           tabIndex={-1}
           onKeyDown={handleKeyDown}>
           <input

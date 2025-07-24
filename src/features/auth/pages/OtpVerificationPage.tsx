@@ -1,5 +1,5 @@
-import { Button } from "../../../shared/components/Button";
-import Input from "../../../shared/components/Input";
+import { Button } from "../../../shared/components/form/Button";
+import Input from "../../../shared/components/form/Input";
 import useOtpVerification from "../hooks/useOtpVerification";
 
 export default function OtpVerificationPage() {
@@ -17,13 +17,13 @@ export default function OtpVerificationPage() {
   } = useOtpVerification();
 
   return (
-    <div className="h-full-s flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="page flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <form
         onSubmit={handleSubmit}
-        className="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow text-center">
+        className="max-w-md w-full space-y-8 p-8 consect text-center">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Check your email</h2>
-          <p className="text-gray-600 mt-2">
+          <h2 className="text-2xl font-bold">Check your email</h2>
+          <p className="text-gray-600 dark:text-gray-400 dark:text-gray-400 mt-2">
             Please enter the six-digit verification code we sent to{" "}
             <strong className="text-primary">{email ?? "Your Email"}</strong>
           </p>
@@ -52,7 +52,7 @@ export default function OtpVerificationPage() {
           Confirm
         </Button>
 
-        <div className="text-sm text-gray-500">
+        <div className="text-sm text-gray-500 dark:text-gray-400">
           {!expired ? (
             <>
               Didn’t get the code? Resend in {formatTime(timer.minute)}:
@@ -68,13 +68,6 @@ export default function OtpVerificationPage() {
             </Button>
           )}
         </div>
-
-        <button
-          type="button"
-          onClick={() => window.history.back()}
-          className="text-sm text-gray-600 mt-2 hover:underline">
-          ← back
-        </button>
       </form>
     </div>
   );

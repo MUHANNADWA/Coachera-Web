@@ -2,7 +2,7 @@ import CourseSidebar from "../components/CourseSidebar";
 import Loader from "../../../shared/components/Loader";
 import NotFoundPage from "../../../shared/pages/NotFoundPage";
 import useCoursePlayer from "../hooks/useCoursePlayer";
-import QuizPage from "./QuizPage";
+import QuizPage from "./quiz/QuizPage";
 import ArticlePage from "./ArticlePage";
 import VideoPage from "./VideoPage";
 import CourseHeader from "../components/CourseHeader";
@@ -32,14 +32,14 @@ export default function LearnPage() {
   }
 
   return (
-    <div className="flex">
+    <div className="page flex">
       <CourseSidebar
         module={module}
         currentMaterial={currentMaterial}
         setCurrentMaterial={setCurrentMaterial}
       />
 
-      <main className="page flex-1 px-8">
+      <main className="flex-1 px-8">
         <CourseHeader
           course={course}
           currentMaterial={currentMaterial}

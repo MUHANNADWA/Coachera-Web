@@ -54,7 +54,7 @@ export default function Review({ review }: ReviewProps) {
           </div>
         </div>
       ) : isError || !student ? (
-        <div className="flex items-center space-x-3 p-4 bg-red-50 rounded-xl border border-red-200">
+        <div className="flex items-center space-x-3 p-4 bg-red-50 rounded-xl border-2 border-red-200">
           <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
             <span className="text-danger text-sm font-semibold">!</span>
           </div>
@@ -83,7 +83,7 @@ export default function Review({ review }: ReviewProps) {
               </div>
               <div>
                 <div className="flex items-center space-x-2">
-                  <h4 className="font-semibold text-gray-900">
+                  <h4 className="font-semibold">
                     {student.firstName} {student.lastName}
                   </h4>
                   <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">

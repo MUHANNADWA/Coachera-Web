@@ -13,7 +13,7 @@ const FeaturesSection: React.FC = () => (
             <Icon className="w-8 h-8" aria-hidden="true" />
           </div>
           <h3 className="font-semibold text-lg mb-2">{title}</h3>
-          <p className="text-gray-500 text-sm">{text}</p>
+          <p className="text-gray-400 text-sm">{text}</p>
         </div>
       ))}
     </div>

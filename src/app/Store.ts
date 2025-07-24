@@ -4,6 +4,7 @@ import authSliceReducer from "../features/auth/authSlice";
 import courseSidebarSliceReducer from "../features/courses/slices/courseSidebarSlice";
 import wishlistSliceReducer from "../features/courses/slices/wishlistSlice";
 import enrolledCoursesSliceReducer from "../features/courses/slices/enrolledCoursesSlice";
+import themeReducer from "../shared/slices/themeSlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     courseSidebar: courseSidebarSliceReducer,
     wishlist: wishlistSliceReducer,
     enrolledCourses: enrolledCoursesSliceReducer,
+    theme: themeReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(apiSlice.middleware),

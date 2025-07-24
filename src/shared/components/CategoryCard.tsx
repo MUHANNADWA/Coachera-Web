@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "./Button";
+import { Button } from "./form/Button";
 
 interface CategoryCardProps {
   category: {
@@ -15,7 +15,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, onClick }) => {
   const Icon = category.icon;
   return (
     <Button
-      className="card group relative flex flex-col items-center transition-transform"
+      className="card hover:bg-primary/2! group relative flex flex-col items-center transition-transform"
       onClick={onClick}
       aria-label={`Explore category: ${category.name}`}
       tabIndex={0}
@@ -26,10 +26,10 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, onClick }) => {
         </span>
       </div>
       <div className="flex-1 flex flex-col justify-between p-6 w-full text-left">
-        <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors">
+        <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
           {category.name}
         </h3>
-        <p className="text-gray-600 text-sm mb-4 min-h-[48px]">
+        <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 min-h-[48px]">
           {category.description}
         </p>
         <span className="inline-block mt-auto text-primary font-semibold group-hover:underline group-hover:underline-offset-4 transition-all">

@@ -1,6 +1,6 @@
-import img from "../../assets/1.svg";
+import img from "../../assets/1.png";
 import Meta from "../components/Meta";
-import { Button } from "../components/Button";
+import { Button } from "../components/form/Button";
 import { useAppHook } from "../hooks/useAppHook";
 import FAQAccordion from "../components/Faq";
 import ContactUsSection from "../components/ContactUsSection";
@@ -10,7 +10,7 @@ import CategoriesSection from "../components/CategoriesSection";
 import CoursesSection from "../components/CoursesSection";
 
 export default function HomePage() {
-  const { navigate } = useAppHook();
+  const { navigate, user } = useAppHook();
 
   return (
     <div className="alternate-sections">
@@ -18,8 +18,8 @@ export default function HomePage() {
 
       {/* Welcome Section */}
       <section>
-        <div className="py-20 px-6 h-full-s max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-          <div>
+        <div className="py-20 px-6 h-full-s max-w-6xl gap-12 items-center mx-auto flex max-md:text-center ">
+          <div className="flex-1/2">
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
               Unlock Your Potential with{" "}
               <span className="text-primary">Coachera</span>
@@ -28,7 +28,7 @@ export default function HomePage() {
               World-class content, expert mentors, and a global community to
               support your goals.
             </p>
-            <div className="flex gap-4">
+            <div className="flex gap-4 max-md:justify-center">
               <Button
                 variant="primary"
                 onClick={() => navigate("/get-started")}>
@@ -39,11 +39,11 @@ export default function HomePage() {
               </Button>
             </div>
           </div>
-          <div className="flex justify-center">
+          <div className="flex flex-1/2 justify-center max-md:hidden">
             <img
               src={img}
               alt="Learning Illustration"
-              className="w-full max-w-xs md:max-w-sm transition-transform duration-300 ease-in-out hover:scale-[0.98]"
+              className="w-full max-w-lg md:max-w-xl transition-transform duration-300 ease-in-out hover:scale-[0.98]"
             />
           </div>
         </div>
@@ -52,7 +52,7 @@ export default function HomePage() {
       {/* Call to Action Section */}
       <section>
         <div className="relative h-[50vh] bg-fixed bg-center bg-cover flex items-center justify-center">
-          <div className="relative z-10 text-center text-primary-dark">
+          <div className="relative z-10 text-center">
             <h2 className="text-4xl md:text-5xl font-bold">
               Ready to Dive In?
             </h2>
@@ -75,8 +75,14 @@ export default function HomePage() {
       {/* Highlights */}
       <HighlightsSection />
 
-      {/* Featured Courses */}
-      <CoursesSection />
+      {/* Recommended Courses */}
+      {user && <CoursesSection variant="recommended" />}
+
+      {/* Trending Courses */}
+      <CoursesSection variant="trending" />
+
+      {/* Popular Courses */}
+      <CoursesSection variant="popular" />
 
       {/* Categories */}
       <CategoriesSection />

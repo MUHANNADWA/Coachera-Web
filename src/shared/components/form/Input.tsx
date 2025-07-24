@@ -56,7 +56,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             htmlFor={name}
-            className="block text-sm font-medium text-gray-700 mb-1">
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             {label}
           </label>
         )}
@@ -80,10 +80,10 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             onChange={onChange}
             onKeyDown={onKeyDown}
             inputMode={inputMode}
-            className={`peer placeholder:text-gray-400 w-full py-2 rounded-2xl border focus:ring-1 focus:ring-primary focus:border-primary focus:bg-primary-lightest outline-none ${
+            className={`peer placeholder:text-gray-400 w-full py-2 rounded-2xl transition-colors duration-300 border-2 focus:ring-1 focus:ring-primary focus:border-primary focus:bg-primary-lightest dark:focus:bg-primary-darkest outline-none ${
               PrefixIcon ? "pl-10" : "pl-3"
             } ${suffixIcon ? "pr-10" : "pr-3"}
-            } ${error ? "border-red-500" : "border-gray-300"} ${className}`}
+            } ${error ? "border-danger" : "border-color"} ${className}`}
           />
 
           {PrefixIcon && (
@@ -98,7 +98,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         </div>
 
         {error ? (
-          <p className="mt-1 text-xs text-red-500">{error}</p>
+          <p className="mt-1 text-xs text-danger">{error}</p>
         ) : (
           helperText && (
             <p className="mt-1 text-xs text-gray-500">{helperText}</p>

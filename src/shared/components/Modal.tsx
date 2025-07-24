@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { XMarkIcon } from "@heroicons/react/24/solid";
-import { Button } from "./Button";
+import { Button } from "./form/Button";
 
 type ModalVariant = "info" | "confirm" | "success" | "danger";
 

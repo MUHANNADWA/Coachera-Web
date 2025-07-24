@@ -13,7 +13,10 @@ export default function ArticlePage({ material }: ArticlePageProps) {
       <h1 className="consect p-4  text-2xl mb-4 font-semibold">
         {material.title}
       </h1>
-      <p className="consect p-4 ">{article}</p>
+      <p
+        className="consect p-4"
+        dangerouslySetInnerHTML={{ __html: article }}
+      />
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { Button } from "../../../shared/components/Button";
+import { Button } from "../../../shared/components/form/Button";
 import { Course } from "../../../shared/types/types";
 import { CurrentMaterial } from "../types";
 import { getBreadcrumbs } from "../utils/Utils";

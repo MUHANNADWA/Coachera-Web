@@ -1,24 +1,23 @@
 import { useAppHook } from "../../hooks/useAppHook";
-import { Button } from "../Button";
+import { Button } from "../form/Button";
+import HeaderThemeToggle from "./HeaderThemeToggle";
 import { HeaderFavorites } from "./HeaderFavorites";
 import HeaderNotifications from "./HeaderNotifications";
 import { HeaderUserDropdown } from "./HeaderUserDropdown";
 
-type HeaderUserMenuProps = {
-  navigate: (path: string) => void;
-};
-
-export default function HeaderUserMenu({ navigate }: HeaderUserMenuProps) {
-  const { token } = useAppHook();
-  return token ? (
+export default function HeaderUserMenu() {
+  const { user, navigate } = useAppHook();
+  return user ? (
     <>
       <Button className="px-4 py-2">Teach on coachera</Button>
+      <HeaderThemeToggle />
       <HeaderFavorites />
       <HeaderNotifications />
       <HeaderUserDropdown />
     </>
   ) : (
-    <div className="flex gap-2">
+    <div className="flex gap-2 items-center">
+      <HeaderThemeToggle />
       <Button
         onClick={() => navigate("/login")}
         variant="secondary"

@@ -5,8 +5,11 @@ export function useAppHook() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+
   const user = useAppSelector((state) => state.auth.user?.user);
   const token = useAppSelector((state) => state.auth.user?.accessToken);
+  const theme = useAppSelector((state) => state.theme.mode);
+
   const courseSidebarCollapsed = useAppSelector(
     (state) => state.courseSidebar.collapsed
   );
@@ -23,6 +26,7 @@ export function useAppHook() {
     location,
     user,
     token,
+    theme,
     courseSidebarCollapsed,
     wishlistIds,
     enrolledIds,

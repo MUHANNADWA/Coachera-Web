@@ -1,4 +1,4 @@
-import { Button } from "../../../shared/components/Button";
+import { Button } from "../../../shared/components/form/Button";
 
 interface CoursesPaginationProps {
   setPage: React.Dispatch<React.SetStateAction<number>>;

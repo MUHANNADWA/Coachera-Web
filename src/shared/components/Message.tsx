@@ -6,7 +6,7 @@ import {
   XCircleIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import { Button } from "./Button";
+import { Button } from "./form/Button";
 
 type MessageVariant = "info" | "success" | "warning" | "danger" | "dark";
 
@@ -53,7 +53,7 @@ const Message = ({
     info: "text-primary dark:text-blue-900",
     success: "text-green-500 dark:text-green-900",
     warning: "text-yellow-500 dark:text-yellow-900",
-    danger: "text-red-500 dark:text-red-900",
+    danger: "text-danger dark:text-red-900",
     dark: "text-gray-400 dark:text-gray-300",
   };
 
@@ -68,7 +68,7 @@ const Message = ({
 
   return (
     <div
-      className={`relative p-4 mb-4 rounded-2xl border ${variantStyles[variant]} ${className} transition-all duration-200`}
+      className={`relative p-4 mb-4 rounded-2xl border-2 ${variantStyles[variant]} ${className} transition-all duration-200`}
       role="alert">
       <div className="flex items-start">
         <Icon

@@ -33,9 +33,9 @@ export default function Skills({
   const getSkillClasses = () => {
     switch (variant) {
       case "compact":
-        return "inline-flex items-center gap-1.5 px-2 py-1 text-xs font-medium bg-primary/10 text-primary border border-primary/20 rounded-lg hover:bg-primary/20 hover:border-primary/30 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-1";
+        return "inline-flex items-center gap-1.5 px-2 py-1 text-xs font-medium bg-primary/10 text-primary border-2 border-primary/20 rounded-lg hover:bg-primary/20 hover:border-primary/30 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-1";
       case "detailed":
-        return "flex items-center gap-2 px-4 py-3 text-sm font-medium bg-white text-gray-700 border border-gray-200 rounded-xl hover:bg-primary/5 hover:border-primary/30 hover:text-primary transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50";
+        return "flex items-center gap-2 px-4 py-3 text-sm font-medium bg-white text-gray-700 border-2 border-gray-200 rounded-xl hover:bg-primary/5 hover:border-primary/30 hover:text-primary transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50";
       default:
         return "inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium bg-primary text-white rounded-full hover:bg-primary/90 hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-1";
     }

@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import Sidebar from "../../../shared/components/Sidebar";
-import Input from "../../../shared/components/Input";
-import Dropdown from "../../../shared/components/Dropdown";
+import Input from "../../../shared/components/form/Input";
+import Dropdown from "../../../shared/components/form/Dropdown";
 import {
   ENTITY_TYPES,
   SORT_DIRECTION_FIELDS,
@@ -12,7 +12,7 @@ import {
   ArrowPathIcon,
   AdjustmentsHorizontalIcon,
 } from "@heroicons/react/24/outline";
-import { Button } from "../../../shared/components/Button";
+import { Button } from "../../../shared/components/form/Button";
 
 interface FiltersSidebarProps {
   setPage: React.Dispatch<React.SetStateAction<number>>;
@@ -84,7 +84,7 @@ export default function FiltersSidebar({
       className={
         collapsed
           ? `max-sm:h-15! max-sm:bg-transparent w-14 ${className}`
-          : `w-70 ${className}`
+          : `w-70 max-sm:w-full ${className}`
       }>
       <SidebarHeader
         label="Filters"
@@ -104,7 +104,7 @@ export default function FiltersSidebar({
                       setSize(10);
                       setIsDirty(true);
                     }}
-                    className="ml-1 text-primary hover:text-red-500">
+                    className="ml-1 text-primary hover:text-danger">
                     ×
                   </button>
                 </span>
@@ -117,7 +117,7 @@ export default function FiltersSidebar({
                       setSortBy("createdAt");
                       setIsDirty(true);
                     }}
-                    className="ml-1 text-primary hover:text-red-500">
+                    className="ml-1 text-primary hover:text-danger">
                     ×
                   </button>
                 </span>
@@ -130,7 +130,7 @@ export default function FiltersSidebar({
                       setSortDirection("desc");
                       setIsDirty(true);
                     }}
-                    className="ml-1 text-primary hover:text-red-500">
+                    className="ml-1 text-primary hover:text-danger">
                     ×
                   </button>
                 </span>
@@ -143,7 +143,7 @@ export default function FiltersSidebar({
                       setEntityType && setEntityType("courses");
                       setIsDirty(true);
                     }}
-                    className="ml-1 text-primary hover:text-red-500">
+                    className="ml-1 text-primary hover:text-danger">
                     ×
                   </button>
                 </span>

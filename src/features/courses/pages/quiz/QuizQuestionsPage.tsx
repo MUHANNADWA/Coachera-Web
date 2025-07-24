@@ -1,16 +1,20 @@
 import { useState } from "react";
-import { Material } from "../../../shared/types/types";
-import { Button } from "../../../shared/components/Button";
-import Modal from "../../../shared/components/Modal";
-import { useModal } from "../../../shared/hooks/useModal";
-import { useSubmitQuizMutation } from "../apiSlices/quizApiSlice";
-import toastPromise from "../../../utils/toast";
+import { Material } from "../../../../shared/types/types";
+import { Button } from "../../../../shared/components/form/Button";
+import Modal from "../../../../shared/components/Modal";
+import { useModal } from "../../../../shared/hooks/useModal";
+import { useSubmitQuizMutation } from "../../apiSlices/quizApiSlice";
+import toastPromise from "../../../../utils/toast";
 
 interface QuizPageProps {
   material: Material;
+  onSubmit: any;
 }
 
-export default function QuizPage({ material }: QuizPageProps) {
+export default function QuizQuestionsPage({
+  material,
+  onSubmit,
+}: QuizPageProps) {
   const quiz = material.quiz;
 
   const [answers, setAnswers] = useState<{ [questionId: number]: number }>({});
@@ -50,17 +54,19 @@ export default function QuizPage({ material }: QuizPageProps) {
       errorMessage: "Failed to submit quiz",
       onSuccess: () => {
         setSubmitted(true);
+        const result = { score: 7, total: 10 }; // مؤقت
+        onSubmit(result);
       },
     });
   };
 
   return (
-    <div className="p-4">
-      <h1 className="consect p-4 text-2xl mb-4 font-semibold">
+    <div className="p-4 z-40!">
+      <h1 className="consect p-4 text-2xl mb-6 font-semibold">
         {material.title}
       </h1>
 
-      <form className="space-y-12" onSubmit={(e) => e.preventDefault()}>
+      <form className="space-y-3" onSubmit={(e) => e.preventDefault()}>
         {quiz.questions.map((question, qIndex) => {
           const answerOptions = [
             question.answer1,
@@ -77,10 +83,10 @@ export default function QuizPage({ material }: QuizPageProps) {
               {answerOptions.map((answer, idx) => (
                 <label
                   key={idx}
-                  className={`flex items-center gap-3 p-2 border rounded-2xl cursor-pointer transition
+                  className={`flex items-center gap-3 p-2 rounded-2xl cursor-pointer transition-colors duration-100
                     ${
                       answers[question.id] === idx
-                        ? "border-primary bg-primary-lightest"
+                        ? "border-2 border-primary bg-primary-lightest dark:bg-primary-darkest"
                         : "border-gray-200"
                     }`}>
                   <input

@@ -13,7 +13,7 @@ const HighlightsSection: React.FC = () => (
           className="text-4xl font-bold leading-tight mt-2 mb-4">
           Empowering You to Succeed
         </h2>
-        <p className="text-gray-600">
+        <p className="text-gray-600 dark:text-gray-400">
           Upskill, grow, and achieve more — wherever you are.
         </p>
       </div>
@@ -24,7 +24,7 @@ const HighlightsSection: React.FC = () => (
               <Icon className="w-8 h-8 mx-auto" aria-hidden="true" />
             </div>
             <h4 className="font-semibold text-lg mb-2">{title}</h4>
-            <p className="text-sm text-gray-500">{text}</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">{text}</p>
           </div>
         ))}
       </div>

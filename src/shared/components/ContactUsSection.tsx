@@ -1,6 +1,8 @@
 import React, { useState } from "react";
-import Input from "./Input";
-import { Button } from "./Button";
+import Input from "./form/Input";
+import { Button } from "./form/Button";
+import { EnvelopeIcon, UserIcon } from "@heroicons/react/24/outline";
+import Textarea from "./form/Textarea";
 
 const ContactUsSection: React.FC = () => {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
@@ -15,7 +17,6 @@ const ContactUsSection: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
-    // Here you would handle sending the form data to your backend or email service
   };
 
   return (
@@ -32,7 +33,7 @@ const ContactUsSection: React.FC = () => {
                 className="text-4xl md:text-5xl font-extrabold mb-4 text-primary-lg tracking-tight">
                 Contact Us
               </h2>
-              <p className="mb-8 text-lg text-gray-700 font-medium">
+              <p className="mb-8 text-lg text-gray-700 dark:text-gray-300 font-medium">
                 Have questions or feedback? Fill out the form and our team will
                 get back to you soon.
               </p>
@@ -50,6 +51,7 @@ const ContactUsSection: React.FC = () => {
                     name="name"
                     value={form.name}
                     onChange={handleChange}
+                    prefixIcon={UserIcon}
                     required
                     autoComplete="name"
                     placeholder="Your Name"
@@ -60,25 +62,20 @@ const ContactUsSection: React.FC = () => {
                     type="email"
                     value={form.email}
                     onChange={handleChange}
+                    prefixIcon={EnvelopeIcon}
                     required
                     autoComplete="email"
                     placeholder="you@email.com"
                   />
                   <div>
-                    <label
-                      htmlFor="message"
-                      className="block text-sm font-medium text-gray-700 mb-1">
-                      Message <span className="text-red-500">*</span>
-                    </label>
-                    <textarea
-                      id="message"
+                    <Textarea
+                      label="Message"
                       name="message"
                       value={form.message}
                       onChange={handleChange}
                       required
                       rows={5}
                       placeholder="How can we help you?"
-                      className="block w-full rounded-2xl border border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary focus:bg-primary-lightest/40 outline-none p-3 text-base transition resize-none min-h-[120px]"
                     />
                   </div>
                   <Button type="submit" variant="primary" full>

@@ -8,7 +8,7 @@ interface VideoPlayerProps {
 
 export default function VideoPlayer({ src, size }: VideoPlayerProps) {
   return (
-    <div className="w-full h-[400px]">
+    <div className="w-full md:h-[300px] aspect-video">
       <Plyr
         source={{
           type: "video",

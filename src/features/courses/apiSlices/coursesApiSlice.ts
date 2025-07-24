@@ -20,6 +20,45 @@ export const coursesApiSlice = apiSlice.injectEndpoints({
       providesTags: ["Course"],
       keepUnusedDataFor: 5,
     }),
+    getRecommendedCourses: builder.query({
+      query: ({
+        page = 0,
+        size = 10,
+        sortBy = "id",
+        sortDirection = "desc",
+      }) => ({
+        url: `${COURSES_URL}/recommended`,
+        params: { page, size, sortBy, sortDirection },
+      }),
+      providesTags: ["Course"],
+      keepUnusedDataFor: 5,
+    }),
+    getTrendingCourses: builder.query({
+      query: ({
+        page = 0,
+        size = 10,
+        sortBy = "id",
+        sortDirection = "desc",
+      }) => ({
+        url: `${COURSES_URL}/trending`,
+        params: { page, size, sortBy, sortDirection },
+      }),
+      providesTags: ["Course"],
+      keepUnusedDataFor: 5,
+    }),
+    getPopularCourses: builder.query({
+      query: ({
+        page = 0,
+        size = 10,
+        sortBy = "id",
+        sortDirection = "desc",
+      }) => ({
+        url: `${COURSES_URL}/popular`,
+        params: { page, size, sortBy, sortDirection },
+      }),
+      providesTags: ["Course"],
+      keepUnusedDataFor: 5,
+    }),
     getCourseDetails: builder.query({
       query: (courseID) => ({
         url: `${COURSES_URL}/${courseID}`,
@@ -92,6 +131,9 @@ export const coursesApiSlice = apiSlice.injectEndpoints({
 
 export const {
   useGetCoursesQuery,
+  useGetRecommendedCoursesQuery,
+  useGetTrendingCoursesQuery,
+  useGetPopularCoursesQuery,
   useGetCourseDetailsQuery,
   useCreateCourseMutation,
   useUpdateCourseMutation,

@@ -28,8 +28,8 @@ export function useLogin() {
 
   const togglePassword = () => setPasswordVisibility((prev) => !prev);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e?: React.FormEvent) => {
+    e?.preventDefault();
 
     await toastPromise(login(formData).unwrap(), {
       loadingMessage: "Logging in...",

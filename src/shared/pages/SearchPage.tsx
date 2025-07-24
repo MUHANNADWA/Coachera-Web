@@ -32,7 +32,7 @@ export default function SearchPage() {
   const totalPages = data?.data.totalPages || 1;
 
   return (
-    <div className="flex">
+    <div className="page flex">
       <FiltersSidebar
         setPage={setPage}
         size={size}
@@ -45,7 +45,7 @@ export default function SearchPage() {
         setEntityType={setEntityType}
       />
 
-      <main className="flex-1 py-8 ml-8 pr-8">
+      <main className="relative flex-1 py-8 ml-8 pr-8">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold mb-12 text-center">
             Search Results for "{searchTerm}"

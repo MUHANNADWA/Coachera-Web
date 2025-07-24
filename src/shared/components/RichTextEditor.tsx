@@ -1,7 +1,7 @@
 import { Editor } from "@tinymce/tinymce-react";
 import { useRef, useState } from "react";
 import type { Editor as TinyMCEEditor } from "tinymce";
-import { Button } from "./Button";
+import { Button } from "./form/Button";
 
 export default function RichTextEditor() {
   const editorRef = useRef<TinyMCEEditor | null>(null);
@@ -61,7 +61,8 @@ export default function RichTextEditor() {
 
       <h2 className="mt-6 text-lg font-semibold">Preview:</h2>
       <div
-        className="border p-4 mt-2 bg-white rounded-md prose max-w-none"
+        id="tinymce"
+        className="mce-content-body tox-edit-area consect p-4 mt-2 bg-white rounded-md prose max-w-none"
         dangerouslySetInnerHTML={{ __html: content }}
       />
     </div>

@@ -1,6 +1,6 @@
 import { useResetPassword } from "../hooks/useResetPassword";
-import { Button } from "../../../shared/components/Button";
-import Input from "../../../shared/components/Input";
+import { Button } from "../../../shared/components/form/Button";
+import Input from "../../../shared/components/form/Input";
 import {
   EyeSlashIcon,
   EyeIcon,
@@ -19,10 +19,10 @@ export default function ResetPasswordPage() {
   } = useResetPassword();
 
   return (
-    <div className="h-full-s flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="page flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <form
         onSubmit={handleReset}
-        className="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow">
+        className="max-w-md w-full space-y-8 p-8 consect">
         <h2 className="text-2xl font-bold mb-4 text-center">Reset Password</h2>
 
         {/* New Password */}
