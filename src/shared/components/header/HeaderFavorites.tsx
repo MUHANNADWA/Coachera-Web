@@ -13,17 +13,17 @@ export function HeaderFavorites() {
       <div className="dropdown">
         <Button
           onClick={() => {}}
-          className="group flex w-full justify-start px-3 py-2 text-gray-700">
+          className="group flex w-full justify-start px-3 py-2 text-gray-700 dark:text-gray-300">
           Notification 1
         </Button>
         <Button
           onClick={() => {}}
-          className="group flex w-full justify-start px-3 py-2 text-gray-700">
+          className="group flex w-full justify-start px-3 py-2 text-gray-700 dark:text-gray-300">
           Notification 2
         </Button>
         <Button
           onClick={() => {}}
-          className="group flex w-full justify-start px-3 py-2 text-gray-700">
+          className="group flex w-full justify-start px-3 py-2 text-gray-700 dark:text-gray-300">
           Notification 3
         </Button>
       </div>

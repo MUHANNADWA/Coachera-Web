@@ -87,7 +87,7 @@ export function HeaderUserDropdown() {
         </Button>
 
         {/* Dropdown */}
-        <div className="consect invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-200 absolute right-0 z-50 mt-2 w-64 p-1">
+        <div className="dropdown">
           {userDropdown.map(({ label, icon: Icon, action }) => (
             <Button
               key={label}

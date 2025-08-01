@@ -17,11 +17,11 @@ export default function QuizIntroPage({
   const numQuestions = material.quiz?.questions?.length || 0;
 
   return (
-    <div className="relative flex items-center justify-center min-h-[60vh] consect p-8">
+    <div className="relative flex items-center justify-center h-[60vh] consect p-8">
       <section className="w-full max-w-md text-center space-y-6">
         <div className="flex flex-col items-center gap-2">
           <QuestionMarkCircleIcon
-            className="text-5xl text-primary mb-2"
+            className="h-50 text-primary mb-2"
             aria-hidden="true"
           />
           <h2 className="text-2xl font-bold mb-1">{material.title}</h2>

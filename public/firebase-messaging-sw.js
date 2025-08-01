@@ -1,5 +1,3 @@
-import {logo} from "../src/assets/logo.svg"
-
 importScripts(
   "https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"
 );
@@ -24,6 +22,6 @@ messaging.onBackgroundMessage(function (payload) {
   // Customize notification
   self.registration.showNotification(payload.notification.title, {
     body: payload.notification.body,
-    icon: {logo},
+    icon: "../src/assets/logo.svg",
   });
 });

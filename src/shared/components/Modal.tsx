@@ -49,7 +49,7 @@ export default function Modal({
   const showActions = variant === "confirm";
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-[1px]">
       <div className="consect border-primary rounded-2xl w-full max-w-md mx-4 relative p-6">
         {/* Close button */}
         <button
@@ -66,7 +66,7 @@ export default function Modal({
         )}
 
         {/* Message */}
-        <p className="pr-4 text-gray-700">{message}</p>
+        <p className="pr-4 text-gray-700 dark:text-gray-300">{message}</p>
 
         {/* Confirm buttons */}
         {showActions ? (

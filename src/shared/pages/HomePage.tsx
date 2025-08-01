@@ -24,7 +24,7 @@ export default function HomePage() {
               Unlock Your Potential with{" "}
               <span className="text-primary">Coachera</span>
             </h2>
-            <p className="text-lg text-gray-700 mb-6">
+            <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">
               World-class content, expert mentors, and a global community to
               support your goals.
             </p>
