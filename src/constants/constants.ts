@@ -19,5 +19,6 @@ export const SEARCH_URL = "/search";
 export const ADMIN_URL = "/admin";
 export const COACHES_URL = "/coaches";
 export const STUDENTS_URL = "/students";
+export const NOTIFICATIONS_URL = "/notifications";
 export const PROFILE_IMAGE = "/src/assets/profile.png";
 export const WISHLIST_URL = "/favorites";

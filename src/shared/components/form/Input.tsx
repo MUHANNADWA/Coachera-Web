@@ -56,13 +56,15 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             htmlFor={name}
-            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+          >
             {label}
           </label>
         )}
 
         <div className="relative">
           <input
+            onPointerDown={(e) => e.stopPropagation()}
             id={name}
             name={name}
             type={type}

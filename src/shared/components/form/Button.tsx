@@ -46,7 +46,9 @@ export function Button({
     <button
       {...props}
       className={`${baseClasses} ${variantClasses[variant]} ${className}`}
-      disabled={isLoading || props.disabled}>
+      disabled={isLoading || props.disabled}
+      onPointerDown={(e) => e.preventDefault()}
+    >
       {isLoading ? "Loading..." : children}
     </button>
   );

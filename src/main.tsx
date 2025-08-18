@@ -30,6 +30,8 @@ import SearchPage from "./shared/pages/SearchPage";
 import CategoriesPage from "./features/courses/pages/CategoriesPage";
 import EditProfilePage from "./features/profile/pages/EditProfilePage";
 import TeachPage from "./features/dashboard/pages/TeachPage";
+import AddCoursePage from "./features/dashboard/pages/AddCoursePage";
+import ManageLessonPage from "./features/dashboard/pages/ManageLessonPage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -46,6 +48,8 @@ const router = createBrowserRouter(
       <Route path="/courses/:id" element={<CourseDetailsPage />} />
       <Route path="/public-profile/:id" element={<ProfilePage />} />
       <Route path="/teach" element={<TeachPage />} />
+      <Route path="/add-course" element={<AddCoursePage />} />
+      <Route path="/manage-lesson/:id" element={<ManageLessonPage />} />
 
       <Route element={<ProtectedRoute />}>
         <Route path="/learn/:courseId/:moduleId" element={<LearnPage />} />
