@@ -106,24 +106,6 @@ export const getBreadcrumbs = (course: Course, currentMaterialId: Number) => {
 
 // ---------------------------------------------------------------
 
-const myImages = [
-  "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80",
-  "https://images.unsplash.com/photo-1605379399642-870262d3d051?q=80&w=906&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?fm=jpg&q=60&w=3000",
-  "https://images.unsplash.com/photo-1552664730-d307ca884978?fm=jpg&q=60&w=3000",
-  "https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?fm=jpg&q=60&w=3000",
-  "https://images.unsplash.com/photo-1657819307873-c57e45f65f6d?fm=jpg&q=60&w=3000",
-  "https://images.unsplash.com/photo-1720411201674-a9ed01606298?q=80&w=1170&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1714976326729-1ffbddfc1c2e?q=80&w=1032&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=400&q=80",
-];
-
-export const placeholderImage = (_text: string) =>
-  myImages[Math.floor(Math.random() * 9)];
-// `https://placehold.co/300x200?text=${text}`;
-
-// ---------------------------------------------------------------
-
 export const SORT_FIELDS = [
   { value: "title", label: "Title" },
   { value: "createdAt", label: "Time Created" },

@@ -1,82 +1,11 @@
 import { useAppHook } from "../../../shared/hooks/useAppHook";
 import { PROFILE_IMAGE } from "../../../constants/constants";
 import CourseCard from "../../courses/components/courseCard/CourseCard";
-import { useGetEnrolledCoursesQuery } from "../../courses/apiSlices/coursesApiSlice";
-import { useGetWishlistQuery } from "../../courses/apiSlices/wishlistApiSlice";
-import { Course } from "../../../shared/types/types";
 import { Button } from "../../../shared/components/form/Button";
-import Skeleton from "react-loading-skeleton";
-import { useEffect, useState } from "react";
-import { coursesApiSlice } from "../../courses/apiSlices/coursesApiSlice";
-
-function EnrolledCourseCard({
-  course,
-  progress = 0,
-}: {
-  course: Course;
-  progress?: number;
-}) {
-  return (
-    <div className="page flex-1 px-8">
-      <img
-        src={course.image}
-        alt={course.title}
-        className="w-32 h-24 object-cover rounded-2xl mr-4"
-        onError={(e) => (e.currentTarget.src = PROFILE_IMAGE)}
-      />
-      <div className="flex-1">
-        <h3 className="font-bold text-lg mb-1">{course.title}</h3>
-        <p className="text-sm text-gray-600 mb-2">{course.instructor}</p>
-        <div className="w-full bg-gray-200 rounded-2xl h-2.5">
-          <div
-            className="bg-primary h-2.5 rounded-2xl transition-all duration-300 ease-in-out"
-            style={{ width: `${progress}%` }}></div>
-        </div>
-        <p className="text-sm mt-1">{progress}% complete</p>
-      </div>
-    </div>
-  );
-}
+import { Course } from "../../../shared/types/types";
 
 export default function ProfilePage() {
-  const { user, navigate, dispatch } = useAppHook();
-
-  const {
-    data: enrolled,
-    isLoading: enrolledLoading,
-    isError: enrolledError,
-  } = useGetEnrolledCoursesQuery({});
-
-  const {
-    data: wishlist,
-    isLoading: wishlistLoading,
-    isError: wishlistError,
-  } = useGetWishlistQuery({});
-
-  const enrolledCourses: Course[] = enrolled?.data ?? [];
-  const [favCourses, setFavCourses] = useState<Course[]>([]);
-  const [favLoading, setFavLoading] = useState(false);
-
-  useEffect(() => {
-    const fetchFavorites = async () => {
-      if (!wishlist?.data) return;
-      setFavLoading(true);
-      try {
-        const promises = wishlist.data.map((item: any) =>
-          dispatch(
-            coursesApiSlice.endpoints.getCourseDetails.initiate(item.courseId)
-          ).unwrap()
-        );
-        const result = await Promise.all(promises);
-        setFavCourses(result);
-      } catch (err) {
-        console.error("Failed to fetch favorite courses", err);
-      } finally {
-        setFavLoading(false);
-      }
-    };
-    fetchFavorites();
-  }, [wishlist, dispatch]);
+  const { user, navigate, wishlistCourses, enrolledCourses } = useAppHook();
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-10">
@@ -94,7 +23,8 @@ export default function ProfilePage() {
           <Button
             variant="secondary"
             className="mt-3"
-            onClick={() => navigate("/edit-profile")}>
+            onClick={() => navigate("/edit-profile")}
+          >
             Edit Profile
           </Button>
         </div>
@@ -103,63 +33,21 @@ export default function ProfilePage() {
       {/* Learning Progress */}
       <section className="mb-16">
         <h2 className="text-2xl font-bold mb-6">Currently Learning</h2>
-        {enrolledLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {[...Array(2)].map((_, i) => (
-              <Skeleton key={i} height={120} />
-            ))}
-          </div>
-        ) : enrolledError ? (
-          <p className="text-danger">Failed to load enrolled courses.</p>
-        ) : enrolledCourses.length === 0 ? (
-          <div className="text-center text-gray-500">
-            <img
-              src="/empty-learning.svg"
-              alt="No courses"
-              className="mx-auto mb-4 w-32"
-            />
-            No enrolled courses found.
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {enrolledCourses.map((course: Course) => (
-              <EnrolledCourseCard
-                key={course.id}
-                course={course}
-                progress={30}
-              />
-            ))}
-          </div>
-        )}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {enrolledCourses.map((course: Course) => (
+            <CourseCard key={course.id} course={course} />
+          ))}
+        </div>
       </section>
 
       {/* Favorites Section */}
       <section className="mb-16">
         <h2 className="text-2xl font-bold mb-6">Favorites</h2>
-        {wishlistLoading || favLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(3)].map((_, i) => (
-              <Skeleton key={i} height={180} />
-            ))}
-          </div>
-        ) : wishlistError ? (
-          <p className="text-danger">Failed to load wishlist.</p>
-        ) : favCourses.length === 0 ? (
-          <div className="text-center text-gray-500">
-            <img
-              src="/empty-favorites.svg"
-              alt="No favorites"
-              className="mx-auto mb-4 w-32"
-            />
-            You have no courses in your wishlist.
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {favCourses.map((course) => (
-              <CourseCard key={course.id} course={course} />
-            ))}
-          </div>
-        )}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {wishlistCourses.map((course: Course) => (
+            <CourseCard key={course.id} course={course} />
+          ))}
+        </div>
       </section>
 
       {/* Career CTA */}
@@ -177,7 +65,8 @@ export default function ProfilePage() {
         <Button
           variant="primary"
           className="rounded-xl shadow-md hover:scale-105 transition-transform"
-          onClick={() => navigate("/courses")}>
+          onClick={() => navigate("/courses")}
+        >
           Browse Courses
         </Button>
       </section>

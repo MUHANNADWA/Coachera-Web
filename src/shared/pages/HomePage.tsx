@@ -18,7 +18,7 @@ export default function HomePage() {
 
       {/* Welcome Section */}
       <section>
-        <div className="py-20 px-6 h-full-s max-w-6xl gap-12 items-center mx-auto flex max-md:text-center ">
+        <div className="py-20 px-6 h-full-s max-w-7xl gap-12 items-center mx-auto flex max-md:text-center ">
           <div className="flex-1/2">
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
               Unlock Your Potential with{" "}
@@ -31,7 +31,8 @@ export default function HomePage() {
             <div className="flex gap-4 max-md:justify-center">
               <Button
                 variant="primary"
-                onClick={() => navigate("/get-started")}>
+                onClick={() => navigate("/get-started")}
+              >
                 Get Started
               </Button>
               <Button variant="secondary" onClick={() => navigate("/courses")}>
@@ -62,7 +63,8 @@ export default function HomePage() {
             <Button
               variant="primary"
               className="flex justify-self-center mt-6"
-              onClick={() => navigate("/courses")}>
+              onClick={() => navigate("/courses")}
+            >
               Browse Courses
             </Button>
           </div>

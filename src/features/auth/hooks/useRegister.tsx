@@ -5,7 +5,6 @@ import { useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 import toastPromise from "../../../utils/toast";
 import { setCredentials } from "../authSlice";
-import { useLogin } from "./useLogin";
 
 export default function useRegister() {
   const { navigate, dispatch, token } = useAppHook();
@@ -25,7 +24,6 @@ export default function useRegister() {
     useState(false);
 
   const [register, { isLoading: isRegisterLoading }] = useRegisterMutation();
-  const { handleSubmit: login, setFormData: setLoginData } = useLogin();
   const [uploadImage, { isLoading: isUploading }] = useUploadPhotoMutation();
 
   const isLoading = isRegisterLoading;
@@ -56,17 +54,6 @@ export default function useRegister() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const loginFormData = {
-      identifier: formData.email,
-      password: formData.password,
-    };
-
-    setLoginData({
-      ...formData,
-      identifier: loginFormData.identifier,
-      password: loginFormData.password,
-    });
-
     await toastPromise(register(formData), {
       loadingMessage: "Registering...",
       successMessage: "Registered successfully!",
@@ -74,8 +61,7 @@ export default function useRegister() {
       onSuccess: async (res: any) => {
         const credentials = res.data;
         dispatch(setCredentials({ ...credentials }));
-        await login();
-        navigate(redirect);
+        navigate("/login");
       },
     });
   };

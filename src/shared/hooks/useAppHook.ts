@@ -1,5 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "./hooks";
+import { Course } from "../types/types";
 
 export function useAppHook() {
   const dispatch = useAppDispatch();
@@ -13,11 +14,11 @@ export function useAppHook() {
   const courseSidebarCollapsed = useAppSelector(
     (state) => state.courseSidebar.collapsed
   );
-  const wishlistIds: number[] = useAppSelector(
-    (state) => state.wishlist.wishlistIds
+  const wishlistCourses: Course[] = useAppSelector(
+    (state) => state.wishlist.wishlistCourses
   );
-  const enrolledIds: number[] = useAppSelector(
-    (state) => state.enrolledCourses.enrolledCoursesIds
+  const enrolledCourses: Course[] = useAppSelector(
+    (state) => state.enrolledCourses.enrolledCourses
   );
 
   return {
@@ -28,7 +29,7 @@ export function useAppHook() {
     token,
     theme,
     courseSidebarCollapsed,
-    wishlistIds,
-    enrolledIds,
+    wishlistCourses,
+    enrolledCourses,
   };
 }

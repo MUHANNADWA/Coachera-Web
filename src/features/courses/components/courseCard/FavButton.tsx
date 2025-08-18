@@ -12,6 +12,7 @@ import Loader from "../../../../shared/components/Loader";
 import { HeartIcon as HeartOutlinedIcon } from "@heroicons/react/24/outline";
 import { HeartIcon as HeartFilledIcon } from "@heroicons/react/16/solid";
 import { Button } from "../../../../shared/components/form/Button";
+import { useRequiresAuth } from "../../../../shared/hooks/useRequiresAuth";
 
 export const FavButton = ({
   id,
@@ -20,9 +21,10 @@ export const FavButton = ({
   id: number;
   className?: string;
 }) => {
-  const { wishlistIds, dispatch } = useAppHook();
+  const requiresAuth = useRequiresAuth();
+  const { wishlistCourses, dispatch } = useAppHook();
 
-  const isWishlisted = wishlistIds.includes(id);
+  const isWishlisted = wishlistCourses.includes(id);
 
   const [addToWishlist, { isLoading: isAdding }] = useAddToWishlistMutation();
   const [removeFromWishlist, { isLoading: isRemoving }] =
@@ -58,14 +60,15 @@ export const FavButton = ({
   return (
     <div title={isWishlisted ? "Remove from favorites" : "Add to favorites"}>
       <Button
-        onClick={handleClick}
+        onClick={(e) => requiresAuth(() => handleClick(e))}
         className={`relative m-0! p-2! rounded-full! ${className}`}
         variant="primaryInverted"
         aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
         aria-pressed={isWishlisted}
         disabled={loading}
         tabIndex={0}
-        type="button">
+        type="button"
+      >
         {loading ? (
           <span className="flex items-center justify-center">
             <Loader />
@@ -75,9 +78,6 @@ export const FavButton = ({
         ) : (
           <HeartOutlinedIcon className="w-6 h-6 transition-transform duration-200" />
         )}
-        <span className="sr-only">
-          {isWishlisted ? "Remove from favorites" : "Add to favorites"}
-        </span>
       </Button>
     </div>
   );

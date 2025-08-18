@@ -6,6 +6,37 @@ import { useGetWishlistQuery } from "../../features/courses/apiSlices/wishlistAp
 import { setWishlist } from "../../features/courses/slices/wishlistSlice";
 import { useGetEnrolledCoursesQuery } from "../../features/courses/apiSlices/coursesApiSlice";
 import { setEnrolledCourses } from "../../features/courses/slices/enrolledCoursesSlice";
+import { Course } from "../types/types";
+
+interface WishlistItem {
+  createdAt: string;
+  updatedAt: string;
+  id: number;
+  courseDTO: Course;
+  studentId: number;
+}
+
+interface FavsApiResponse {
+  status: number;
+  message: string;
+  data: WishlistItem[];
+  timestamp: string;
+}
+
+interface EnrolledItem {
+  createdAt: string;
+  updatedAt: string;
+  id: number;
+  courseDTO: Course;
+  studentId: number;
+}
+
+interface EnrolledApiResponse {
+  status: number;
+  message: string;
+  data: EnrolledItem[];
+  timestamp: string;
+}
 
 const InitProvider = () => {
   const { theme, user, dispatch } = useAppHook();
@@ -25,6 +56,9 @@ const InitProvider = () => {
   const { data: enrolled, isSuccess: enrolledSuccess } =
     useGetEnrolledCoursesQuery({}, { skip: !user });
 
+  console.log(wishlist);
+  console.log(enrolled);
+
   useEffect(() => {
     requestPermission().then((token) => {
       if (token) {
@@ -35,17 +69,19 @@ const InitProvider = () => {
 
   useEffect(() => {
     if (wishlistSuccess && wishlist) {
-      const wishlistIds = wishlist.data.map((item: any) => item.courseId);
-      dispatch(setWishlist(wishlistIds));
+      const favs = wishlist as FavsApiResponse;
+      const wishlistCourses = favs.data.map((item) => item.courseDTO);
+
+      dispatch(setWishlist(wishlistCourses));
     }
   }, [wishlistSuccess, wishlist, dispatch]);
 
   useEffect(() => {
     if (enrolledSuccess && enrolled) {
-      const enrolledCoursesIds = enrolled.data.map(
-        (item: any) => item.courseId
-      );
-      dispatch(setEnrolledCourses(enrolledCoursesIds));
+      const enrolledData = enrolled as EnrolledApiResponse;
+      const enrolledCourses = enrolledData.data.map((item) => item.courseDTO);
+
+      dispatch(setEnrolledCourses(enrolledCourses));
     }
   }, [enrolledSuccess, enrolled, dispatch]);
 

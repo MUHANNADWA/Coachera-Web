@@ -103,26 +103,31 @@ export default function CoursesSection({
   return (
     <section className="flex-1 relative">
       <div className="px-16 py-10">
-        <h2 className="text-3xl font-bold mb-6 text-center">{data.title}</h2>
+        <h2 className="text-3xl font-bold mb-6 text-center dark:text-white">
+          {data.title}
+        </h2>
 
         {/* Scroll buttons */}
         <Button
           onClick={() => scroll("left")}
           variant="primaryInverted"
-          className="absolute! left-2 top-1/2 z-10 border-2 border-secondary! p-2!">
+          className="absolute! left-2 top-1/2 z-10 border-2 border-secondary! p-2!"
+        >
           <ChevronLeftIcon className="w-6 h-6" />
         </Button>
         <Button
           onClick={() => scroll("right")}
           variant="primaryInverted"
-          className="absolute! right-2 top-1/2 z-10 border-2 border-secondary! p-2!">
+          className="absolute! right-2 top-1/2 z-10 border-2 border-secondary! p-2!"
+        >
           <ChevronRightIcon className="w-6 h-6" />
         </Button>
 
         <div
           ref={scrollRef}
           className="p-4 flex overflow-x-auto space-x-4 snap-x snap-mandatory scroll-smooth"
-          style={{ scrollbarWidth: "none" }}>
+          style={{ scrollbarWidth: "none" }}
+        >
           {data.isLoading ? (
             Array(data.size)
               .fill(0)

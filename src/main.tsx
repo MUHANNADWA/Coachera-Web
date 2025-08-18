@@ -21,7 +21,7 @@ import LearnPage from "./features/courses/pages/LearnPage";
 import ProtectedRoute from "./shared/routes/ProtectedRoute";
 import AdminRoute from "./shared/routes/AdminRoute";
 import NotFoundPage from "./shared/pages/NotFoundPage";
-import Profile from "./features/profile/pages/ProfilePage";
+import ProfilePage from "./features/profile/pages/ProfilePage";
 import DashboardPage from "./features/dashboard/pages/DashboardPage";
 import ForgotPasswordPage from "./features/auth/pages/FogotPasswordPage";
 import ResetPasswordPage from "./features/auth/pages/ResetPasswordPage";
@@ -29,6 +29,7 @@ import OtpVerificationPage from "./features/auth/pages/OtpVerificationPage";
 import SearchPage from "./shared/pages/SearchPage";
 import CategoriesPage from "./features/courses/pages/CategoriesPage";
 import EditProfilePage from "./features/profile/pages/EditProfilePage";
+import TeachPage from "./features/dashboard/pages/TeachPage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -43,7 +44,8 @@ const router = createBrowserRouter(
       <Route path="/categories" element={<CategoriesPage />} />
       <Route path="/courses" element={<CoursesPage />} />
       <Route path="/courses/:id" element={<CourseDetailsPage />} />
-      <Route path="/public-profile/:id" element={<Profile />} />
+      <Route path="/public-profile/:id" element={<ProfilePage />} />
+      <Route path="/teach" element={<TeachPage />} />
 
       <Route element={<ProtectedRoute />}>
         <Route path="/learn/:courseId/:moduleId" element={<LearnPage />} />

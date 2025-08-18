@@ -1,26 +1,31 @@
-import { createSlice } from "@reduxjs/toolkit";
-const initialState: { wishlistIds: number[] } = {
-  wishlistIds: [],
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Course } from "../../../shared/types/types";
+
+const initialState: { wishlistCourses: Course[] } = {
+  wishlistCourses: [],
 };
 
 const wishlistSlice = createSlice({
   name: "wishlist",
   initialState,
   reducers: {
-    setWishlist: (state, action) => {
-      state.wishlistIds = action.payload;
+    setWishlist: (state, action: PayloadAction<Course[]>) => {
+      state.wishlistCourses = action.payload;
     },
     clearWishlist: (state) => {
-      state.wishlistIds = [];
+      state.wishlistCourses = [];
     },
-    addToWishlistSlice: (state, action) => {
-      if (!state.wishlistIds.includes(action.payload)) {
-        state.wishlistIds.push(action.payload);
+    addToWishlistSlice: (state, action: PayloadAction<Course>) => {
+      const exists = state.wishlistCourses.some(
+        (course) => course.id === action.payload.id
+      );
+      if (!exists) {
+        state.wishlistCourses.push(action.payload);
       }
     },
-    removeFromWishlistSlice: (state, action) => {
-      state.wishlistIds = state.wishlistIds.filter(
-        (id) => id !== action.payload
+    removeFromWishlistSlice: (state, action: PayloadAction<Course>) => {
+      state.wishlistCourses = state.wishlistCourses.filter(
+        (course) => course.id !== action.payload.id
       );
     },
   },

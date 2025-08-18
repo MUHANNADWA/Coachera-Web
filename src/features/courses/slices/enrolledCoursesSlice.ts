@@ -1,26 +1,31 @@
-import { createSlice } from "@reduxjs/toolkit";
-const initialState: { enrolledCoursesIds: number[] } = {
-  enrolledCoursesIds: [],
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Course } from "../../../shared/types/types";
+
+const initialState: { enrolledCourses: Course[] } = {
+  enrolledCourses: [],
 };
 
 const enrolledCoursesSlice = createSlice({
   name: "enrolledCourses",
   initialState,
   reducers: {
-    setEnrolledCourses: (state, action) => {
-      state.enrolledCoursesIds = action.payload;
+    setEnrolledCourses: (state, action: PayloadAction<Course[]>) => {
+      state.enrolledCourses = action.payload;
     },
     clearEnrolledCourses: (state) => {
-      state.enrolledCoursesIds = [];
+      state.enrolledCourses = [];
     },
-    addToEnrolledCoursesSlice: (state, action) => {
-      if (!state.enrolledCoursesIds.includes(action.payload)) {
-        state.enrolledCoursesIds.push(action.payload);
+    addToEnrolledCoursesSlice: (state, action: PayloadAction<Course>) => {
+      const exists = state.enrolledCourses.some(
+        (course) => course.id === action.payload.id
+      );
+      if (!exists) {
+        state.enrolledCourses.push(action.payload);
       }
     },
-    removeFromEnrolledCoursesSlice: (state, action) => {
-      state.enrolledCoursesIds = state.enrolledCoursesIds.filter(
-        (id) => id !== action.payload
+    removeFromEnrolledCoursesSlice: (state, action: PayloadAction<Course>) => {
+      state.enrolledCourses = state.enrolledCourses.filter(
+        (course) => course.id !== action.payload.id
       );
     },
   },

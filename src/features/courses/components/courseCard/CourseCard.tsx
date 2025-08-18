@@ -1,5 +1,5 @@
 import { Course } from "../../../../shared/types/types";
-import { placeholderImage, renderStars } from "../../utils/Utils";
+import { renderStars } from "../../utils/Utils";
 import { useAppHook } from "../../../../shared/hooks/useAppHook";
 import { FavButton } from "./FavButton";
 import { ClockIcon, UserIcon } from "@heroicons/react/24/outline";
@@ -46,11 +46,12 @@ export default function CourseCard({ course, className }: CourseCardProps) {
           handleCardClick();
         }
       }}
-      aria-label={`View course: ${course.title}`}>
+      aria-label={`View course: ${course.title}`}
+    >
       {/* Image Container */}
       <div className="relative overflow-hidden">
         <img
-          src={course.image ?? placeholderImage(course.title)}
+          src={course.image}
           alt={`Course cover for ${course.title}`}
           className="h-48 w-full object-cover transition-transform duration-300 group-hover:scale-105"
           loading="lazy"
@@ -61,23 +62,24 @@ export default function CourseCard({ course, className }: CourseCardProps) {
             onClick={handleCategoryClick}
             className="absolute! top-3 left-3 text-xs font-medium py-1.5! px-3! m-0!"
             variant="primaryInverted"
-            aria-label={`Filter by category: ${course.categories[0]}`}
             tabIndex={0}
             type="button"
             onKeyDown={(e) => e.stopPropagation()}
             onClickCapture={(e) => {
               e.stopPropagation();
               handleCategoryClick(e);
-            }}>
-            {course.categories[0]}
+            }}
+          >
+            {course.categories[0].name}
           </Button>
         )}
 
         {/* Favorite Button */}
-        <div className="absolute! top-3 right-3 z-10">
-          <span title="Add to favorites">
-            <FavButton id={course.id} />
-          </span>
+        <div
+          className="absolute! top-3 right-3 z-10"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <FavButton id={course.id} />
         </div>
 
         {/* Level Badge */}
@@ -101,7 +103,8 @@ export default function CourseCard({ course, className }: CourseCardProps) {
         {/* Title */}
         <h3
           className="font-bold text-xl line-clamp-2 group-hover:text-primary transition-colors duration-200"
-          title={course.title}>
+          title={course.title}
+        >
           {course.title}
         </h3>
 
@@ -110,8 +113,9 @@ export default function CourseCard({ course, className }: CourseCardProps) {
           <UserIcon className="w-4 h-4" />
           <span
             className="truncate"
-            title={course.instructor ?? "Abo Mahmoud Org"}>
-            {course.instructor ?? "Abo Mahmoud Org"}
+            title={course.instructors[0] ?? "Abo Mahmoud Org"}
+          >
+            {course.instructors[0] ?? "Abo Mahmoud Org"}
           </span>
         </div>
 
@@ -125,7 +129,8 @@ export default function CourseCard({ course, className }: CourseCardProps) {
         {course.description && (
           <div
             className="text-gray-700 dark:text-gray-300 text-sm line-clamp-2"
-            title={course.description}>
+            title={course.description}
+          >
             {course.description}
           </div>
         )}

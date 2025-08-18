@@ -114,8 +114,8 @@ export default function Review({ review }: ReviewProps) {
 
           {/* Review Content */}
           <div className="pl-15">
-            <div className="bg-gray-50 rounded-xl p-4 border-l-4 border-primary">
-              <p className="text-gray-700 leading-relaxed">
+            <div className="bg-gray-50 dark:bg-primary-dark rounded-xl p-4 border-l-4 border-primary">
+              <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
                 "{review.comment}"
               </p>
             </div>

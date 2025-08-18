@@ -15,15 +15,16 @@ export interface Course {
   id: number;
   title: string;
   description: string;
-  instructor: string;
+  instructors: string[];
   price: number;
   rating: number;
   image: string;
   durationHours: string;
   ratingCount: number;
   level: string;
-  categories: string[];
-  org: string;
+  categories: Category[];
+  orgId: number;
+  learningPathIds: number[];
   modules: Module[];
   reviews?: Review[];
 }
@@ -67,6 +68,7 @@ export interface Question {
 export interface Category {
   id: number;
   name: string;
+  icon: string;
 }
 
 export interface Skill {

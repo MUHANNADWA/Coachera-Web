@@ -10,14 +10,14 @@ export default function useCoursePlayer() {
   const { courseId, moduleId } = useParams();
 
   const moduleIndex = Number(moduleId);
-  const { data, isLoading } = useGetCourseDetailsQuery(Number(courseId));
-  const course: Course = data?.data;
-
-  const module = course?.modules.find((m) => m.id === moduleIndex);
 
   const [currentMaterial, setCurrentMaterial] =
     useState<CurrentMaterial | null>(null);
 
+  const { data, isLoading } = useGetCourseDetailsQuery(Number(courseId));
+  const course: Course = data?.data;
+
+  const module = course?.modules.find((m) => m.id === moduleIndex);
   useEffect(() => {
     if (!module) return;
 

@@ -36,7 +36,8 @@ export default function RegisterPage() {
             Already have an account?{" "}
             <Link
               className="text-primary font-semibold hover:underline"
-              to="/login">
+              to="/login"
+            >
               login
             </Link>
           </p>
@@ -93,7 +94,8 @@ export default function RegisterPage() {
                   <Button
                     onClick={() => setPasswordVisibility((prev) => !prev)}
                     className="text-gray-500 hover:text-primary"
-                    type="button">
+                    type="button"
+                  >
                     {isPasswordVisible ? (
                       <EyeSlashIcon className="h-5 w-5" />
                     ) : (
@@ -127,7 +129,8 @@ export default function RegisterPage() {
                       setConfirmPasswordVisibility((prev) => !prev)
                     }
                     className="text-gray-500 hover:text-primary"
-                    type="button">
+                    type="button"
+                  >
                     {isConfirmPasswordVisible ? (
                       <EyeSlashIcon className="h-5 w-5" />
                     ) : (
@@ -149,7 +152,8 @@ export default function RegisterPage() {
                     formData.password &&
                     formData.confirmPassword
                   )
-                }>
+                }
+              >
                 Next
               </Button>
             </section>
@@ -207,7 +211,8 @@ export default function RegisterPage() {
                 <Button
                   variant="secondary"
                   className="px-4! py-[10px]!"
-                  onClick={() => setStep("first")}>
+                  onClick={() => setStep("first")}
+                >
                   {"<"}
                 </Button>
 
@@ -215,7 +220,8 @@ export default function RegisterPage() {
                   full
                   variant="primary"
                   disabled={!formData.role}
-                  isLoading={isLoading || isUploading}>
+                  isLoading={isLoading || isUploading}
+                >
                   Create Account
                 </Button>
               </div>

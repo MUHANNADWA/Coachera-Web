@@ -24,7 +24,6 @@ import Meta from "../../../shared/components/Meta";
 import Skills from "../../../shared/components/Skills";
 import { skills } from "../../../shared/data/sampleData";
 import { CourseModules } from "../components/CourseModules";
-import { placeholderImage } from "../utils/Utils";
 import Review from "../components/Review";
 import { useGetCourseReviewsQuery } from "../apiSlices/reviewsApiSlice";
 import { Button } from "../../../shared/components/form/Button";
@@ -40,7 +39,7 @@ import { useRequiresAuth } from "../../../shared/hooks/useRequiresAuth";
 export default function CourseDetailsPage() {
   const { id } = useParams();
 
-  const { wishlistIds, enrolledIds, dispatch, navigate } = useAppHook();
+  const { wishlistCourses, enrolledCourses, dispatch, navigate } = useAppHook();
   const requiresAuth = useRequiresAuth();
 
   const { data } = useGetCourseDetailsQuery(Number(id));
@@ -75,16 +74,16 @@ export default function CourseDetailsPage() {
         : "Added to favorites!",
       onSuccess: () => {
         if (isInWishlist) {
-          dispatch(removeFromWishlistSlice(Number(id)));
+          dispatch(removeFromWishlistSlice(course));
         } else {
-          dispatch(addToWishlistSlice(Number(id)));
+          dispatch(addToWishlistSlice(course));
         }
       },
     });
   };
 
-  const isEnrolled = enrolledIds.includes(Number(id));
-  const isInWishlist = wishlistIds.includes(Number(id));
+  const isEnrolled = enrolledCourses.includes(course);
+  const isInWishlist = wishlistCourses.includes(course);
 
   if (!course) return <Loader logo />;
 
@@ -108,7 +107,7 @@ export default function CourseDetailsPage() {
               <div className="flex items-center bg-white/10 backdrop-blur-sm px-4 py-2 rounded-xl">
                 <UserIcon className="h-5 w-5 mr-2" />
                 <span className="font-medium">
-                  {course.instructor ?? "Abo Mahmoud Org"}
+                  {course.instructors[0] ?? "Abo Mahmoud Org"}
                 </span>
               </div>
               <div className="flex items-center bg-white/10 backdrop-blur-sm px-4 py-2 rounded-xl">
@@ -220,7 +219,7 @@ export default function CourseDetailsPage() {
               {/* Course Image */}
               <section className="relative group overflow-hidden rounded-2xl shadow-lg">
                 <img
-                  src={course.image ?? placeholderImage(course.title)}
+                  src={course.image}
                   alt={course.title}
                   className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-105"
                 />
@@ -254,14 +253,16 @@ export default function CourseDetailsPage() {
                       isEnrolled
                         ? () => navigate(`${LEARN_URL}/${id}/1`)
                         : () => requiresAuth(handleEnrollment)
-                    }>
+                    }
+                  >
                     {isEnrolled ? "Go To Course" : "Enroll Now"}
                   </Button>
 
                   <Button
                     onClick={() => requiresAuth(handleToggleWishlist)}
                     full
-                    variant="secondaryInverted">
+                    variant="secondaryInverted"
+                  >
                     {isInWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
                   </Button>
                 </div>
