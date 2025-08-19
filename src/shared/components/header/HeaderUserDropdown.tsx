@@ -9,7 +9,6 @@ import {
   ArrowRightStartOnRectangleIcon,
   BellIcon,
   UserCircleIcon,
-  HeartIcon,
   AcademicCapIcon,
   PresentationChartLineIcon,
   PencilSquareIcon,
@@ -34,11 +33,6 @@ export function HeaderUserDropdown() {
       label: "Accomplishments",
       icon: AcademicCapIcon,
       action: () => navigate("/accomplishments"),
-    },
-    {
-      label: "Wishlist",
-      icon: HeartIcon,
-      action: () => navigate("/profile#wishlist"),
     },
     {
       label: "Notifications",

@@ -13,18 +13,21 @@ import { HeartIcon as HeartOutlinedIcon } from "@heroicons/react/24/outline";
 import { HeartIcon as HeartFilledIcon } from "@heroicons/react/16/solid";
 import { Button } from "../../../../shared/components/form/Button";
 import { useRequiresAuth } from "../../../../shared/hooks/useRequiresAuth";
+import { Course } from "../../../../shared/types/types";
 
 export const FavButton = ({
-  id,
+  course,
   className = "",
 }: {
-  id: number;
+  course: Course;
   className?: string;
 }) => {
   const requiresAuth = useRequiresAuth();
   const { wishlistCourses, dispatch } = useAppHook();
 
-  const isWishlisted = wishlistCourses.includes(id);
+  console.log("wishlistCourses = ", wishlistCourses);
+
+  const isWishlisted = wishlistCourses.includes(course);
 
   const [addToWishlist, { isLoading: isAdding }] = useAddToWishlistMutation();
   const [removeFromWishlist, { isLoading: isRemoving }] =
@@ -33,7 +36,9 @@ export const FavButton = ({
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
 
-    const promise = isWishlisted ? removeFromWishlist(id) : addToWishlist(id);
+    const promise = isWishlisted
+      ? removeFromWishlist(course.id)
+      : addToWishlist(course.id);
 
     toastPromise(promise, {
       loadingMessage: isWishlisted
@@ -47,9 +52,9 @@ export const FavButton = ({
         : "Failed adding to favorites",
       onSuccess: () => {
         if (isWishlisted) {
-          dispatch(removeFromWishlistSlice(id));
+          dispatch(removeFromWishlistSlice(course));
         } else {
-          dispatch(addToWishlistSlice(id));
+          dispatch(addToWishlistSlice(course));
         }
       },
     });
