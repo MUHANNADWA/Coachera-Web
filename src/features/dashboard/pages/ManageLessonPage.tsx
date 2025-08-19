@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Button } from "../../../shared/components/form/Button";
 import QuizSection from "./QuizSection";
+import Input from "../../../shared/components/form/Input";
+import Textarea from "../../../shared/components/form/Textarea";
 
 export type LessonType = "video" | "article" | "quiz";
 
@@ -26,11 +28,11 @@ const ManageLessonPage = () => {
       {/* Lesson Title */}
       <div>
         <label className="block font-medium mb-1">Lesson Title</label>
-        <input
+        <Input
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+          placeholder="Enter lesson title"
         />
       </div>
 
@@ -42,7 +44,7 @@ const ManageLessonPage = () => {
             className={`px-4 py-2 font-medium rounded-t-lg ${
               lessonType === type
                 ? "bg-primary text-white"
-                : "bg-gray-100 dark:bg-dark border-b border-gray-300"
+                : "bg-gray-100 dark:bg-dark border-b border-gray-300 dark:border-gray-700"
             }`}
             onClick={() => setLessonType(type)}
           >
@@ -55,17 +57,17 @@ const ManageLessonPage = () => {
       {lessonType === "video" && (
         <div>
           <label className="block font-medium mb-1">Video URL</label>
-          <input
+          <Input
             type="text"
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary mb-2"
+            placeholder="Enter video URL"
           />
           {content && (
             <video
               src={content}
               controls
-              className="w-full rounded-lg border border-gray-300"
+              className="w-full mt-2 rounded-lg border border-gray-300 dark:border-gray-700"
             />
           )}
         </div>
@@ -74,10 +76,11 @@ const ManageLessonPage = () => {
       {lessonType === "article" && (
         <div>
           <label className="block font-medium mb-1">Article Content</label>
-          <textarea
+          <Textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            className="w-full border rounded px-3 py-2 h-40 focus:outline-none focus:ring-2 focus:ring-primary"
+            placeholder="Write your article..."
+            className="h-40"
           />
           {content && (
             <div className="mt-2 p-4 border rounded bg-gray-50 dark:bg-dark">

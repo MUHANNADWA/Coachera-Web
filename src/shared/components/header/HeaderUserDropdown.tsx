@@ -8,12 +8,11 @@ import { Button } from "../form/Button";
 import {
   ArrowRightStartOnRectangleIcon,
   BellIcon,
-  UserGroupIcon,
   UserCircleIcon,
   HeartIcon,
   AcademicCapIcon,
-  RectangleStackIcon,
   PresentationChartLineIcon,
+  PencilSquareIcon,
 } from "@heroicons/react/24/outline";
 import Modal from "../Modal";
 
@@ -22,14 +21,14 @@ export function HeaderUserDropdown() {
 
   const userDropdown = [
     {
-      label: "Public Profile",
-      icon: UserGroupIcon,
-      action: () => navigate(`/public-profile/${user?.id}`),
+      label: "My Profile",
+      icon: UserCircleIcon,
+      action: () => navigate("/profile"),
     },
     {
       label: "Edit Profile",
-      icon: UserCircleIcon,
-      action: () => navigate("/profile"),
+      icon: PencilSquareIcon,
+      action: () => navigate("/edit-profile"),
     },
     {
       label: "Accomplishments",
@@ -37,14 +36,9 @@ export function HeaderUserDropdown() {
       action: () => navigate("/accomplishments"),
     },
     {
-      label: "My Learning",
-      icon: RectangleStackIcon,
-      action: () => navigate("/learning"),
-    },
-    {
       label: "Wishlist",
       icon: HeartIcon,
-      action: () => navigate("/wishlist"),
+      action: () => navigate("/profile#wishlist"),
     },
     {
       label: "Notifications",
@@ -92,7 +86,8 @@ export function HeaderUserDropdown() {
             <Button
               key={label}
               onClick={action}
-              className="group flex w-full items-center justify-start gap-2 px-3 py-2 text-gray-700 dark:text-gray-300">
+              className="group flex w-full items-center justify-start gap-2 px-3 py-2 text-gray-700 dark:text-gray-300"
+            >
               <Icon className="h-4 w-4 text-gray-700 dark:text-gray-300" />
               {label}
             </Button>
@@ -100,7 +95,8 @@ export function HeaderUserDropdown() {
 
           <Button
             onClick={openModal}
-            className="group flex w-full items-center justify-start gap-2 px-3 py-2 text-sm text-danger dark:text-red-400 hover:bg-red-50 rounded-2xl">
+            className="group flex w-full items-center justify-start gap-2 px-3 py-2 text-sm text-danger dark:text-red-400 hover:bg-red-50 rounded-2xl"
+          >
             <ArrowRightStartOnRectangleIcon className="h-4 w-4 dark:text-red-400 text-danger" />
             Logout
           </Button>

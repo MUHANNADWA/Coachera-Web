@@ -23,6 +23,8 @@ export default function EditProfilePage() {
     setCollapsed((prev) => !prev);
   }, []);
 
+  const { navigate } = useAppHook();
+
   return (
     <div className="page flex">
       {/* Sidebar */}
@@ -31,7 +33,8 @@ export default function EditProfilePage() {
           collapsed
             ? "max-sm:h-15! max-sm:bg-transparent w-14"
             : "w-70 max-sm:w-full"
-        }>
+        }
+      >
         <SidebarHeader
           label="Filters"
           collapsed={collapsed}
@@ -49,17 +52,18 @@ export default function EditProfilePage() {
             </div>
 
             {/* Navigation buttons */}
-            <nav className="space-y-2 text-sm text-gray-700 font-medium">
-              {profileSidebar.map(({ label, icon: Icon, action }) => (
+            <nav className="space-y-2 text-sm text-gray-700 dark:text-gray-300 font-medium">
+              {profileSidebar.map(({ label, icon: Icon, link }) => (
                 <Button
                   full
                   key={label}
                   onClick={() => {
-                    action();
+                    navigate(link);
                     window.innerWidth <= 768 && toggleCollapse();
                   }}
-                  className="group flex items-center justify-start gap-2 px-3 py-2">
-                  <Icon className="h-4 w-4 text-gray-700 group-hover:text-gray-900" />
+                  className="group flex items-center justify-start gap-2 px-3 py-2"
+                >
+                  <Icon className="h-4 w-4 text-gray-700 group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-100" />
                   {label}
                 </Button>
               ))}
@@ -68,7 +72,8 @@ export default function EditProfilePage() {
                 full
                 key="Close account"
                 onClick={() => {}}
-                className="group flex items-center justify-start gap-2 px-3 py-2 text-danger hover:bg-red-50">
+                className="group flex items-center justify-start gap-2 px-3 py-2 text-danger hover:bg-red-50"
+              >
                 <UserMinusIcon className="h-4 w-4 text-red-400 group-hover:text-danger" />
                 Close account
               </Button>
@@ -80,7 +85,7 @@ export default function EditProfilePage() {
       {/* Content */}
       <main className="flex-1 flex flex-col py-8 ml-8 pr-8">
         <article className="consect p-4 mb-4 text-center">
-          <h1 className="text-2xl font-bold mb-2">Public profile</h1>
+          <h1 className="text-2xl font-bold mb-2">Edit profile</h1>
           <p className="text-sm text-gray-500">
             Add information about yourself
           </p>
@@ -134,16 +139,15 @@ export default function EditProfilePage() {
               <select
                 className=""
                 value={form.language}
-                onChange={(e) =>
-                  setForm({ ...form, language: e.target.value })
-                }>
+                onChange={(e) => setForm({ ...form, language: e.target.value })}
+              >
                 <option value="en">English (US)</option>
                 <option value="ar">Arabic</option>
                 <option value="fr">French</option>
               </select>
             </div>
 
-            <Button type="submit" className="mt-4">
+            <Button type="submit" variant="primary">
               Save Changes
             </Button>
           </form>
@@ -195,16 +199,15 @@ export default function EditProfilePage() {
               <select
                 className=""
                 value={form.language}
-                onChange={(e) =>
-                  setForm({ ...form, language: e.target.value })
-                }>
+                onChange={(e) => setForm({ ...form, language: e.target.value })}
+              >
                 <option value="en">English (US)</option>
                 <option value="ar">Arabic</option>
                 <option value="fr">French</option>
               </select>
             </div>
 
-            <Button type="submit" className="mt-4">
+            <Button type="submit" variant="primary">
               Save Changes
             </Button>
           </form>

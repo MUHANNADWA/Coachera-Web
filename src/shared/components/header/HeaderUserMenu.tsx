@@ -9,7 +9,9 @@ export default function HeaderUserMenu() {
   const { user, navigate } = useAppHook();
   return user ? (
     <>
-      <Button className="px-4 py-2">Teach on coachera</Button>
+      <Button className="px-4 py-2" onClick={() => navigate("/teach")}>
+        Teach on coachera
+      </Button>
       <HeaderThemeToggle />
       <HeaderFavorites />
       <HeaderNotifications />
@@ -21,13 +23,15 @@ export default function HeaderUserMenu() {
       <Button
         onClick={() => navigate("/login")}
         variant="secondary"
-        className="my-1! py-2! px-4!">
+        className="my-1! py-2! px-4!"
+      >
         Login
       </Button>
       <Button
         onClick={() => navigate("/signup")}
         variant="primary"
-        className="my-1! py-2! px-4!">
+        className="my-1! py-2! px-4!"
+      >
         Signup
       </Button>
     </div>

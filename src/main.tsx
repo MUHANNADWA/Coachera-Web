@@ -46,14 +46,14 @@ const router = createBrowserRouter(
       <Route path="/categories" element={<CategoriesPage />} />
       <Route path="/courses" element={<CoursesPage />} />
       <Route path="/courses/:id" element={<CourseDetailsPage />} />
-      <Route path="/public-profile/:id" element={<ProfilePage />} />
+      <Route path="/profile" element={<ProfilePage />} />
       <Route path="/teach" element={<TeachPage />} />
       <Route path="/add-course" element={<AddCoursePage />} />
       <Route path="/manage-lesson/:id" element={<ManageLessonPage />} />
 
       <Route element={<ProtectedRoute />}>
         <Route path="/learn/:courseId/:moduleId" element={<LearnPage />} />
-        <Route path="/profile" element={<EditProfilePage />}>
+        <Route path="/edit-profile" element={<EditProfilePage />}>
           {/* <Route path="/close-account" element={<LearnPage />} /> */}
         </Route>
       </Route>

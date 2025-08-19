@@ -224,27 +224,27 @@ export const highlights = [
 
 export const profileSidebar = [
   {
-    label: "View public profile",
+    label: "View Profile",
     icon: ArrowTopRightOnSquareIcon,
-    action: () => {},
+    link: "/profile",
   },
   {
     label: "Information",
     icon: InformationCircleIcon,
-    action: () => {},
+    link: "/",
   },
-  { label: "Photo", icon: PhotoIcon, action: () => {} },
+  { label: "Photo", icon: PhotoIcon, link: "/" },
   {
     label: "Account Settings",
     icon: Cog6ToothIcon,
-    action: () => {},
+    link: "/",
   },
-  { label: "Payment methods", icon: WalletIcon, action: () => {} },
-  { label: "Privacy", icon: LockClosedIcon, action: () => {} },
+  { label: "Payment methods", icon: WalletIcon, link: "/" },
+  { label: "Privacy", icon: LockClosedIcon, link: "/" },
   {
     label: "Notification Preferences",
     icon: BellIcon,
-    action: () => {},
+    link: "/",
   },
 ];
 

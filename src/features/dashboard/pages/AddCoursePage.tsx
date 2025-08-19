@@ -1,5 +1,5 @@
 import {
-  FolderOpenIcon,
+  PencilSquareIcon,
   PlusCircleIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
@@ -257,7 +257,7 @@ const AddCoursePage = () => {
                                       }
                                       className="ml-3 text-secondary hover:text-secondary/50"
                                     >
-                                      <FolderOpenIcon className="w-6" />
+                                      <PencilSquareIcon className="w-6" />
                                     </Button>
                                     <Button
                                       onClick={() =>
