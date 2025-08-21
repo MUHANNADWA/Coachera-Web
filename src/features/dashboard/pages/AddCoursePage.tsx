@@ -22,6 +22,14 @@ import { CSS } from "@dnd-kit/utilities";
 import Input from "../../../shared/components/form/Input";
 import { useAppHook } from "../../../shared/hooks/useAppHook";
 
+// import API hooks
+import {
+  useCreateModuleMutation,
+  useUpdateModuleMutation,
+  useDeleteModuleMutation,
+  useGetModulesByCourseQuery,
+} from "../slices/ModuleApiSlice";
+
 // Component for draggable items
 const SortableItem = ({
   id,
@@ -45,8 +53,14 @@ const SortableItem = ({
   );
 };
 
-const AddCoursePage = () => {
+const AddCoursePage =({ courseId }: {courseId: number}) => {
   const { navigate } = useAppHook();
+
+  const { data: fetchedModules = [], refetch } = useGetModulesByCourseQuery(courseId);
+  
+  const [createModule] = useCreateModuleMutation();
+  const [updateModule] = useUpdateModuleMutation();
+  const [deleteModule] = useDeleteModuleMutation();
 
   const [modules, setModules] = useState([
     {
@@ -106,19 +120,22 @@ const AddCoursePage = () => {
   };
 
   // Helpers to add/remove
-  const addModule = () => {
-    setModules([
-      ...modules,
+  const addModule = async () => {
+    const newModule =
       {
         id: `m${Date.now()}`,
         name: `Module ${modules.length + 1}`,
         sections: [],
-      },
-    ]);
+      };
+    setModules([...modules, newModule]);
+    await createModule({ courseId, data: newModule });
+    refetch();
   };
 
-  const removeModule = (mIndex: number) => {
-    setModules(modules.filter((_, i) => i !== mIndex));
+  const removeModule = async (moduleId: number) => {
+    if (!moduleId) return;
+    await deleteModule(moduleId);
+    refetch();
   };
 
   const addSection = (mIndex: number) => {
