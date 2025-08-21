@@ -22,13 +22,21 @@ import { CSS } from "@dnd-kit/utilities";
 import Input from "../../../shared/components/form/Input";
 import { useAppHook } from "../../../shared/hooks/useAppHook";
 
-// import API hooks
+// Module API hooks
 import {
   useCreateModuleMutation,
   useUpdateModuleMutation,
   useDeleteModuleMutation,
   useGetModulesByCourseQuery,
 } from "../slices/ModuleApiSlice";
+
+// Section API hooks
+import {
+  useCreateSectionMutation,
+  useUpdateSectionMutation,
+  useDeleteSectionMutation,
+  useGetSectionsQuery,
+} from "../slices/SectionApiSlice";
 
 // Component for draggable items
 const SortableItem = ({
@@ -58,9 +66,15 @@ const AddCoursePage =({ courseId }: {courseId: number}) => {
 
   const { data: fetchedModules = [], refetch } = useGetModulesByCourseQuery(courseId);
   
+  // Module API mutations
   const [createModule] = useCreateModuleMutation();
   const [updateModule] = useUpdateModuleMutation();
   const [deleteModule] = useDeleteModuleMutation();
+
+  // Section API mutations
+  const [createSection] = useCreateSectionMutation();
+  const [updateSection] = useUpdateSectionMutation();
+  const [deleteSection] = useDeleteSectionMutation();
 
   const [modules, setModules] = useState([
     {
@@ -133,27 +147,59 @@ const AddCoursePage =({ courseId }: {courseId: number}) => {
   };
 
   const removeModule = async (moduleId: number) => {
+
+    setModules(modules.filter((_, i) => i !== moduleId));
+
     if (!moduleId) return;
     await deleteModule(moduleId);
     refetch();
   };
 
-  const addSection = (mIndex: number) => {
+  const addSection = async (moduleId: number) => {
+    // Screen Stuff
     const newModules = [...modules];
-    newModules[mIndex].sections.push({
+    newModules[moduleId].sections.push({ 
       id: `s${Date.now()}`,
-      name: `Section ${newModules[mIndex].sections.length + 1}`,
-      lessons: [],
-    });
-    setModules(newModules);
+      name: `Section ${newModules[moduleId].sections.length + 1}`,
+      lessons: [],});
+      setModules(newModules);
+
+    // DB Stuff
+    const newSection = {
+      title: `Section`,
+      orderIndex: 1,
+      materials: [],
+    };
+
+    await createSection({ moduleId, data: newSection });
+    refetch();
   };
 
-  const removeSection = (mIndex: number, sIndex: number) => {
+  const removeSectionHandler = async (moduleId: number, sectionId: number) => {
+
+    // screen stuff
     const newModules = [...modules];
-    newModules[mIndex].sections = newModules[mIndex].sections.filter(
-      (_, i) => i !== sIndex
+    newModules[moduleId].sections = newModules[moduleId].sections.filter(
+      (_, i) => i !== sectionId
     );
+
+    // db stuff
     setModules(newModules);
+    await deleteSection({ moduleId, sectionId });
+    refetch();
+  };
+  
+  const updateSectionHandler = async (
+    moduleId: number,
+    sectionId: number,
+    newTitle: string
+  ) => {
+    await updateSection({
+      moduleId,
+      sectionId,
+      data: { title: newTitle, orderIndex: 1, materials: [] },
+    });
+    refetch();
   };
 
   const addLesson = (mIndex: number, sIndex: number) => {
@@ -234,7 +280,7 @@ const AddCoursePage =({ courseId }: {courseId: number}) => {
                               className="font-medium border-b px-2 py-1 focus:outline-none w-full"
                             />
                             <Button
-                              onClick={() => removeSection(mIndex, sIndex)}
+                              onClick={() => removeSectionHandler(mIndex, sIndex)}
                               className="ml-3 text-danger hover:text-danger/50"
                             >
                               <TrashIcon className="w-6" />
