@@ -3,22 +3,67 @@ import { Button } from "../../../shared/components/form/Button";
 import QuizSection from "./QuizSection";
 import Input from "../../../shared/components/form/Input";
 import Textarea from "../../../shared/components/form/Textarea";
+import {
+  useCreateMaterialMutation,
+  useUpdateMaterialMutation,
+} from "../slices/MaterialApiSlice.tsx"; // <-- import hooks
 
 export type LessonType = "video" | "article" | "quiz";
 
-const ManageLessonPage = () => {
+interface ManageLessonPageProps {
+  sectionId: string;     // passed from route or parent
+  materialId?: string;   // optional for edit mode
+}
+
+const ManageLessonPage = ({ sectionId, materialId }: ManageLessonPageProps) => {
   const [lessonType, setLessonType] = useState<LessonType>("video");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [quizQuestions, setQuizQuestions] = useState<any[]>([]);
 
-  const handleSave = () => {
-    const payload =
-      lessonType === "quiz"
-        ? { title, type: lessonType, quizQuestions }
-        : { title, type: lessonType, content };
-    console.log(payload);
-    alert("Lesson saved! Check console for payload.");
+  // RTK Query mutations
+  const [createMaterial, { isLoading: isCreating }] =
+    useCreateMaterialMutation();
+  const [updateMaterial, { isLoading: isUpdating }] =
+    useUpdateMaterialMutation();
+
+  const handleSave = async () => {
+    try {
+      const payload =
+        lessonType === "quiz"
+          ? {
+              title,
+              orderIndex: 1,
+              type: "QUIZ",
+              quiz: { questions: quizQuestions },
+            }
+          : lessonType === "video"
+          ? {
+              title,
+              orderIndex: 1,
+              type: "VIDEO",
+              videoUrl: content,
+            }
+          : {
+              title,
+              orderIndex: 1,
+              type: "ARTICLE",
+              article: content,
+            };
+
+      if (materialId) {
+        // update
+        await updateMaterial({ sectionId, materialId, data: payload }).unwrap();
+        alert("Lesson updated!");
+      } else {
+        // create
+        await createMaterial({data: payload }).unwrap();
+        alert("Lesson created!");
+      }
+    } catch (err: any) {
+      console.error("Failed to save lesson:", err);
+      alert("Error saving lesson.");
+    }
   };
 
   return (
@@ -53,7 +98,7 @@ const ManageLessonPage = () => {
         ))}
       </div>
 
-      {/* Content */}
+      {/* Content Fields */}
       {lessonType === "video" && (
         <div>
           <label className="block font-medium mb-1">Video URL</label>
@@ -97,8 +142,13 @@ const ManageLessonPage = () => {
         />
       )}
 
-      <Button onClick={handleSave} className="mt-4" variant="primary">
-        Save Lesson
+      <Button
+        onClick={handleSave}
+        className="mt-4"
+        variant="primary"
+        disabled={isCreating || isUpdating}
+      >
+        {materialId ? (isUpdating ? "Updating..." : "Update Lesson") : isCreating ? "Saving..." : "Save Lesson"}
       </Button>
     </div>
   );
