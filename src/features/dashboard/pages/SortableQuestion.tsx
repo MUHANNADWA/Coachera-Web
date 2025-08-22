@@ -26,7 +26,7 @@ interface QuizQuestion {
 interface Props {
   question: QuizQuestion;
   qIndex: number;
-  setQuizQuestions: (questions: QuizQuestion[]) => void;
+  setQuizQuestions: React.Dispatch<React.SetStateAction<QuizQuestion[]>>;
 }
 
 export default function SortableQuestion({
@@ -38,47 +38,66 @@ export default function SortableQuestion({
     useSortable({ id: question.id });
   const style = { transform: CSS.Transform.toString(transform), transition };
 
+  const sensors = useSensors(useSensor(PointerSensor));
+
+  // 🔹 Update a question field
   const updateQuestionField = (field: keyof QuizQuestion, value: any) => {
-    const updated = [...JSON.parse(JSON.stringify(setQuizQuestions))];
-    updated[qIndex][field] = value;
-    setQuizQuestions(updated);
+    setQuizQuestions((prev) => {
+      const updated = [...prev];
+      updated[qIndex] = { ...updated[qIndex], [field]: value };
+      return updated;
+    });
   };
 
+  // 🔹 Add new option
   const addOption = () => {
     if (question.options.length >= 4) return;
-    const updated = [...JSON.parse(JSON.stringify(setQuizQuestions))];
-    updated[qIndex].options.push({ id: `o${Date.now()}`, text: "" });
-    setQuizQuestions(updated);
+    setQuizQuestions((prev) => {
+      const updated = [...prev];
+      const newOptions = [
+        ...updated[qIndex].options,
+        { id: `o${Date.now()}`, text: "" },
+      ];
+      updated[qIndex] = { ...updated[qIndex], options: newOptions };
+      return updated;
+    });
   };
 
+  // 🔹 Remove option
   const removeOption = (oIndex: number) => {
     if (question.options.length <= 2) return;
-    const updated = [...JSON.parse(JSON.stringify(setQuizQuestions))];
-    updated[qIndex].options.splice(oIndex, 1);
-    setQuizQuestions(updated);
+    setQuizQuestions((prev) => {
+      const updated = [...prev];
+      const newOptions = [...updated[qIndex].options];
+      newOptions.splice(oIndex, 1);
+      updated[qIndex] = { ...updated[qIndex], options: newOptions };
+      return updated;
+    });
   };
 
+  // 🔹 Drag reordering options
   const handleOptionDragEnd = (event: any) => {
     const { active, over } = event;
-    if (!over) return;
-    if (active.id !== over.id) {
-      const updated = [...JSON.parse(JSON.stringify(setQuizQuestions))];
-      const oldIndex = updated[qIndex].options.findIndex(
-        (o: { id: any; }) => o.id === active.id
-      );
-      const newIndex = updated[qIndex].options.findIndex(
-        (o: { id: any; }) => o.id === over.id
-      );
-      updated[qIndex].options = arrayMove(
-        updated[qIndex].options,
-        oldIndex,
-        newIndex
-      );
-      setQuizQuestions(updated);
-    }
+    if (!over || active.id === over.id) return;
+
+    setQuizQuestions((prev) => {
+      const updated = [...prev];
+      const oldIndex = updated[qIndex].options.findIndex((o) => o.id === active.id);
+      const newIndex = updated[qIndex].options.findIndex((o) => o.id === over.id);
+      const reordered = arrayMove(updated[qIndex].options, oldIndex, newIndex);
+      updated[qIndex] = { ...updated[qIndex], options: reordered };
+      return updated;
+    });
   };
 
-  const sensors = useSensors(useSensor(PointerSensor));
+  // 🔹 Delete entire question
+  const removeQuestion = () => {
+    setQuizQuestions((prev) => {
+      const updated = [...prev];
+      updated.splice(qIndex, 1);
+      return updated;
+    });
+  };
 
   return (
     <div
@@ -91,11 +110,7 @@ export default function SortableQuestion({
       <div className="flex justify-between items-center">
         <label className="font-medium">Question {qIndex + 1}</label>
         <Button
-          onClick={() => {
-            const updated = [...JSON.parse(JSON.stringify(setQuizQuestions))];
-            updated.splice(qIndex, 1);
-            setQuizQuestions(updated);
-          }}
+          onClick={removeQuestion}
           className="text-danger hover:text-danger/50"
           variant="secondary"
         >
@@ -123,13 +138,15 @@ export default function SortableQuestion({
               <Input
                 type="text"
                 value={opt.text}
-                onChange={(e) => {
-                  const updated = [
-                    ...JSON.parse(JSON.stringify(setQuizQuestions)),
-                  ];
-                  updated[qIndex].options[oIndex].text = e.target.value;
-                  setQuizQuestions(updated);
-                }}
+                onChange={(e) =>
+                  setQuizQuestions((prev) => {
+                    const updated = [...prev];
+                    const newOptions = [...updated[qIndex].options];
+                    newOptions[oIndex] = { ...newOptions[oIndex], text: e.target.value };
+                    updated[qIndex] = { ...updated[qIndex], options: newOptions };
+                    return updated;
+                  })
+                }
               />
               <Button
                 onClick={() => removeOption(oIndex)}

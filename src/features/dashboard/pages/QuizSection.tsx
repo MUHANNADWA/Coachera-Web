@@ -17,13 +17,26 @@ import SortableQuestion from "./SortableQuestion";
 import {
   useGetQuizzesQuery,
   useCreateQuizMutation,
-  useDeleteQuizMutation,
-  useVerifyQuizMutation,
+  // useDeleteQuizMutation,
+  // useVerifyQuizMutation,
 } from "../slices/QuizApiSlice"; // adjust path if needed
 
+// 🔹 Define consistent shape for quiz questions
+interface QuizOption {
+  id: string;
+  text: string;
+}
+
+interface QuizQuestion {
+  id: string;
+  question: string;
+  options: QuizOption[];
+  answer: number; // index of correct answer
+}
+
 interface QuizSectionProps {
-  quizQuestions: any[];
-  setQuizQuestions: (questions: any[]) => void;
+  quizQuestions: QuizQuestion[];
+  setQuizQuestions: React.Dispatch<React.SetStateAction<QuizQuestion[]>>;
 }
 
 export default function QuizSection({
@@ -35,13 +48,13 @@ export default function QuizSection({
   // 🔹 API hooks
   const { data: quizzes, isLoading } = useGetQuizzesQuery();
   const [createQuiz, { isLoading: isCreating }] = useCreateQuizMutation();
-  const [deleteQuiz] = useDeleteQuizMutation();
-  const [verifyQuiz] = useVerifyQuizMutation();
+  // const [deleteQuiz] = useDeleteQuizMutation();
+  // const [verifyQuiz] = useVerifyQuizMutation();
 
   // 🔹 Prefill state when quizzes load
   useEffect(() => {
     if (quizzes && quizzes.length > 0) {
-      // load first quiz’s questions into UI (example)
+      // Load first quiz’s questions into UI
       setQuizQuestions(
         quizzes[0].questions.map((q: any, i: number) => ({
           id: `q${q.id}`,
@@ -51,7 +64,7 @@ export default function QuizSection({
             { id: `o${i}2`, text: q.answer2 },
             { id: `o${i}3`, text: q.answer3 },
             { id: `o${i}4`, text: q.answer4 },
-          ],
+          ].filter((opt) => opt.text !== undefined && opt.text !== ""), // ignore empty
           answer: 0, // backend doesn’t provide correct index here
         }))
       );
@@ -60,8 +73,8 @@ export default function QuizSection({
 
   // 🔹 Local add question
   const addQuizQuestion = () => {
-    setQuizQuestions([
-      ...quizQuestions,
+    setQuizQuestions((prev) => [
+      ...prev,
       {
         id: `q${Date.now()}`,
         question: "",
@@ -77,12 +90,13 @@ export default function QuizSection({
   // 🔹 Drag reordering
   const handleQuestionDragEnd = (event: any) => {
     const { active, over } = event;
-    if (!over) return;
-    if (active.id !== over.id) {
-      const oldIndex = quizQuestions.findIndex((q) => q.id === active.id);
-      const newIndex = quizQuestions.findIndex((q) => q.id === over.id);
-      setQuizQuestions(arrayMove(quizQuestions, oldIndex, newIndex));
-    }
+    if (!over || active.id === over.id) return;
+
+    setQuizQuestions((prev) => {
+      const oldIndex = prev.findIndex((q) => q.id === active.id);
+      const newIndex = prev.findIndex((q) => q.id === over.id);
+      return arrayMove(prev, oldIndex, newIndex);
+    });
   };
 
   // 🔹 Submit to backend
@@ -94,6 +108,7 @@ export default function QuizSection({
         answer2: q.options[1]?.text || "",
         answer3: q.options[2]?.text || "",
         answer4: q.options[3]?.text || "",
+        // backend doesn’t support correct index yet
       })),
     };
     try {
