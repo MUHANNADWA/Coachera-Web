@@ -64,10 +64,10 @@ export default function SortableQuestion({
     if (active.id !== over.id) {
       const updated = [...JSON.parse(JSON.stringify(setQuizQuestions))];
       const oldIndex = updated[qIndex].options.findIndex(
-        (o) => o.id === active.id
+        (o: { id: any; }) => o.id === active.id
       );
       const newIndex = updated[qIndex].options.findIndex(
-        (o) => o.id === over.id
+        (o: { id: any; }) => o.id === over.id
       );
       updated[qIndex].options = arrayMove(
         updated[qIndex].options,
