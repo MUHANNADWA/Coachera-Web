@@ -35,7 +35,7 @@ import {
   useCreateSectionMutation,
   useUpdateSectionMutation,
   useDeleteSectionMutation,
-  useGetSectionsQuery,
+  // useGetSectionsQuery,
 } from "../slices/SectionApiSlice";
 
 // Component for draggable items

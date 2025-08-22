@@ -1,28 +1,28 @@
 import { apiSlice } from "../../../shared/slices/apiSlice";
 
-const MODULES_URL = "/api/modules";
+const BASE_URL = "/api";
 
 export const sectionsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     // Get all sections of a module
     getSections: builder.query({
-      query: (moduleId) => `${MODULES_URL}/${moduleId}/sections`,
+      query: (moduleId) => `${BASE_URL}/sections/modules/${moduleId}`,
       providesTags: ["Section"],
       keepUnusedDataFor: 5,
     }),
 
     // Get a single section by ID
     getSectionById: builder.query({
-      query: ({ moduleId, sectionId }) =>
-        `${MODULES_URL}/${moduleId}/sections/${sectionId}`,
+      query: (sectionId) =>
+        `${BASE_URL}/sections/${sectionId}`,
       providesTags: ["Section"],
       keepUnusedDataFor: 5,
     }),
 
     // Create a new section
     createSection: builder.mutation({
-      query: ({ moduleId, data }) => ({
-        url: `${MODULES_URL}/${moduleId}/sections`,
+      query: (data) => ({
+        url: `${BASE_URL}/sections`,
         method: "POST",
         body: data,
       }),
@@ -31,8 +31,8 @@ export const sectionsApiSlice = apiSlice.injectEndpoints({
 
     // Update a section
     updateSection: builder.mutation({
-      query: ({ moduleId, sectionId, data }) => ({
-        url: `${MODULES_URL}/${moduleId}/sections/${sectionId}`,
+      query: ({ sectionId, data }) => ({
+        url: `${BASE_URL}/sections/${sectionId}`,
         method: "PUT",
         body: data,
       }),
@@ -42,7 +42,7 @@ export const sectionsApiSlice = apiSlice.injectEndpoints({
     // Delete a section
     deleteSection: builder.mutation({
       query: ({ moduleId, sectionId }) => ({
-        url: `${MODULES_URL}/${moduleId}/sections/${sectionId}`,
+        url: `${BASE_URL}/${moduleId}/sections/${sectionId}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Section"],

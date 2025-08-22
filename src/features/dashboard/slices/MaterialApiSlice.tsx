@@ -6,7 +6,7 @@ export const materialsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     // Get all materials in a section
     getMaterials: builder.query({
-      query: (sectionId) => `${BASE_URL}/materials`,
+      query: (sectionId) => `${BASE_URL}/materials/sections/${sectionId}`,
       providesTags: ["Material"],
       keepUnusedDataFor: 5,
     }),
