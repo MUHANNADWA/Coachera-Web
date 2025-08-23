@@ -1,6 +1,6 @@
 import { apiSlice } from "../../../shared/slices/apiSlice";
 
-const MODULES_URL = "/api/modules";
+const MODULES_URL = "modules";
 
 export const modulesApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({

@@ -1,6 +1,6 @@
 import { apiSlice } from "../../../shared/slices/apiSlice";
 
-const QUIZ_URL = "/api/quizzes";
+const QUIZ_URL = "quizzes";
 
 export const quizzesApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({

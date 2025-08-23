@@ -1,12 +1,10 @@
 import { apiSlice } from "../../../shared/slices/apiSlice";
 
-const BASE_URL = "/api";
-
 export const materialsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     // Get all materials in a section
     getMaterials: builder.query({
-      query: (sectionId) => `${BASE_URL}/materials/sections/${sectionId}`,
+      query: (sectionId) => `materials/sections/${sectionId}`,
       providesTags: ["Material"],
       keepUnusedDataFor: 5,
     }),
@@ -14,7 +12,7 @@ export const materialsApiSlice = apiSlice.injectEndpoints({
     // Get single material by materialId
     getMaterial: builder.query({
       query: (materialId ) =>
-        `${BASE_URL}/materials/${materialId}`,
+        `materials/${materialId}`,
       providesTags: ["Material"],
       keepUnusedDataFor: 5,
     }),
@@ -22,7 +20,7 @@ export const materialsApiSlice = apiSlice.injectEndpoints({
     // Create new material
     createMaterial: builder.mutation({
       query: (data) => ({
-        url: `${BASE_URL}/materials`,
+        url: `materials`,
         method: "POST",
         body: data,
       }),
@@ -32,7 +30,7 @@ export const materialsApiSlice = apiSlice.injectEndpoints({
     // Update material
     updateMaterial: builder.mutation({
       query: ({materialId, data }) => ({
-        url: `${BASE_URL}/materials/${materialId}`,
+        url: `materials/${materialId}`,
         method: "PUT",
         body: data,
       }),
@@ -42,7 +40,7 @@ export const materialsApiSlice = apiSlice.injectEndpoints({
     // Delete material
     deleteMaterial: builder.mutation({
       query: (materialId) => ({
-        url: `${BASE_URL}/materials/${materialId}`,
+        url: `materials/${materialId}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Material"],
