@@ -27,7 +27,7 @@ export const FavButton = ({
 
   console.log("wishlistCourses = ", wishlistCourses);
 
-  const isWishlisted = wishlistCourses.includes(course);
+  const isWishlisted = wishlistCourses.some((c) => c.id === course.id);
 
   const [addToWishlist, { isLoading: isAdding }] = useAddToWishlistMutation();
   const [removeFromWishlist, { isLoading: isRemoving }] =
