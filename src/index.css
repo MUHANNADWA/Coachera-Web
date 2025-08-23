@@ -50,7 +50,7 @@ body {
   .card {
     @apply cursor-pointer bg-white dark:bg-dark rounded-2xl relative ease-in-out dark:text-white
     w-full border-2 border-gray-300 dark:border-primary-dark overflow-hidden transform transition-all duration-300 
-    hover:bg-primary-lightest hover:border-primary hover:shadow-md hover:-translate-y-2 hover:scale-[1.02];
+    hover:bg-primary-lightest dark:hover:bg-primary-dark hover:border-primary hover:shadow-md hover:-translate-y-2 hover:scale-[1.02];
   }
 
   .header-element {
@@ -72,6 +72,7 @@ body {
   .min-h-full-s {
     @apply min-h-[calc(100vh-63px)];
   }
+
   .fill-available {
     @apply w-[-webkit-fill-available] w-[-moz-available];
   }

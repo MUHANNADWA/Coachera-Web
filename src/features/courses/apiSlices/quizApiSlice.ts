@@ -1,55 +1,59 @@
-import { MATERIALS_URL, QUIZZES_URL } from "../../../constants/constants";
 import { apiSlice } from "../../../shared/slices/apiSlice";
+
+const QUIZ_URL = "quizzes";
 
 export const quizzesApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getQuizzesByMaterial: builder.query({
-      query: (materialId) => ({
-        url: `${MATERIALS_URL}/${materialId}/quizzes`,
-      }),
+    // GET all quizzes
+    getQuizzes: builder.query<any, void>({
+      query: () => QUIZ_URL,
       providesTags: ["Quiz"],
       keepUnusedDataFor: 5,
     }),
 
-    getQuizDetails: builder.query({
-      query: ({ materialId, quizId }) => ({
-        url: `${MATERIALS_URL}/${materialId}/quizzes/${quizId}`,
-      }),
-      providesTags: ["Quiz"],
-      keepUnusedDataFor: 5,
-    }),
-
+    // CREATE quiz
     createQuiz: builder.mutation({
       query: (data) => ({
-        url: `${MATERIALS_URL}/${data.materialId}/quizzes`,
+        url: QUIZ_URL,
         method: "POST",
-        body: data.quizData,
+        body: data,
       }),
       invalidatesTags: ["Quiz"],
     }),
 
+    // DELETE quiz by id
     deleteQuiz: builder.mutation({
-      query: ({ materialId, quizId }) => ({
-        url: `${MATERIALS_URL}/${materialId}/quizzes/${quizId}`,
+      query: (quizId) => ({
+        url: `${QUIZ_URL}/${quizId}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Quiz"],
     }),
 
-    submitQuiz: builder.mutation({
-      query: (submissionData) => ({
-        url: `${QUIZZES_URL}/verify`,
+    // GET quiz details by id
+    getQuizDetails: builder.query({
+      query: (quizId) => `${QUIZ_URL}/${quizId}`,
+      providesTags: ["Quiz"],
+      keepUnusedDataFor: 5,
+    }),
+
+    // VERIFY quiz answers
+    verifyQuiz: builder.mutation({
+      query: (data) => ({
+        url: `${QUIZ_URL}/verify`,
         method: "POST",
-        body: submissionData,
+        body: data,
       }),
+      invalidatesTags: ["Quiz"],
     }),
   }),
+  overrideExisting: false,
 });
 
 export const {
-  useGetQuizzesByMaterialQuery,
-  useGetQuizDetailsQuery,
+  useGetQuizzesQuery,
   useCreateQuizMutation,
   useDeleteQuizMutation,
-  useSubmitQuizMutation,
+  useGetQuizDetailsQuery,
+  useVerifyQuizMutation,
 } = quizzesApiSlice;

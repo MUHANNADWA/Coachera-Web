@@ -11,8 +11,7 @@ export const materialsApiSlice = apiSlice.injectEndpoints({
 
     // Get single material by materialId
     getMaterial: builder.query({
-      query: (materialId ) =>
-        `materials/${materialId}`,
+      query: (materialId) => `materials/${materialId}`,
       providesTags: ["Material"],
       keepUnusedDataFor: 5,
     }),
@@ -29,7 +28,7 @@ export const materialsApiSlice = apiSlice.injectEndpoints({
 
     // Update material
     updateMaterial: builder.mutation({
-      query: ({materialId, data }) => ({
+      query: ({ materialId, data }) => ({
         url: `materials/${materialId}`,
         method: "PUT",
         body: data,

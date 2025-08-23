@@ -7,7 +7,7 @@ import ContactUsSection from "../components/ContactUsSection";
 import FeaturesSection from "../components/FeaturesSection";
 import HighlightsSection from "../components/HighlightsSection";
 import CategoriesSection from "../components/CategoriesSection";
-import CoursesSection from "../components/CoursesSection";
+import CoursesView from "../components/CoursesView";
 
 export default function HomePage() {
   const { navigate, user } = useAppHook();
@@ -78,13 +78,13 @@ export default function HomePage() {
       <HighlightsSection />
 
       {/* Recommended Courses */}
-      {user && <CoursesSection variant="recommended" />}
+      {user && <CoursesView variant="recommended" />}
 
       {/* Trending Courses */}
-      <CoursesSection variant="trending" />
+      <CoursesView variant="trending" />
 
       {/* Popular Courses */}
-      <CoursesSection variant="popular" />
+      <CoursesView variant="popular" />
 
       {/* Categories */}
       <CategoriesSection />

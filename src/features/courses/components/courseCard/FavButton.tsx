@@ -25,8 +25,6 @@ export const FavButton = ({
   const requiresAuth = useRequiresAuth();
   const { wishlistCourses, dispatch } = useAppHook();
 
-  console.log("wishlistCourses = ", wishlistCourses);
-
   const isWishlisted = wishlistCourses.some((c) => c.id === course.id);
 
   const [addToWishlist, { isLoading: isAdding }] = useAddToWishlistMutation();

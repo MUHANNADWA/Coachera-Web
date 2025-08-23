@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { useMemo } from "react";
 import { useAppHook } from "../../../shared/hooks/useAppHook";
 import { PROFILE_IMAGE } from "../../../constants/constants";
@@ -25,13 +26,13 @@ export default function ProfilePage() {
     () => ({
       username: user?.username ?? "User",
       email: user?.email ?? "No email",
-      firstName: (user as any)?.firstName ?? "",
-      lastName: (user as any)?.lastName ?? "",
-      birthDate: (user as any)?.birthDate ?? "",
-      gender: (user as any)?.gender ?? "",
-      education: (user as any)?.education ?? "",
-      phoneNumber: (user as any)?.phoneNumber ?? "",
-      address: (user as any)?.address ?? "",
+      firstName: user?.details?.firstName ?? "",
+      lastName: user?.details?.lastName ?? "",
+      birthDate: user?.details?.birthDate ?? "",
+      gender: user?.details?.gender ?? "",
+      education: user?.details?.education ?? "",
+      phoneNumber: user?.details?.phoneNumber ?? "",
+      address: user?.details?.address ?? "",
       profileImage: user?.profileImage || PROFILE_IMAGE,
     }),
     [user]
@@ -90,7 +91,7 @@ export default function ProfilePage() {
       <div className="mx-auto mb-2 inline-flex rounded-xl bg-primary/10 p-2">
         <Icon className="h-5 w-5 text-primary" />
       </div>
-      <div className="text-2xl font-bold">{value}</div>
+      <div className="text-2xl font-bold dark:text-gray-200">{value}</div>
       <div className="text-sm text-gray-500">{label}</div>
     </div>
   );
@@ -113,8 +114,10 @@ export default function ProfilePage() {
               />
             </div>
             <div className="flex-1">
-              <h1 className="text-3xl font-bold">{profile.username}</h1>
-              <div className="mt-1 flex items-center gap-2 text-gray-600 dark:text-gray-300">
+              <h1 className="text-3xl font-bold dark:text-gray-200">
+                {profile.username}
+              </h1>
+              <div className="mt-1 flex items-center gap-2 text-gray-500 dark:text-gray-400">
                 <EnvelopeIcon className="w-4 h-4" />
                 <span className="truncate">{profile.email}</span>
               </div>
@@ -146,7 +149,7 @@ export default function ProfilePage() {
 
       {/* About Me */}
       <section className="mb-12">
-        <h2 className="text-2xl font-bold mb-4 dark:text-white">About</h2>
+        <h2 className="text-3xl font-bold mb-4 dark:text-white">About</h2>
         <div className="grid md:grid-cols-2 gap-4">
           <InfoRow
             icon={UserIcon}
@@ -177,7 +180,7 @@ export default function ProfilePage() {
       {/* Currently Learning */}
       <section className="mb-16">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold dark:text-white">
+          <h2 className="text-3xl font-bold dark:text-white">
             Currently Learning
           </h2>
           {enrolledCourses?.length > 0 && (
@@ -212,16 +215,9 @@ export default function ProfilePage() {
       {/* Favorites */}
       <section className="mb-16" id="wishlist">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold dark:text-white">Favorites</h2>
-          {wishlistCourses?.length > 0 && (
-            <Button
-              variant="secondary"
-              onClick={() => navigate("/search/favorites")}
-              className="text-sm"
-            >
-              View All
-            </Button>
-          )}
+          <h2 className="text-3xl font-bold dark:text-white">
+            Favorited Courses
+          </h2>
         </div>
 
         {!wishlistCourses || wishlistCourses.length === 0 ? (

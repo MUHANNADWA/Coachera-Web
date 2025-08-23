@@ -92,14 +92,14 @@ export default function Modal({
       {/* Dialog */}
       <div
         ref={dialogRef}
-        className="relative w-full max-w-md mx-4 rounded-2xl p-6 shadow-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900"
+        className="relative w-full max-w-md mx-4 rounded-2xl p-6 shadow-xl border border-gray-200 dark:border-primary-dark bg-white dark:bg-dark"
       >
         {/* Close button */}
         <button
           type="button"
           onClick={onClose}
           aria-label="Close"
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary rounded-full"
+          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-2xl"
           autoFocus
         >
           <XMarkIcon className="w-6 h-6" />

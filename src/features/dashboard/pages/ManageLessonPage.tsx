@@ -6,16 +6,17 @@ import Textarea from "../../../shared/components/form/Textarea";
 import {
   useCreateMaterialMutation,
   useUpdateMaterialMutation,
-} from "../slices/MaterialApiSlice.tsx"; // <-- import hooks
+} from "../../courses/apiSlices/MaterialApiSlice";
+import { useAppHook } from "../../../shared/hooks/useAppHook";
 
 export type LessonType = "video" | "article" | "quiz";
 
-interface ManageLessonPageProps {
-  sectionId: string;     // passed from route or parent
-  materialId?: string;   // optional for edit mode
-}
+const ManageLessonPage = () => {
+  const { location } = useAppHook();
 
-const ManageLessonPage = ({ sectionId, materialId }: ManageLessonPageProps) => {
+  const sectionId = location.state.sectionId;
+  const materialId = location.state.materialId;
+
   const [lessonType, setLessonType] = useState<LessonType>("video");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -57,7 +58,7 @@ const ManageLessonPage = ({ sectionId, materialId }: ManageLessonPageProps) => {
         alert("Lesson updated!");
       } else {
         // create
-        await createMaterial({data: payload }).unwrap();
+        await createMaterial({ data: payload }).unwrap();
         alert("Lesson created!");
       }
     } catch (err: any) {
@@ -148,7 +149,13 @@ const ManageLessonPage = ({ sectionId, materialId }: ManageLessonPageProps) => {
         variant="primary"
         disabled={isCreating || isUpdating}
       >
-        {materialId ? (isUpdating ? "Updating..." : "Update Lesson") : isCreating ? "Saving..." : "Save Lesson"}
+        {materialId
+          ? isUpdating
+            ? "Updating..."
+            : "Update Lesson"
+          : isCreating
+          ? "Saving..."
+          : "Save Lesson"}
       </Button>
     </div>
   );

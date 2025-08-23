@@ -11,7 +11,7 @@ export default function Header() {
 
   return (
     <header
-      className="sticky w-full py-2 px-4 top-0 z-50! border-b border-color backdrop-blur bg-white/70 dark:bg-dark/70 dark:text-white transition-shadow"
+      className="sticky w-full py-2 px-4 top-0 z-50! border-b border-color backdrop-blur bg-white/80 dark:bg-dark/80 dark:text-white transition-shadow"
       role="banner"
       aria-label="Main header"
     >

@@ -29,14 +29,15 @@ import OtpVerificationPage from "./features/auth/pages/OtpVerificationPage";
 import SearchPage from "./shared/pages/SearchPage";
 import CategoriesPage from "./features/courses/pages/CategoriesPage";
 import EditProfilePage from "./features/profile/pages/EditProfilePage";
-import TeachPage from "./features/dashboard/pages/TeachPage";
-import AddCoursePage from "./features/dashboard/pages/AddCoursePage";
 import ManageLessonPage from "./features/dashboard/pages/ManageLessonPage";
 import CheckoutButton from "./shared/components/Stripe";
 import NotificationsPage from "./features/courses/pages/NotificationsPage";
 import InstructorRoute from "./shared/routes/InstructorRoute";
 import OrganizationRoute from "./shared/routes/OrganizationRoute";
-import OrgCoursesPage from "./features/dashboard/pages/org/OrgCoursesPage";
+import AddCoursePage from "./features/courses/builder/pages/AddCoursePage";
+import EditCoursePage from "./features/courses/builder/pages/EditCoursePage";
+import OrgDashboardPage from "./features/dashboard/pages/org/OrgDashboardPage";
+import InstructorDashboardPage from "./features/dashboard/pages/InstructorDashboardPage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -52,12 +53,13 @@ const router = createBrowserRouter(
       <Route path="/courses" element={<CoursesPage />} />
       <Route path="/courses/:id" element={<CourseDetailsPage />} />
       <Route path="/profile" element={<ProfilePage />} />
-      <Route path="/teach" element={<TeachPage />} />
+      <Route path="/inst-dashboard" element={<InstructorDashboardPage />} />
       <Route path="/add-course" element={<AddCoursePage />} />
+      <Route path="/edit-course" element={<EditCoursePage />} />
       <Route path="/manage-lesson/:id" element={<ManageLessonPage />} />
       <Route path="/stripe" element={<CheckoutButton />} />
       <Route path="/notifications" element={<NotificationsPage />} />
-      <Route path="/organization/courses" element={<OrgCoursesPage />} />
+      <Route path="/org-dashboard" element={<OrgDashboardPage />} />
 
       <Route element={<ProtectedRoute />}>
         <Route path="/learn/:courseId/:moduleId" element={<LearnPage />} />

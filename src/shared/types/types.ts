@@ -84,6 +84,19 @@ export interface Review {
   createdAt: string;
 }
 
+export interface Organization {
+  id: number;
+  userId: number;
+  orgName: string;
+  orgDecription: string;
+}
+
+export interface Instructor {
+  id: number;
+  userId: number;
+  bio: string;
+}
+
 export interface Student {
   id: number;
   userId: number;

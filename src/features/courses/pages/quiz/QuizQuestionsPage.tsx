@@ -3,8 +3,8 @@ import { Material } from "../../../../shared/types/types";
 import { Button } from "../../../../shared/components/form/Button";
 import Modal from "../../../../shared/components/Modal";
 import { useModal } from "../../../../shared/hooks/useModal";
-import { useSubmitQuizMutation } from "../../apiSlices/quizApiSlice";
 import toastPromise from "../../../../utils/toast";
+import { useVerifyQuizMutation } from "../../apiSlices/QuizApiSlice";
 
 interface QuizPageProps {
   material: Material;
@@ -21,7 +21,7 @@ export default function QuizQuestionsPage({
   const [submitted, setSubmitted] = useState(false);
   const { isModalOpen, openModal, closeModal } = useModal();
 
-  const [submitQuiz, { isLoading }] = useSubmitQuizMutation();
+  const [submitQuiz, { isLoading }] = useVerifyQuizMutation();
 
   if (!quiz) return <p>No quiz found.</p>;
 
@@ -88,7 +88,8 @@ export default function QuizQuestionsPage({
                       answers[question.id] === idx
                         ? "border-2 border-primary bg-primary-lightest dark:bg-primary-darkest"
                         : "border-gray-200"
-                    }`}>
+                    }`}
+                >
                   <input
                     type="radio"
                     name={`question-${question.id}`}
@@ -109,7 +110,8 @@ export default function QuizQuestionsPage({
           type="button"
           onClick={handleSubmit}
           variant="primary"
-          disabled={submitted || isLoading}>
+          disabled={submitted || isLoading}
+        >
           {submitted
             ? "Submitted"
             : isLoading

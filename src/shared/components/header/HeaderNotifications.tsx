@@ -77,8 +77,6 @@ export default function HeaderNotifications() {
                     onClick={() => {
                       if (n.actionUrl) {
                         window.location.href = n.actionUrl;
-                      } else {
-                        console.log("Clicked notification:", n);
                       }
                     }}
                     className={`group flex w-full justify-start px-4 py-2 ${

@@ -13,7 +13,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, onClick }) => {
 
   return (
     <Button
-      className="card hover:bg-primary/5! group relative flex flex-col items-center transition-transform"
+      className="card group relative flex flex-col items-center transition-transform"
       onClick={onClick}
       aria-label={`Explore category: ${category.name}`}
       tabIndex={0}
@@ -22,6 +22,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, onClick }) => {
       <div className="flex flex-col items-center justify-center w-full h-40 bg-primary/5">
         <span className="flex items-center justify-center rounded-full bg-primary/10 text-primary mb-2 p-4 group-hover:bg-primary/20 transition-all">
           {Icon ? (
+            // @ts-ignore
             <Icon className="w-12 h-12" aria-hidden="true" />
           ) : (
             // Fallback: أيقونة عامة أو الحرف الأول

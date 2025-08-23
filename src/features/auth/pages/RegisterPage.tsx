@@ -1,15 +1,25 @@
+// features/auth/pages/RegisterPage.tsx
 import { Link } from "react-router-dom";
 import useRegister from "../hooks/useRegister";
 import { Button } from "../../../shared/components/form/Button";
 import Input from "../../../shared/components/form/Input";
+import Checkbox from "../../../shared/components/form/Checkbox";
 import {
   EyeIcon,
   EyeSlashIcon,
   LockClosedIcon,
   EnvelopeIcon,
   UserIcon,
+  PhoneIcon,
+  CalendarIcon,
+  AcademicCapIcon,
+  MapPinIcon,
+  UsersIcon,
+  BuildingOfficeIcon,
+  IdentificationIcon,
+  DocumentTextIcon,
 } from "@heroicons/react/24/outline";
-import Checkbox from "../../../shared/components/form/Checkbox";
+import { UserRole } from "../types";
 
 export default function RegisterPage() {
   const {
@@ -22,9 +32,9 @@ export default function RegisterPage() {
     isUploading,
     isLoading,
     handleSubmit,
+    handleNext,
     step,
     setStep,
-    handleNext,
   } = useRegister();
 
   return (
@@ -42,14 +52,15 @@ export default function RegisterPage() {
             </Link>
           </p>
         </div>
+
         <form className="space-y-6" onSubmit={handleSubmit}>
+          {/* Step 1 */}
           {step === "first" && (
-            <section>
+            <section className="space-y-4">
               <Input
                 label="Username"
                 name="username"
                 type="text"
-                autoComplete="username"
                 placeholder="johndoe"
                 required
                 value={formData.username}
@@ -57,14 +68,11 @@ export default function RegisterPage() {
                   setFormData({ ...formData, username: e.target.value })
                 }
                 prefixIcon={UserIcon}
-                className="mt-1 block w-full"
               />
-
               <Input
                 label="Email address"
                 name="email"
                 type="email"
-                autoComplete="email"
                 placeholder="johndoe@example.com"
                 required
                 value={formData.email}
@@ -72,14 +80,11 @@ export default function RegisterPage() {
                   setFormData({ ...formData, email: e.target.value })
                 }
                 prefixIcon={EnvelopeIcon}
-                className="mt-1 block w-full"
               />
-
               <Input
                 label="Password"
                 name="password"
                 type={isPasswordVisible ? "text" : "password"}
-                autoComplete="new-password"
                 placeholder="********"
                 required
                 minLength={8}
@@ -88,13 +93,11 @@ export default function RegisterPage() {
                   setFormData({ ...formData, password: e.target.value })
                 }
                 prefixIcon={LockClosedIcon}
-                helperText="Password must be at least 8 characters"
-                className="mt-1 block w-full pr-10"
                 suffixIcon={
                   <Button
                     onClick={() => setPasswordVisibility((prev) => !prev)}
-                    className="text-gray-500 hover:text-primary"
                     type="button"
+                    className="text-gray-500 hover:text-primary"
                   >
                     {isPasswordVisible ? (
                       <EyeSlashIcon className="h-5 w-5" />
@@ -104,12 +107,10 @@ export default function RegisterPage() {
                   </Button>
                 }
               />
-
               <Input
                 label="Confirm Password"
                 name="confirmPassword"
                 type={isConfirmPasswordVisible ? "text" : "password"}
-                autoComplete="new-password"
                 placeholder="********"
                 required
                 minLength={8}
@@ -121,15 +122,13 @@ export default function RegisterPage() {
                   })
                 }
                 prefixIcon={LockClosedIcon}
-                helperText="Please re-enter your password"
-                className="mt-1 block w-full pr-10"
                 suffixIcon={
                   <Button
                     onClick={() =>
                       setConfirmPasswordVisibility((prev) => !prev)
                     }
-                    className="text-gray-500 hover:text-primary"
                     type="button"
+                    className="text-gray-500 hover:text-primary"
                   >
                     {isConfirmPasswordVisible ? (
                       <EyeSlashIcon className="h-5 w-5" />
@@ -140,86 +139,172 @@ export default function RegisterPage() {
                 }
               />
 
-              {/* Next Step */}
-              <Button
-                full
-                variant="primary"
-                onClick={handleNext}
-                disabled={
-                  !(
-                    formData.email &&
-                    formData.username &&
-                    formData.password &&
-                    formData.confirmPassword
-                  )
-                }
-              >
+              <Button full variant="primary" onClick={handleNext}>
                 Next
               </Button>
             </section>
           )}
+
+          {/* Step 2 */}
           {step === "second" && (
             <section>
               <h3 className="text-lg font-semibold">
                 What best describes you?
               </h3>
-
               <div className="mt-4 space-y-6">
-                <div>
-                  <Checkbox
-                    label="I am a student"
-                    checked={formData.role === "student"}
-                    onChange={() =>
-                      setFormData({ ...formData, role: "student" })
-                    }
-                  />
-                  <p className="text-sm text-gray-600 dark:text-gray-400 ml-7">
-                    You want to enroll in courses and learn from instructors.
-                  </p>
-                </div>
-
-                <div>
-                  <Checkbox
-                    label="I am a teacher"
-                    checked={formData.role === "teacher"}
-                    onChange={() =>
-                      setFormData({ ...formData, role: "teacher" })
-                    }
-                  />
-                  <p className="text-sm text-gray-600 dark:text-gray-400 ml-7">
-                    You want to create and manage educational content.
-                  </p>
-                </div>
-
-                <div>
-                  <Checkbox
-                    label="I am an organization"
-                    checked={formData.role === "organization"}
-                    onChange={() =>
-                      setFormData({ ...formData, role: "organization" })
-                    }
-                  />
-                  <p className="text-sm text-gray-600 dark:text-gray-400 ml-7">
-                    You represent an institution offering multiple courses or
-                    managing instructors.
-                  </p>
-                </div>
+                <Checkbox
+                  label="I am a student"
+                  checked={formData.role === UserRole.STUDENT}
+                  onChange={() =>
+                    setFormData({ ...formData, role: UserRole.STUDENT })
+                  }
+                />
+                <Checkbox
+                  label="I am an instructor"
+                  checked={formData.role === UserRole.INSTRUCTOR}
+                  onChange={() =>
+                    setFormData({ ...formData, role: UserRole.INSTRUCTOR })
+                  }
+                />
+                <Checkbox
+                  label="I am an organization"
+                  checked={formData.role === UserRole.ORGANIZATION}
+                  onChange={() =>
+                    setFormData({ ...formData, role: UserRole.ORGANIZATION })
+                  }
+                />
               </div>
-
-              {/* Create Account */}
-              <div className="flex gap-4 items-center">
+              <div className="flex gap-4 mt-6">
                 <Button
                   variant="secondary"
-                  className="px-4! py-[10px]!"
                   onClick={() => setStep("first")}
+                  type="button"
                 >
                   {"<"}
                 </Button>
-
                 <Button
                   full
                   variant="primary"
                   disabled={!formData.role}
+                  onClick={() => setStep("third")}
+                >
+                  Next
+                </Button>
+              </div>
+            </section>
+          )}
+
+          {/* Step 3 (role-specific) */}
+          {step === "third" && (
+            <section className="space-y-4">
+              {formData.role === UserRole.STUDENT && (
+                <>
+                  <Input
+                    label="First Name"
+                    value={formData.firstName || ""}
+                    onChange={(e) =>
+                      setFormData({ ...formData, firstName: e.target.value })
+                    }
+                    prefixIcon={IdentificationIcon}
+                  />
+                  <Input
+                    label="Last Name"
+                    value={formData.lastName || ""}
+                    onChange={(e) =>
+                      setFormData({ ...formData, lastName: e.target.value })
+                    }
+                    prefixIcon={IdentificationIcon}
+                  />
+                  <Input
+                    label="Birth Date"
+                    type="date"
+                    value={formData.birthDate || ""}
+                    onChange={(e) =>
+                      setFormData({ ...formData, birthDate: e.target.value })
+                    }
+                    prefixIcon={CalendarIcon}
+                  />
+                  <Input
+                    label="Gender"
+                    value={formData.gender || ""}
+                    onChange={(e) =>
+                      setFormData({ ...formData, gender: e.target.value })
+                    }
+                    prefixIcon={UsersIcon}
+                  />
+                  <Input
+                    label="Education"
+                    value={formData.education || ""}
+                    onChange={(e) =>
+                      setFormData({ ...formData, education: e.target.value })
+                    }
+                    prefixIcon={AcademicCapIcon}
+                  />
+                  <Input
+                    label="Phone Number"
+                    value={formData.phoneNumber || ""}
+                    onChange={(e) =>
+                      setFormData({ ...formData, phoneNumber: e.target.value })
+                    }
+                    prefixIcon={PhoneIcon}
+                  />
+                  <Input
+                    label="Address"
+                    value={formData.address || ""}
+                    onChange={(e) =>
+                      setFormData({ ...formData, address: e.target.value })
+                    }
+                    prefixIcon={MapPinIcon}
+                  />
+                </>
+              )}
+
+              {formData.role === UserRole.INSTRUCTOR && (
+                <Input
+                  label="Bio"
+                  value={formData.bio || ""}
+                  onChange={(e) =>
+                    setFormData({ ...formData, bio: e.target.value })
+                  }
+                  prefixIcon={DocumentTextIcon}
+                />
+              )}
+
+              {formData.role === UserRole.ORGANIZATION && (
+                <>
+                  <Input
+                    label="Organization Name"
+                    value={formData.orgName || ""}
+                    onChange={(e) =>
+                      setFormData({ ...formData, orgName: e.target.value })
+                    }
+                    prefixIcon={BuildingOfficeIcon}
+                  />
+                  <Input
+                    label="Description"
+                    value={formData.orgDescription || ""}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        orgDescription: e.target.value,
+                      })
+                    }
+                    prefixIcon={DocumentTextIcon}
+                  />
+                </>
+              )}
+
+              <div className="flex gap-4 mt-6">
+                <Button
+                  variant="secondary"
+                  onClick={() => setStep("second")}
+                  type="button"
+                >
+                  {"<"}
+                </Button>
+                <Button
+                  full
+                  variant="primary"
                   isLoading={isLoading || isUploading}
                 >
                   Create Account

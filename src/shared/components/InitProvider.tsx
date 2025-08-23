@@ -54,7 +54,6 @@ const InitProvider = () => {
   const { data: enrolled, isSuccess: enrolledSuccess } =
     useGetEnrolledCoursesQuery({}, { skip: !user });
 
-  console.log("wishlist from server = ", wishlist);
   console.log("enrolled from server = ", enrolled);
 
   useEffect(() => {

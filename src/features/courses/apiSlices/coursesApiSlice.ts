@@ -1,6 +1,8 @@
 import {
   COURSES_URL,
   ENROLLMENTS_URL,
+  INSTRUCTOR_URL,
+  ORGANZATION_URL,
   UPLOAD_URL,
 } from "../../../constants/constants";
 import { apiSlice } from "../../../shared/slices/apiSlice";
@@ -59,6 +61,34 @@ export const coursesApiSlice = apiSlice.injectEndpoints({
       providesTags: ["Course"],
       keepUnusedDataFor: 5,
     }),
+    getOrgCourses: builder.query({
+      query: ({
+        id,
+        page = 0,
+        size = 10,
+        sortBy = "id",
+        sortDirection = "desc",
+      }) => ({
+        url: `${COURSES_URL}${ORGANZATION_URL}/${id}`,
+        params: { page, size, sortBy, sortDirection },
+      }),
+      providesTags: ["Course"],
+      keepUnusedDataFor: 5,
+    }),
+    getInstCourses: builder.query({
+      query: ({
+        id,
+        page = 0,
+        size = 10,
+        sortBy = "id",
+        sortDirection = "desc",
+      }) => ({
+        url: `${COURSES_URL}${INSTRUCTOR_URL}/${id}`,
+        params: { page, size, sortBy, sortDirection },
+      }),
+      providesTags: ["Course"],
+      keepUnusedDataFor: 5,
+    }),
     getCourseDetails: builder.query({
       query: (courseID) => ({
         url: `${COURSES_URL}/${courseID}`,
@@ -78,7 +108,6 @@ export const coursesApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Enrollments"],
     }),
-
     unEnrollCourse: builder.mutation({
       query: (courseId: number) => ({
         url: `${ENROLLMENTS_URL}/delete/${courseId}/student`,
@@ -122,10 +151,6 @@ export const coursesApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Course"],
     }),
-    getTopCourses: builder.query({
-      query: () => `${COURSES_URL}/top`,
-      keepUnusedDataFor: 5,
-    }),
   }),
 });
 
@@ -134,13 +159,14 @@ export const {
   useGetRecommendedCoursesQuery,
   useGetTrendingCoursesQuery,
   useGetPopularCoursesQuery,
+  useGetOrgCoursesQuery,
+  useGetInstCoursesQuery,
   useGetCourseDetailsQuery,
   useCreateCourseMutation,
   useUpdateCourseMutation,
   useUploadCourseImageMutation,
   useDeleteCourseMutation,
   useCreateReviewMutation,
-  useGetTopCoursesQuery,
   useGetEnrolledCoursesQuery,
   useEnrollCourseMutation,
   useUnEnrollCourseMutation,

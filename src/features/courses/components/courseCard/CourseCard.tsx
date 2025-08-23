@@ -88,14 +88,6 @@ export default function CourseCard({ course, className }: CourseCardProps) {
             {course.level ?? "Beginner"}
           </span>
         </div>
-        {/* Free Badge */}
-        {course.price === 0 && (
-          <div className="absolute! bottom-3 left-3 z-10">
-            <span className="text-xs font-bold text-primary bg-white/90 border-2 border-primary/20 px-2 py-1 rounded-md">
-              Free
-            </span>
-          </div>
-        )}
       </div>
 
       {/* Content */}
@@ -120,7 +112,7 @@ export default function CourseCard({ course, className }: CourseCardProps) {
         </div>
 
         {/* Duration */}
-        <div className="flex items-center gap-2 text-sm dark:text-gray-400">
+        <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
           <ClockIcon className="w-4 h-4" />
           <span>{formatDuration(course.durationHours)}</span>
         </div>
@@ -128,7 +120,7 @@ export default function CourseCard({ course, className }: CourseCardProps) {
         {/* Description */}
         {course.description && (
           <div
-            className="text-gray-700 dark:text-gray-300 text-sm line-clamp-2"
+            className="text-gray-800 dark:text-gray-300 text-sm line-clamp-2"
             title={course.description}
           >
             {course.description}
@@ -145,7 +137,7 @@ export default function CourseCard({ course, className }: CourseCardProps) {
               {renderStars(course.rating ?? 0)}
             </div>
           </div>
-          <span className="text-sm text-gray-500">
+          <span className="text-sm text-gray-600 dark:text-gray-400">
             ({course.ratingCount ?? 0} reviews)
           </span>
         </div>
@@ -155,7 +147,7 @@ export default function CourseCard({ course, className }: CourseCardProps) {
           <div className="text-xl font-bold text-primary">
             {formatPrice(course.price)}
           </div>
-          <div className="text-sm text-gray-600">course</div>
+          <div className="text-sm text-gray-800 dark:text-gray-300">course</div>
         </div>
       </div>
     </article>
