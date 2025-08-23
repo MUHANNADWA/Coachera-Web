@@ -36,6 +36,7 @@ import CheckoutButton from "./shared/components/Stripe";
 import NotificationsPage from "./features/courses/pages/NotificationsPage";
 import InstructorRoute from "./shared/routes/InstructorRoute";
 import OrganizationRoute from "./shared/routes/OrganizationRoute";
+import OrgCoursesPage from "./features/dashboard/pages/org/OrgCoursesPage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -56,6 +57,7 @@ const router = createBrowserRouter(
       <Route path="/manage-lesson/:id" element={<ManageLessonPage />} />
       <Route path="/stripe" element={<CheckoutButton />} />
       <Route path="/notifications" element={<NotificationsPage />} />
+      <Route path="/organization/courses" element={<OrgCoursesPage />} />
 
       <Route element={<ProtectedRoute />}>
         <Route path="/learn/:courseId/:moduleId" element={<LearnPage />} />
