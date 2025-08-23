@@ -2,10 +2,9 @@ export interface LearningPath {
   id: number;
   title: string;
   description: string;
-  instructor: string;
   price: number;
   rating: number;
-  image: string;
+  imageUrl: string;
   duration: string;
   ratingCount: number;
   level: string;

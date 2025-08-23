@@ -32,6 +32,10 @@ import EditProfilePage from "./features/profile/pages/EditProfilePage";
 import TeachPage from "./features/dashboard/pages/TeachPage";
 import AddCoursePage from "./features/dashboard/pages/AddCoursePage";
 import ManageLessonPage from "./features/dashboard/pages/ManageLessonPage";
+import CheckoutButton from "./shared/components/Stripe";
+import NotificationsPage from "./features/courses/pages/NotificationsPage";
+import InstructorRoute from "./shared/routes/InstructorRoute";
+import OrganizationRoute from "./shared/routes/OrganizationRoute";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -50,12 +54,20 @@ const router = createBrowserRouter(
       <Route path="/teach" element={<TeachPage />} />
       <Route path="/add-course" element={<AddCoursePage />} />
       <Route path="/manage-lesson/:id" element={<ManageLessonPage />} />
+      <Route path="/stripe" element={<CheckoutButton />} />
+      <Route path="/notifications" element={<NotificationsPage />} />
 
       <Route element={<ProtectedRoute />}>
         <Route path="/learn/:courseId/:moduleId" element={<LearnPage />} />
-        <Route path="/edit-profile" element={<EditProfilePage />}>
-          {/* <Route path="/close-account" element={<LearnPage />} /> */}
-        </Route>
+        <Route path="/edit-profile" element={<EditProfilePage />}></Route>
+      </Route>
+
+      <Route element={<InstructorRoute />}>
+        <Route path="/dashboard" element={<DashboardPage />} />
+      </Route>
+
+      <Route element={<OrganizationRoute />}>
+        <Route path="/dashboard" element={<DashboardPage />} />
       </Route>
 
       <Route element={<AdminRoute />}>

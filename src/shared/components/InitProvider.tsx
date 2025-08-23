@@ -1,7 +1,5 @@
 import { useAppHook } from "../hooks/useAppHook";
 import { useEffect } from "react";
-import { requestPermission } from "../../features/fcm/requestPermission";
-import { listenToForegroundMessages } from "../../features/fcm/onForegroundMessage";
 import { useGetWishlistQuery } from "../../features/courses/apiSlices/wishlistApiSlice";
 import { setWishlist } from "../../features/courses/slices/wishlistSlice";
 import { useGetEnrolledCoursesQuery } from "../../features/courses/apiSlices/coursesApiSlice";
@@ -12,7 +10,7 @@ interface WishlistItem {
   createdAt: string;
   updatedAt: string;
   id: number;
-  courseDTO: Course;
+  course: Course;
   studentId: number;
 }
 
@@ -27,7 +25,7 @@ interface EnrolledItem {
   createdAt: string;
   updatedAt: string;
   id: number;
-  courseDTO: Course;
+  course: Course;
   studentId: number;
 }
 
@@ -56,21 +54,13 @@ const InitProvider = () => {
   const { data: enrolled, isSuccess: enrolledSuccess } =
     useGetEnrolledCoursesQuery({}, { skip: !user });
 
-  console.log(wishlist);
-  console.log(enrolled);
-
-  useEffect(() => {
-    requestPermission().then((token) => {
-      if (token) {
-      }
-    });
-    listenToForegroundMessages();
-  }, []);
+  console.log("wishlist from server = ", wishlist);
+  console.log("enrolled from server = ", enrolled);
 
   useEffect(() => {
     if (wishlistSuccess && wishlist) {
       const favs = wishlist as FavsApiResponse;
-      const wishlistCourses = favs.data.map((item) => item.courseDTO);
+      const wishlistCourses = favs.data.map((item) => item.course);
 
       dispatch(setWishlist(wishlistCourses));
     }
@@ -79,7 +69,7 @@ const InitProvider = () => {
   useEffect(() => {
     if (enrolledSuccess && enrolled) {
       const enrolledData = enrolled as EnrolledApiResponse;
-      const enrolledCourses = enrolledData.data.map((item) => item.courseDTO);
+      const enrolledCourses = enrolledData.data.map((item) => item.course);
 
       dispatch(setEnrolledCourses(enrolledCourses));
     }

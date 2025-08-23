@@ -1,26 +1,29 @@
-import { Course } from "../../../../shared/types/types";
+import { LearningPath } from "../../../../shared/types/types";
 import { renderStars } from "../../utils/Utils";
 import { useAppHook } from "../../../../shared/hooks/useAppHook";
 import { FavButton } from "./FavButton";
 import { ClockIcon, UserIcon } from "@heroicons/react/24/outline";
 import { Button } from "../../../../shared/components/form/Button";
 
-interface CourseCardProps {
-  course: Course;
+interface LearningPathCardProps {
+  learningPath: LearningPath;
   className?: string;
 }
 
-export default function CourseCard({ course, className }: CourseCardProps) {
+export default function LearningPathCard({
+  learningPath,
+  className,
+}: LearningPathCardProps) {
   const { navigate } = useAppHook();
 
   const handleCardClick = () => {
-    navigate(`/courses/${course.id}`);
+    navigate(`/learningPaths/${learningPath.id}`);
   };
 
   const handleCategoryClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (course.categories?.[0]) {
-      navigate(`/search/${course.categories[0]}`);
+    if (learningPath.categories?.[0]) {
+      navigate(`/search/${learningPath.categories[0]}`);
     }
   };
 
@@ -36,7 +39,7 @@ export default function CourseCard({ course, className }: CourseCardProps) {
 
   return (
     <article
-      className={`card group ${className}`}
+      className={`card group ${className} drop-shadow-[4px_4px_0px_#e3e3e3,8px_8px_0px_black]`}
       onClick={handleCardClick}
       role="button"
       tabIndex={0}
@@ -46,18 +49,18 @@ export default function CourseCard({ course, className }: CourseCardProps) {
           handleCardClick();
         }
       }}
-      aria-label={`View course: ${course.title}`}
+      aria-label={`View learningPath: ${learningPath.title}`}
     >
       {/* Image Container */}
       <div className="relative overflow-hidden">
         <img
-          src={course.image}
-          alt={`Course cover for ${course.title}`}
+          src={learningPath.image}
+          alt={`LearningPath cover for ${learningPath.title}`}
           className="h-48 w-full object-cover transition-transform duration-300 group-hover:scale-105"
           loading="lazy"
         />
         {/* Category Badge */}
-        {course.categories?.[0] && (
+        {learningPath.categories?.[0] && (
           <Button
             onClick={handleCategoryClick}
             className="absolute! top-3 left-3 text-xs font-medium py-1.5! px-3! m-0!"
@@ -70,7 +73,7 @@ export default function CourseCard({ course, className }: CourseCardProps) {
               handleCategoryClick(e);
             }}
           >
-            {course.categories[0].name}
+            {learningPath.categories[0].name}
           </Button>
         )}
 
@@ -79,17 +82,17 @@ export default function CourseCard({ course, className }: CourseCardProps) {
           className="absolute! top-3 right-3 z-10"
           onClick={(e) => e.stopPropagation()}
         >
-          <FavButton course={course} />
+          <FavButton course={learningPath} />
         </div>
 
         {/* Level Badge */}
         <div className="absolute! bottom-3 right-3 z-10">
           <span className="text-xs font-semibold text-white dark:text-dark bg-primary backdrop-blur-sm px-2 py-1 rounded-md">
-            {course.level ?? "Beginner"}
+            {learningPath.level ?? "Beginner"}
           </span>
         </div>
         {/* Free Badge */}
-        {course.price === 0 && (
+        {learningPath.price === 0 && (
           <div className="absolute! bottom-3 left-3 z-10">
             <span className="text-xs font-bold text-primary bg-white/90 border-2 border-primary/20 px-2 py-1 rounded-md">
               Free
@@ -103,9 +106,9 @@ export default function CourseCard({ course, className }: CourseCardProps) {
         {/* Title */}
         <h3
           className="font-bold text-xl line-clamp-2 group-hover:text-primary transition-colors duration-200"
-          title={course.title}
+          title={learningPath.title}
         >
-          {course.title}
+          {learningPath.title}
         </h3>
 
         {/* Instructor */}
@@ -113,25 +116,25 @@ export default function CourseCard({ course, className }: CourseCardProps) {
           <UserIcon className="w-4 h-4" />
           <span
             className="truncate"
-            title={course.instructors[0] ?? "Abo Mahmoud Org"}
+            title={learningPath.instructors[0] ?? "Abo Mahmoud Org"}
           >
-            {course.instructors[0] ?? "Abo Mahmoud Org"}
+            {learningPath.instructors[0] ?? "Abo Mahmoud Org"}
           </span>
         </div>
 
         {/* Duration */}
         <div className="flex items-center gap-2 text-sm dark:text-gray-400">
           <ClockIcon className="w-4 h-4" />
-          <span>{formatDuration(course.durationHours)}</span>
+          <span>{formatDuration(learningPath.durationHours)}</span>
         </div>
 
         {/* Description */}
-        {course.description && (
+        {learningPath.description && (
           <div
             className="text-gray-700 dark:text-gray-300 text-sm line-clamp-2"
-            title={course.description}
+            title={learningPath.description}
           >
-            {course.description}
+            {learningPath.description}
           </div>
         )}
 
@@ -139,23 +142,23 @@ export default function CourseCard({ course, className }: CourseCardProps) {
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1">
             <span className="text-sm font-semibold not-dark:text-gray-900">
-              {course.rating?.toFixed(1) ?? "0.0"}
+              {learningPath.rating?.toFixed(1) ?? "0.0"}
             </span>
             <div className="flex gap-0.5">
-              {renderStars(course.rating ?? 0)}
+              {renderStars(learningPath.rating ?? 0)}
             </div>
           </div>
           <span className="text-sm text-gray-500">
-            ({course.ratingCount ?? 0} reviews)
+            ({learningPath.ratingCount ?? 0} reviews)
           </span>
         </div>
 
         {/* Price & Type */}
         <div className="flex items-center justify-between pt-2 border-t border-gray-100 dark:border-primary-dark">
           <div className="text-xl font-bold text-primary">
-            {formatPrice(course.price)}
+            {formatPrice(learningPath.price)}
           </div>
-          <div className="text-sm text-gray-600">course</div>
+          <div className="text-sm text-gray-600">Learning Path</div>
         </div>
       </div>
     </article>

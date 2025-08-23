@@ -42,7 +42,7 @@ export default function CourseDetailsPage() {
   const { wishlistCourses, enrolledCourses, dispatch, navigate } = useAppHook();
   const requiresAuth = useRequiresAuth();
 
-  const { data } = useGetCourseDetailsQuery(Number(id));
+  const { data, isLoading } = useGetCourseDetailsQuery(Number(id));
   const course: Course = data?.data;
 
   const { data: reviewsData } = useGetCourseReviewsQuery(Number(id));
@@ -61,19 +61,19 @@ export default function CourseDetailsPage() {
   };
 
   const handleToggleWishlist = async () => {
-    const promise = isInWishlist
+    const promise = isWishlisted
       ? removeFromWishlist(Number(id))
       : addToWishlist(Number(id));
 
     toastPromise(promise, {
-      loadingMessage: isInWishlist
+      loadingMessage: isWishlisted
         ? "Removing from favorites..."
         : "Adding to favorites...",
-      successMessage: isInWishlist
+      successMessage: isWishlisted
         ? "Removed from favorites."
         : "Added to favorites!",
       onSuccess: () => {
-        if (isInWishlist) {
+        if (isWishlisted) {
           dispatch(removeFromWishlistSlice(course));
         } else {
           dispatch(addToWishlistSlice(course));
@@ -83,9 +83,11 @@ export default function CourseDetailsPage() {
   };
 
   const isEnrolled = enrolledCourses.includes(course);
-  const isInWishlist = wishlistCourses.includes(course);
+  const isWishlisted = isLoading
+    ? false
+    : wishlistCourses.some((c) => c.id === course.id);
 
-  if (!course) return <Loader logo />;
+  if (!course || isLoading) return <Loader logo />;
 
   return (
     <div className="page">
@@ -263,7 +265,7 @@ export default function CourseDetailsPage() {
                     full
                     variant="secondaryInverted"
                   >
-                    {isInWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
+                    {isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
                   </Button>
                 </div>
 
