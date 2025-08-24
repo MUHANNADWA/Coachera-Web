@@ -99,8 +99,8 @@ export default function CourseCard({
           {actionMode === "org" ? (
             <Button
               type="button"
-              variant="danger"
-              className="px-2! py-2!"
+              variant="dangerInverted"
+              className="relative m-0! p-2! rounded-full!"
               aria-label="Delete course"
               onClick={() => onDeleteCourse?.(course)}
             >
@@ -109,8 +109,8 @@ export default function CourseCard({
           ) : actionMode === "inst" ? (
             <Button
               type="button"
-              variant="secondary"
-              className="px-2! py-2!"
+              variant="primaryInverted"
+              className="relative m-0! p-2! rounded-full!"
               aria-label="Edit course"
               onClick={() => onEditCourse?.(course)}
             >

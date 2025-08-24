@@ -38,7 +38,7 @@ export function Button({
     secondaryInverted:
       "hover:bg-secondary text-white py-3 px-6 my-4 font-semibold border-2 border-white",
     dangerInverted:
-      "bg-danger hover:bg-red-700 font-semibold text-white py-3 px-6 my-4",
+      "bg-danger hover:bg-red-900 font-semibold text-white py-3 px-6 my-4",
     custom: "hover:bg-primary-light dark:hover:bg-primary-dark",
   };
 

@@ -13,7 +13,7 @@ import Message from "./Message";
 import { Course } from "../types/types";
 import CourseCard from "../../features/courses/components/courseCard/CourseCard";
 import { Button } from "./form/Button";
-import { AddCourseCard } from "./CourseCardOverlay"; // ما زالت نستخدم بطاقة الإضافة فقط
+import { AddCourseCard } from "./CourseCardOverlay";
 
 type LayoutMode = "carousel" | "grid";
 
@@ -93,6 +93,8 @@ export default function CoursesView({
 
   const [localLayout, setLocalLayout] = useState<LayoutMode>("carousel");
   const effectiveLayout: LayoutMode = layout ?? localLayout;
+
+  const [loadingMore, setLoadingMore] = useState(false);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const scroll = (dir: "left" | "right") => {
@@ -196,7 +198,17 @@ export default function CoursesView({
     ) : null;
 
   const canLoadMore = data.list.length < data.total && !data.last;
-  const onLoadMore = () => data.setSize(data.getSize() + gridPageSize);
+
+  const onLoadMore = async () => {
+    if (loadingMore) return;
+    setLoadingMore(true);
+    try {
+      data.setSize(data.getSize() + gridPageSize);
+    } finally {
+      // keep the visual feedback visible briefly
+      setTimeout(() => setLoadingMore(false), 600);
+    }
+  };
 
   return (
     <section className="flex-1 relative">
@@ -234,7 +246,6 @@ export default function CoursesView({
           )}
         </div>
 
-        {/* Loading / Error / Empty */}
         {data.isLoading ? (
           effectiveLayout === "carousel" ? (
             <div className="relative">
@@ -343,16 +354,31 @@ export default function CoursesView({
             </div>
 
             {canLoadMore && (
-              <div className="mt-6 flex justify-center">
-                <Button type="button" variant="secondary" onClick={onLoadMore}>
-                  Load more
+              <div className="mt-6 flex flex-col items-center gap-4">
+                {loadingMore && (
+                  <div className="flex gap-4">
+                    {Array(gridPageSize)
+                      .fill(0)
+                      .map((_, i) => (
+                        <div key={i} className="min-w-[300px]">
+                          <CourseCardSkeleton />
+                        </div>
+                      ))}
+                  </div>
+                )}
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={onLoadMore}
+                  disabled={loadingMore}
+                >
+                  {loadingMore ? "Loading..." : "Load more"}
                 </Button>
               </div>
             )}
           </div>
         ) : (
           <>
-            {/* Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {variant === "org" && maybeAddCard}
               {data.list.map((course: Course) => (
@@ -373,9 +399,23 @@ export default function CoursesView({
             </div>
 
             {canLoadMore && (
-              <div className="mt-8 flex justify-center">
-                <Button type="button" variant="secondary" onClick={onLoadMore}>
-                  Load more
+              <div className="mt-8 flex flex-col items-center gap-4">
+                {loadingMore && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full">
+                    {Array(gridPageSize)
+                      .fill(0)
+                      .map((_, i) => (
+                        <CourseCardSkeleton key={i} />
+                      ))}
+                  </div>
+                )}
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={onLoadMore}
+                  disabled={loadingMore}
+                >
+                  {loadingMore ? "Loading..." : "Load more"}
                 </Button>
               </div>
             )}
