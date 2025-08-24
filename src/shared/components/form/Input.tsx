@@ -82,7 +82,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             onChange={onChange}
             onKeyDown={onKeyDown}
             inputMode={inputMode}
-            className={`peer placeholder:text-gray-400 w-full py-2 rounded-2xl transition-colors duration-300 border-2 focus:ring-1 focus:ring-primary focus:border-primary focus:bg-primary-lightest dark:focus:bg-primary-darkest outline-none ${
+            className={`peer placeholder:text-gray-400 dark:placeholder:text-gray-600 dark:text-white w-full py-2 rounded-2xl transition-colors duration-300 border-2 focus:ring-1 focus:ring-primary focus:border-primary focus:bg-primary-lightest dark:focus:bg-primary-darkest outline-none ${
               PrefixIcon ? "pl-10" : "pl-3"
             } ${suffixIcon ? "pr-10" : "pr-3"}
             } ${error ? "border-danger" : "border-color"} ${className}`}

@@ -32,7 +32,7 @@ export function Button({
     secondary:
       "hover:bg-primary-light dark:hover:bg-primary-darkest text-primary py-3 px-6 my-4 font-semibold border-2 border-primary",
     danger:
-      "bg-danger hover:bg-red-700 font-semibold text-white py-3 px-6 my-4",
+      "hover:bg-primary-light dark:hover:bg-primary-darkest text-danger dark:text-danger-light py-3 px-6 my-4 font-semibold border-2 border-danger dark:border-danger-light",
     primaryInverted:
       "bg-white dark:bg-dark hover:bg-primary-light dark:hover:bg-primary-darkest font-semibold text-secondary dark:text-primary py-3 px-6 my-4",
     secondaryInverted:

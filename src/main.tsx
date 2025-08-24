@@ -52,26 +52,24 @@ const router = createBrowserRouter(
       <Route path="/categories" element={<CategoriesPage />} />
       <Route path="/courses" element={<CoursesPage />} />
       <Route path="/courses/:id" element={<CourseDetailsPage />} />
-      <Route path="/profile" element={<ProfilePage />} />
-      <Route path="/inst-dashboard" element={<InstructorDashboardPage />} />
-      <Route path="/add-course" element={<AddCoursePage />} />
-      <Route path="/edit-course" element={<EditCoursePage />} />
-      <Route path="/manage-lesson/:id" element={<ManageLessonPage />} />
       <Route path="/stripe" element={<CheckoutButton />} />
       <Route path="/notifications" element={<NotificationsPage />} />
-      <Route path="/org-dashboard" element={<OrgDashboardPage />} />
 
       <Route element={<ProtectedRoute />}>
+        <Route path="/profile" element={<ProfilePage />} />
         <Route path="/learn/:courseId/:moduleId" element={<LearnPage />} />
-        <Route path="/edit-profile" element={<EditProfilePage />}></Route>
+        <Route path="/edit-profile" element={<EditProfilePage />} />
       </Route>
 
       <Route element={<InstructorRoute />}>
-        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/manage-lesson/:id" element={<ManageLessonPage />} />
+        <Route path="/inst-dashboard" element={<InstructorDashboardPage />} />
+        <Route path="/edit-course" element={<EditCoursePage />} />
       </Route>
 
       <Route element={<OrganizationRoute />}>
-        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/org-dashboard" element={<OrgDashboardPage />} />
+        <Route path="/add-course" element={<AddCoursePage />} />
       </Route>
 
       <Route element={<AdminRoute />}>

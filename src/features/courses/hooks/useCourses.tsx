@@ -1,3 +1,4 @@
+// features/courses/hooks/useCourses.ts
 import { Course } from "../../../shared/types/types";
 import { useState } from "react";
 import {
@@ -10,50 +11,45 @@ import {
 } from "../apiSlices/coursesApiSlice";
 import { useAppHook } from "../../../shared/hooks/useAppHook";
 
-type Params = {
-  orgId?: number | string;
-  instructorId?: number | string;
-};
+type HookArgs = { orgId?: number | string; instructorId?: number | string };
 
-export default function useCourses({ orgId, instructorId }: Params = {}) {
+export default function useCourses({ orgId, instructorId }: HookArgs = {}) {
   const { user } = useAppHook();
 
-  const [page, setPage] = useState(0);
-  const [size, setSize] = useState(5);
-
-  const [recommendedSize, setRecommendedSize] = useState(5);
-  const [trendingSize, setTrendingSize] = useState(5);
-  const [popularSize, setPopularSize] = useState(5);
-  const [orgSize, setOrgSize] = useState(5);
-  const [instSize, setInstSize] = useState(5);
+  // sizes you can grow to "load more"
+  const [size, setSize] = useState(8);
+  const [recommendedSize, setRecommendedSize] = useState(8);
+  const [trendingSize, setTrendingSize] = useState(8);
+  const [popularSize, setPopularSize] = useState(8);
+  const [orgSize, setOrgSize] = useState(8);
+  const [instSize, setInstSize] = useState(8);
 
   const [sortBy, setSortBy] = useState("createdAt");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
 
   // All
   const { data, isLoading, error } = useGetCoursesQuery({
-    page,
+    page: 0,
     size,
     sortBy,
     sortDirection,
   });
-  const courses: Course[] = data?.data?.content || [];
+  const courses: Course[] = data?.data?.content ?? [];
+  const allTotal = data?.data?.totalElements ?? 0;
+  const allLast = data?.data?.last ?? true;
 
-  // Recommended (skip when user is not available)
+  // Recommended (fix: send size not "recommendedSize")
   const {
     data: recommendedData,
     isLoading: recommendedLoading,
     error: recommendedError,
   } = useGetRecommendedCoursesQuery(
-    {
-      page,
-      size: recommendedSize, // FIX: must be "size"
-      sortBy,
-      sortDirection,
-    },
+    { page: 0, size: recommendedSize, sortBy, sortDirection },
     { skip: !user }
   );
-  const recommendedCourses: Course[] = recommendedData?.data?.content || [];
+  const recommendedCourses: Course[] = recommendedData?.data?.content ?? [];
+  const recommendedTotal = recommendedData?.data?.totalElements ?? 0;
+  const recommendedLast = recommendedData?.data?.last ?? true;
 
   // Trending
   const {
@@ -61,12 +57,14 @@ export default function useCourses({ orgId, instructorId }: Params = {}) {
     isLoading: trendingLoading,
     error: trendingError,
   } = useGetTrendingCoursesQuery({
-    page,
-    size: trendingSize, // FIX
+    page: 0,
+    size: trendingSize,
     sortBy,
     sortDirection,
   });
-  const trendingCourses: Course[] = trendingData?.data?.content || [];
+  const trendingCourses: Course[] = trendingData?.data?.content ?? [];
+  const trendingTotal = trendingData?.data?.totalElements ?? 0;
+  const trendingLast = trendingData?.data?.last ?? true;
 
   // Popular
   const {
@@ -74,92 +72,100 @@ export default function useCourses({ orgId, instructorId }: Params = {}) {
     isLoading: popularLoading,
     error: popularError,
   } = useGetPopularCoursesQuery({
-    page,
-    size: popularSize, // FIX
+    page: 0,
+    size: popularSize,
     sortBy,
     sortDirection,
   });
-  const popularCourses: Course[] = popularData?.data?.content || [];
+  const popularCourses: Course[] = popularData?.data?.content ?? [];
+  const popularTotal = popularData?.data?.totalElements ?? 0;
+  const popularLast = popularData?.data?.last ?? true;
 
-  // Organization
+  // Org
   const {
     data: orgData,
     isLoading: orgLoading,
     error: orgError,
   } = useGetOrgCoursesQuery(
-    {
-      id: orgId,
-      page,
-      size: orgSize,
-      sortBy,
-      sortDirection,
-    },
+    { id: orgId, page: 0, size: orgSize, sortBy, sortDirection },
     { skip: !orgId }
   );
-  const orgCourses: Course[] = orgData?.data?.content || [];
+  const orgCourses: Course[] = orgData?.data?.content ?? [];
+  const orgTotal = orgData?.data?.totalElements ?? 0;
+  const orgLast = orgData?.data?.last ?? true;
 
-  // Instructor
+  // Inst
   const {
     data: instData,
     isLoading: instLoading,
     error: instError,
   } = useGetInstCoursesQuery(
-    {
-      id: instructorId,
-      page,
-      size: instSize,
-      sortBy,
-      sortDirection,
-    },
+    { id: instructorId, page: 0, size: instSize, sortBy, sortDirection },
     { skip: !instructorId }
   );
-  const instCourses: Course[] = instData?.data?.content || [];
-
-  const totalPages = data?.data?.totalPages || 1;
+  const instCourses: Course[] = instData?.data?.content ?? [];
+  const instTotal = instData?.data?.totalElements ?? 0;
+  const instLast = instData?.data?.last ?? true;
 
   return {
-    page,
-    setPage,
+    // sorting (if you want)
     sortBy,
     setSortBy,
     sortDirection,
     setSortDirection,
-    totalPages,
 
+    // all
     courses,
     size,
     setSize,
     isLoading,
     error,
+    allTotal,
+    allLast,
 
+    // recommended
     recommendedCourses,
     recommendedSize,
     setRecommendedSize,
     recommendedLoading,
     recommendedError,
+    recommendedTotal,
+    recommendedLast,
 
+    // trending
     trendingCourses,
     trendingSize,
     setTrendingSize,
     trendingLoading,
     trendingError,
+    trendingTotal,
+    trendingLast,
 
+    // popular
     popularCourses,
     popularSize,
     setPopularSize,
     popularLoading,
     popularError,
+    popularTotal,
+    popularLast,
 
+    // org
     orgCourses,
     orgSize,
     setOrgSize,
     orgLoading,
     orgError,
+    orgTotal,
+    orgLast,
 
+    // inst
     instCourses,
     instSize,
     setInstSize,
     instLoading,
     instError,
+    instTotal,
+    instLast,
   };
 }

@@ -5,7 +5,7 @@ import {
   Squares2X2Icon,
   ViewColumnsIcon,
 } from "@heroicons/react/24/outline";
-import { useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import useCourses from "../../features/courses/hooks/useCourses";
 import CourseCardSkeleton from "../../features/skeletons/CourseCardSkeleton";
 import { showErrorMessage } from "../../utils/errorMessage";
@@ -13,7 +13,7 @@ import Message from "./Message";
 import { Course } from "../types/types";
 import CourseCard from "../../features/courses/components/courseCard/CourseCard";
 import { Button } from "./form/Button";
-import { AddCourseCard, CourseCardWithOverlay } from "./CourseCardOverlay";
+import { AddCourseCard } from "./CourseCardOverlay"; // ما زالت نستخدم بطاقة الإضافة فقط
 
 type LayoutMode = "carousel" | "grid";
 
@@ -24,8 +24,6 @@ interface CoursesViewProps {
   layout?: LayoutMode;
   gridPageSize?: number;
   showLayoutToggle?: boolean;
-
-  // Optional handlers for actions
   onAddCourseClick?: () => void;
   onEditCourse?: (course: Course) => void;
   onDeleteCourse?: (course: Course) => void;
@@ -43,76 +41,88 @@ export default function CoursesView({
   onDeleteCourse,
 }: CoursesViewProps) {
   const {
+    // all
     courses,
     size,
     setSize,
     isLoading,
     error,
-
+    allTotal,
+    allLast,
+    // recommended
     recommendedCourses,
     recommendedSize,
     setRecommendedSize,
     recommendedLoading,
     recommendedError,
-
+    recommendedTotal,
+    recommendedLast,
+    // trending
     trendingCourses,
     trendingSize,
     setTrendingSize,
     trendingLoading,
     trendingError,
-
+    trendingTotal,
+    trendingLast,
+    // popular
     popularCourses,
     popularSize,
     setPopularSize,
     popularLoading,
     popularError,
-
+    popularTotal,
+    popularLast,
+    // org
     orgCourses,
     orgSize,
     setOrgSize,
     orgLoading,
     orgError,
-
+    orgTotal,
+    orgLast,
+    // inst
     instCourses,
     instSize,
     setInstSize,
     instLoading,
     instError,
+    instTotal,
+    instLast,
   } = useCourses({ orgId, instructorId });
 
-  // Local layout state if not forced via prop
   const [localLayout, setLocalLayout] = useState<LayoutMode>("carousel");
   const effectiveLayout: LayoutMode = layout ?? localLayout;
 
-  // Horizontal scroll (carousel)
   const scrollRef = useRef<HTMLDivElement>(null);
-  const scroll = (direction: "left" | "right") => {
+  const scroll = (dir: "left" | "right") => {
     if (!scrollRef.current) return;
-    const scrollAmount = 298;
-    const currentScroll = scrollRef.current.scrollLeft;
-    const newScroll =
-      direction === "left"
-        ? currentScroll - scrollAmount
-        : currentScroll + scrollAmount;
-    scrollRef.current.scrollTo({ left: newScroll, behavior: "smooth" });
+    const amount = 298;
+    const left =
+      scrollRef.current.scrollLeft + (dir === "left" ? -amount : amount);
+    scrollRef.current.scrollTo({ left, behavior: "smooth" });
   };
 
   type DataPack = {
     title: string;
     list: Course[];
-    size: number;
-    setSize: (n: number) => void;
     isLoading: boolean;
     error: any;
+    total: number;
+    last: boolean;
+    getSize: () => number;
+    setSize: (n: number) => void;
   };
 
   let data: DataPack = {
     title: "All Courses",
     list: courses,
-    size,
-    setSize,
     isLoading,
     error,
+    total: allTotal,
+    last: allLast,
+    getSize: () => size,
+    setSize,
   };
 
   switch (variant) {
@@ -120,91 +130,73 @@ export default function CoursesView({
       data = {
         title: "Recommended Courses For You",
         list: recommendedCourses,
-        size: recommendedSize,
-        setSize: setRecommendedSize,
         isLoading: recommendedLoading,
         error: recommendedError,
+        total: recommendedTotal,
+        last: recommendedLast,
+        getSize: () => recommendedSize,
+        setSize: setRecommendedSize,
       };
       break;
     case "trending":
       data = {
         title: "Trending Courses This Month",
         list: trendingCourses,
-        size: trendingSize,
-        setSize: setTrendingSize,
         isLoading: trendingLoading,
         error: trendingError,
+        total: trendingTotal,
+        last: trendingLast,
+        getSize: () => trendingSize,
+        setSize: setTrendingSize,
       };
       break;
     case "popular":
       data = {
         title: "Most Popular Courses",
         list: popularCourses,
-        size: popularSize,
-        setSize: setPopularSize,
         isLoading: popularLoading,
         error: popularError,
+        total: popularTotal,
+        last: popularLast,
+        getSize: () => popularSize,
+        setSize: setPopularSize,
       };
       break;
     case "org":
       data = {
         title: "Organization Courses",
         list: orgCourses,
-        size: orgSize,
-        setSize: setOrgSize,
         isLoading: orgLoading,
         error: orgError,
+        total: orgTotal,
+        last: orgLast,
+        getSize: () => orgSize,
+        setSize: setOrgSize,
       };
       break;
     case "inst":
       data = {
         title: "Instructor Courses",
         list: instCourses,
-        size: instSize,
-        setSize: setInstSize,
         isLoading: instLoading,
         error: instError,
+        total: instTotal,
+        last: instLast,
+        getSize: () => instSize,
+        setSize: setInstSize,
       };
       break;
     default:
       break;
   }
 
-  // Grid paging (client-side slice)
-  const [gridPage, setGridPage] = useState(1);
-  const gridSlice = useMemo(() => {
-    const end = gridPage * gridPageSize;
-    return data.list.slice(0, end);
-  }, [data.list, gridPage, gridPageSize]);
-
-  const canLoadMoreGrid = gridSlice.length < data.list.length;
-
-  // Action mode based on variant
-  const overlayMode =
-    variant === "org" ? "org" : variant === "inst" ? "inst" : "none";
-
-  // Helpers for overlay actions
-  const handleEdit = (c: Course) => onEditCourse?.(c);
-  const handleDelete = (c: Course) => onDeleteCourse?.(c);
-
-  // Render one course item with overlay
-  const renderCourseItem = (course: Course) => (
-    <CourseCardWithOverlay
-      key={course.id}
-      course={course}
-      mode={overlayMode as any}
-      onEdit={handleEdit}
-      onDelete={handleDelete}
-    >
-      <CourseCard course={course} />
-    </CourseCardWithOverlay>
-  );
-
-  // AddCourseCard only for org variant
   const maybeAddCard =
     variant === "org" ? (
       <AddCourseCard onClick={() => onAddCourseClick?.()} />
     ) : null;
+
+  const canLoadMore = data.list.length < data.total && !data.last;
+  const onLoadMore = () => data.setSize(data.getSize() + gridPageSize);
 
   return (
     <section className="flex-1 relative">
@@ -214,7 +206,6 @@ export default function CoursesView({
             {data.title}
           </h2>
 
-          {/* Layout toggle (hidden if layout prop is provided) */}
           {showLayoutToggle && !layout && (
             <div className="flex items-center gap-2">
               <Button
@@ -247,7 +238,6 @@ export default function CoursesView({
         {data.isLoading ? (
           effectiveLayout === "carousel" ? (
             <div className="relative">
-              {/* Scroll buttons */}
               <Button
                 onClick={() => scroll("left")}
                 variant="primaryInverted"
@@ -275,10 +265,10 @@ export default function CoursesView({
                     <CourseCardSkeleton />
                   </div>
                 )}
-                {Array(data.size)
+                {Array(data.getSize())
                   .fill(0)
-                  .map((_, index) => (
-                    <div key={index} className="snap-start min-w-[300px]">
+                  .map((_, i) => (
+                    <div key={i} className="snap-start min-w-[300px]">
                       <CourseCardSkeleton />
                     </div>
                   ))}
@@ -287,7 +277,7 @@ export default function CoursesView({
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {variant === "org" && <CourseCardSkeleton />}
-              {Array(gridPageSize)
+              {Array(Math.min(gridPageSize, data.getSize()))
                 .fill(0)
                 .map((_, i) => (
                   <CourseCardSkeleton key={i} />
@@ -298,7 +288,6 @@ export default function CoursesView({
           showErrorMessage(data.error)
         ) : data.list.length === 0 ? (
           <div className="min-w-full text-center">
-            {/* If org and empty, show only AddCourseCard */}
             {variant === "org" ? (
               <div className="flex justify-center">{maybeAddCard}</div>
             ) : (
@@ -310,7 +299,6 @@ export default function CoursesView({
           </div>
         ) : effectiveLayout === "carousel" ? (
           <div className="relative">
-            {/* Scroll buttons */}
             <Button
               onClick={() => scroll("left")}
               variant="primaryInverted"
@@ -336,30 +324,57 @@ export default function CoursesView({
               {variant === "org" && (
                 <div className="snap-start min-w-[300px]">{maybeAddCard}</div>
               )}
-
               {data.list.map((course: Course) => (
                 <div key={course.id} className="snap-start min-w-[300px]">
-                  {renderCourseItem(course)}
+                  <CourseCard
+                    course={course}
+                    actionMode={
+                      variant === "org"
+                        ? "org"
+                        : variant === "inst"
+                        ? "inst"
+                        : "none"
+                    }
+                    onEditCourse={onEditCourse}
+                    onDeleteCourse={onDeleteCourse}
+                  />
                 </div>
               ))}
             </div>
+
+            {canLoadMore && (
+              <div className="mt-6 flex justify-center">
+                <Button type="button" variant="secondary" onClick={onLoadMore}>
+                  Load more
+                </Button>
+              </div>
+            )}
           </div>
         ) : (
           <>
-            {/* Grid layout */}
+            {/* Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {variant === "org" && maybeAddCard}
-              {gridSlice.map((course: Course) => renderCourseItem(course))}
+              {data.list.map((course: Course) => (
+                <CourseCard
+                  key={course.id}
+                  course={course}
+                  actionMode={
+                    variant === "org"
+                      ? "org"
+                      : variant === "inst"
+                      ? "inst"
+                      : "none"
+                  }
+                  onEditCourse={onEditCourse}
+                  onDeleteCourse={onDeleteCourse}
+                />
+              ))}
             </div>
 
-            {/* Grid "Load more" */}
-            {canLoadMoreGrid && (
+            {canLoadMore && (
               <div className="mt-8 flex justify-center">
-                <Button
-                  type="button"
-                  variant="secondary"
-                  onClick={() => setGridPage((p) => p + 1)}
-                >
+                <Button type="button" variant="secondary" onClick={onLoadMore}>
                   Load more
                 </Button>
               </div>

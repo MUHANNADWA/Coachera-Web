@@ -20,8 +20,6 @@ import {
 export default function ProfilePage() {
   const { user, navigate, wishlistCourses, enrolledCourses } = useAppHook();
 
-  // If your user object contains these fields (populated from EditProfile page),
-  // they will render; otherwise we show friendly placeholders.
   const profile = useMemo(
     () => ({
       username: user?.username ?? "User",
@@ -100,7 +98,7 @@ export default function ProfilePage() {
     <div className="max-w-6xl mx-auto px-4 py-10">
       {/* Cover + Avatar */}
       <section className="relative mb-20">
-        <div className="h-36 w-full rounded-3xl bg-gradient-to-t from-primary/20 via-primary/10 to-transparent dark:from-primary/30 dark:via-primary/20" />
+        <div className="h-12 w-full rounded-3xl bg-primary/30" />
         <div className="consect p-6 -mt-10 mx-3 rounded-2xl relative z-10">
           <div className="flex flex-col md:flex-row md:items-center gap-6">
             <div className="-mt-16 md:-mt-16">

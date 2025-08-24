@@ -1,16 +1,31 @@
+// features/courses/components/courseCard/CourseCard.tsx
 import { Course } from "../../../../shared/types/types";
 import { renderStars } from "../../utils/Utils";
 import { useAppHook } from "../../../../shared/hooks/useAppHook";
 import { FavButton } from "./FavButton";
-import { ClockIcon, UserIcon } from "@heroicons/react/24/outline";
+import {
+  ClockIcon,
+  UserIcon,
+  PencilSquareIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
 import { Button } from "../../../../shared/components/form/Button";
 
 interface CourseCardProps {
   course: Course;
   className?: string;
+  actionMode?: "none" | "org" | "inst";
+  onEditCourse?: (course: Course) => void;
+  onDeleteCourse?: (course: Course) => void;
 }
 
-export default function CourseCard({ course, className }: CourseCardProps) {
+export default function CourseCard({
+  course,
+  className,
+  actionMode = "none",
+  onEditCourse,
+  onDeleteCourse,
+}: CourseCardProps) {
   const { navigate } = useAppHook();
 
   const handleCardClick = () => {
@@ -20,7 +35,11 @@ export default function CourseCard({ course, className }: CourseCardProps) {
   const handleCategoryClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (course.categories?.[0]) {
-      navigate(`/search/${course.categories[0]}`);
+      const name =
+        typeof course.categories[0] === "string"
+          ? (course.categories[0] as unknown as string)
+          : course.categories[0]?.name ?? "";
+      if (name) navigate(`/search/${name}`);
     }
   };
 
@@ -34,9 +53,11 @@ export default function CourseCard({ course, className }: CourseCardProps) {
     return duration;
   };
 
+  const stop = (e: React.MouseEvent) => e.stopPropagation();
+
   return (
     <article
-      className={`card group ${className}`}
+      className={`card group ${className ?? ""}`}
       onClick={handleCardClick}
       role="button"
       tabIndex={0}
@@ -48,7 +69,7 @@ export default function CourseCard({ course, className }: CourseCardProps) {
       }}
       aria-label={`View course: ${course.title}`}
     >
-      {/* Image Container */}
+      {/* Image */}
       <div className="relative overflow-hidden">
         <img
           src={course.image}
@@ -56,30 +77,48 @@ export default function CourseCard({ course, className }: CourseCardProps) {
           className="h-48 w-full object-cover transition-transform duration-300 group-hover:scale-105"
           loading="lazy"
         />
+
         {/* Category Badge */}
         {course.categories?.[0] && (
           <Button
-            onClick={handleCategoryClick}
             className="absolute! top-3 left-3 text-xs font-medium py-1.5! px-3! m-0!"
             variant="primaryInverted"
             tabIndex={0}
             type="button"
+            onClick={handleCategoryClick}
             onKeyDown={(e) => e.stopPropagation()}
-            onClickCapture={(e) => {
-              e.stopPropagation();
-              handleCategoryClick(e);
-            }}
           >
-            {course.categories[0].name}
+            {typeof course.categories[0] === "string"
+              ? (course.categories[0] as unknown as string)
+              : course.categories[0]?.name}
           </Button>
         )}
 
-        {/* Favorite Button */}
-        <div
-          className="absolute! top-3 right-3 z-10"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <FavButton course={course} />
+        {/* Top-right action */}
+        <div className="absolute! top-3 right-3 z-10" onClick={stop}>
+          {actionMode === "org" ? (
+            <Button
+              type="button"
+              variant="danger"
+              className="px-2! py-2!"
+              aria-label="Delete course"
+              onClick={() => onDeleteCourse?.(course)}
+            >
+              <TrashIcon className="w-5 h-5" />
+            </Button>
+          ) : actionMode === "inst" ? (
+            <Button
+              type="button"
+              variant="secondary"
+              className="px-2! py-2!"
+              aria-label="Edit course"
+              onClick={() => onEditCourse?.(course)}
+            >
+              <PencilSquareIcon className="w-5 h-5" />
+            </Button>
+          ) : (
+            <FavButton course={course} />
+          )}
         </div>
 
         {/* Level Badge */}
@@ -92,7 +131,6 @@ export default function CourseCard({ course, className }: CourseCardProps) {
 
       {/* Content */}
       <div className="p-5 space-y-3">
-        {/* Title */}
         <h3
           className="font-bold text-xl line-clamp-2 group-hover:text-primary transition-colors duration-200"
           title={course.title}
@@ -100,14 +138,14 @@ export default function CourseCard({ course, className }: CourseCardProps) {
           {course.title}
         </h3>
 
-        {/* Instructor */}
+        {/* Instructor/Org */}
         <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
           <UserIcon className="w-4 h-4" />
           <span
             className="truncate"
-            title={course.instructors[0] ?? "Abo Mahmoud Org"}
+            title={course.instructors?.[0] ?? "Organization"}
           >
-            {course.instructors[0] ?? "Abo Mahmoud Org"}
+            {course.instructors?.[0] ?? "Organization"}
           </span>
         </div>
 

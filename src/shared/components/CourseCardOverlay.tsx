@@ -14,7 +14,7 @@ export function AddCourseCard({ onClick }: { onClick: () => void }) {
     <button
       type="button"
       onClick={onClick}
-      className="card group min-w-[300px] h-full flex items-center justify-center p-6 border-dashed border-2 border-primary/30 hover:border-primary transition-colors"
+      className="card group min-w-[300px] h-full flex items-center justify-center p-6 border-dashed border-2 border-primary/30 hover:border-primary"
       aria-label="Add a new course"
     >
       <div className="flex flex-col items-center gap-2">

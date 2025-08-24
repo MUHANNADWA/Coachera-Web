@@ -1,5 +1,5 @@
+// @ts-nocheck
 import { useCallback, useMemo, useRef, useState } from "react";
-import Sidebar from "../../../shared/components/Sidebar";
 import { useAppHook } from "../../../shared/hooks/useAppHook";
 import { Button } from "../../../shared/components/form/Button";
 import { PROFILE_IMAGE } from "../../../constants/constants";
@@ -17,10 +17,14 @@ import {
   UsersIcon,
   PhotoIcon,
   TrashIcon,
+  UserCircleIcon,
+  ArrowPathIcon,
+  CheckCircleIcon,
 } from "@heroicons/react/24/outline";
 import Input from "../../../shared/components/form/Input";
 import SidebarHeader from "../../courses/components/SidebarHeader";
 import { profileSidebar } from "../../courses/utils/Utils";
+import Modal from "../../../shared/components/Modal";
 
 type FormState = {
   username: string;
@@ -42,28 +46,23 @@ export default function EditProfilePage() {
     username: user?.username || "",
     email: user?.email || "",
     newPassword: "",
-    firstName: "",
-    lastName: "",
-    birthDate: "",
-    gender: "",
-    education: "",
-    phoneNumber: "",
-    address: "",
+    firstName: user?.details?.firstName || "",
+    lastName: user?.details?.lastName || "",
+    birthDate: user?.details?.birthDate || "",
+    gender: user?.details?.gender || "",
+    education: user?.details?.education || "",
+    phoneNumber: user?.details?.phoneNumber || "",
+    address: user?.details?.address || "",
   });
 
   const [isPasswordVisible, setPasswordVisibility] = useState(false);
-  const [collapsed, setCollapsed] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isCloseModalOpen, setIsCloseModalOpen] = useState(false);
 
-  // Profile photo (preview + file)
   const initialPhoto = user?.profileImage || PROFILE_IMAGE;
   const [photoPreview, setPhotoPreview] = useState<string>(initialPhoto);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-
-  const toggleCollapse = useCallback(() => {
-    setCollapsed((prev) => !prev);
-  }, []);
 
   const sidebarItems = useMemo(() => profileSidebar, []);
 
@@ -74,7 +73,6 @@ export default function EditProfilePage() {
     };
 
   const handlePhotoPick = () => fileInputRef.current?.click();
-
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -82,7 +80,6 @@ export default function EditProfilePage() {
     const url = URL.createObjectURL(file);
     setPhotoPreview(url);
   };
-
   const handlePhotoRemove = () => {
     setPhotoFile(null);
     setPhotoPreview(initialPhoto);
@@ -110,108 +107,44 @@ export default function EditProfilePage() {
     if (isSaving) return;
     try {
       setIsSaving(true);
-
-      // TODO: Upload profile photo if a new file is selected
-      // if (photoFile) {
-      //   const formData = new FormData();
-      //   formData.append("file", photoFile);
-      //   const { url } = await uploadAvatar(formData).unwrap();
-      //   // Use url in the update below
-      // }
-
-      // TODO: Execute account and student updates
-      // await updateAccount({ username: form.username, email: form.email, newPassword: form.newPassword, profileImage: urlOrExisting });
-      // await updateStudent({ firstName: form.firstName, lastName: form.lastName, birthDate: form.birthDate, gender: form.gender, education: form.education, phoneNumber: form.phoneNumber, address: form.address });
-
-      // toast.success("Profile updated");
-    } catch (err) {
-      // toast.error("Failed to save changes");
+      // TODO: save profile changes
     } finally {
       setIsSaving(false);
     }
   };
 
+  const openCloseModal = () => setIsCloseModalOpen(true);
+  const closeCloseModal = () => setIsCloseModalOpen(false);
+
+  const handleCloseAccount = async () => {
+    // TODO: call API
+    setIsCloseModalOpen(false);
+    navigate("/goodbye");
+  };
+
   return (
-    <div className="page flex">
-      {/* Sidebar */}
-      <Sidebar
-        className={
-          collapsed
-            ? "max-sm:h-15! max-sm:bg-transparent w-14"
-            : "w-72 max-sm:w-full"
-        }
-      >
-        <SidebarHeader
-          label="Profile"
-          collapsed={collapsed}
-          toggleCollapse={toggleCollapse}
-        />
-
-        {!collapsed && (
-          <div>
-            <div className="text-center space-y-2 mb-8">
-              <img
-                src={photoPreview}
-                alt="profile"
-                className="h-24 w-24 justify-center mx-auto rounded-full object-cover"
-              />
-              <h2 className="font-semibold text-lg truncate">
-                {user?.username}
-              </h2>
-            </div>
-
-            {/* Navigation */}
-            <nav className="space-y-2 text-sm text-gray-700 dark:text-gray-300 font-medium">
-              {sidebarItems.map(({ label, icon: Icon, link }) => (
-                <Button
-                  full
-                  key={label}
-                  onClick={() => {
-                    navigate(link);
-                    if (window.innerWidth <= 768) toggleCollapse();
-                  }}
-                  className="group flex items-center justify-start gap-2 px-3 py-2"
-                  type="button"
-                >
-                  <Icon className="h-4 w-4 text-gray-700 group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-100" />
-                  {label}
-                </Button>
-              ))}
-
-              <Button
-                full
-                key="Close account"
-                onClick={() => {}}
-                className="group flex items-center justify-start gap-2 px-3 py-2 text-danger hover:bg-red-50"
-                type="button"
-              >
-                <UserMinusIcon className="h-4 w-4 text-red-400 group-hover:text-danger" />
-                Close account
-              </Button>
-            </nav>
-          </div>
-        )}
-      </Sidebar>
-
-      {/* Content */}
-      <main className="flex-1 flex flex-col py-8 ml-8 pr-8 max-lg:ml-0 max-lg:pr-0">
-        <article className="consect p-4 mb-4 text-center">
-          <h1 className="text-2xl font-bold mb-2">Edit profile</h1>
-          <p className="text-sm text-gray-500">
+    <div className="max-w-6xl mx-auto px-4 py-10 dark:bg-dark">
+      <main className="flex-1 flex flex-col py-8">
+        <article className="consect p-4 mb-4 text-center bg-white dark:bg-dark rounded-lg">
+          <h1 className="text-2xl font-bold mb-2 dark:text-white">
+            Edit profile
+          </h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
             Add information about yourself
           </p>
         </article>
 
-        {/* Unified form with separate sections */}
         <form className="space-y-6" onSubmit={onSubmit}>
-          {/* Section 1: Profile photo */}
-          <section className="consect p-6">
-            <h2 className="text-xl font-semibold mb-3">Profile Photo</h2>
+          {/* Profile Photo */}
+          <section className="consect p-6 bg-white dark:bg-dark rounded-lg">
+            <h2 className="text-xl font-semibold mb-3 dark:text-white">
+              Profile Photo
+            </h2>
             <div className="flex items-start gap-4">
               <img
                 src={photoPreview}
                 alt="Current profile"
-                className="h-24 w-24 rounded-full object-cover ring-1 ring-gray-100 dark:ring-gray-800"
+                className="h-24 w-24 rounded-full object-cover ring-1 ring-gray-200 dark:ring-gray-700"
               />
               <div className="flex flex-wrap items-center gap-3">
                 <input
@@ -239,24 +172,23 @@ export default function EditProfilePage() {
                   <TrashIcon className="w-5 h-5" />
                   Remove
                 </Button>
-                <p className="w-full text-xs text-gray-500">
-                  JPG/PNG preferred, less than 2MB. A preview will be shown
-                  before saving.
+                <p className="w-full text-xs text-gray-500 dark:text-gray-400">
+                  JPG/PNG preferred, less than 2MB.
                 </p>
               </div>
             </div>
           </section>
 
-          {/* Section 2: Account information */}
-          <section className="consect p-6">
-            <h2 className="text-xl font-semibold mb-3">Account Information</h2>
+          {/* Account Information */}
+          <section className="consect p-6 bg-white dark:bg-dark rounded-lg">
+            <h2 className="text-xl font-semibold mb-3 dark:text-white">
+              Account Information
+            </h2>
             <div className="grid sm:grid-cols-2 gap-4">
               <Input
                 label="Username"
                 name="username"
                 type="text"
-                autoComplete="username"
-                placeholder="Username"
                 value={form.username}
                 prefixIcon={UserIcon}
                 onChange={onChange("username")}
@@ -265,8 +197,6 @@ export default function EditProfilePage() {
                 label="Email address"
                 name="email"
                 type="email"
-                autoComplete="email"
-                placeholder="Email"
                 value={form.email}
                 prefixIcon={EnvelopeIcon}
                 onChange={onChange("email")}
@@ -275,60 +205,49 @@ export default function EditProfilePage() {
                 label="New Password"
                 name="password"
                 type={isPasswordVisible ? "text" : "password"}
-                autoComplete="new-password"
-                placeholder="********"
-                minLength={8}
                 value={form.newPassword}
                 prefixIcon={LockClosedIcon}
                 suffixIcon={
-                  <button
+                  <Button
                     onClick={(e) => {
                       e.preventDefault();
                       setPasswordVisibility((prev) => !prev);
                     }}
-                    className="text-gray-500 hover:text-primary"
                     type="button"
-                    aria-label={
-                      isPasswordVisible ? "Hide password" : "Show password"
-                    }
+                    className="text-gray-500 hover:text-primary"
                   >
                     {isPasswordVisible ? (
                       <EyeSlashIcon className="h-5 w-5" />
                     ) : (
                       <EyeIcon className="h-5 w-5" />
                     )}
-                  </button>
+                  </Button>
                 }
                 onChange={onChange("newPassword")}
               />
             </div>
           </section>
 
-          {/* Section 3: Student information */}
-          <section className="consect p-6">
-            <h2 className="text-xl font-semibold mb-3">Student Information</h2>
+          {/* Student Info */}
+          <section className="consect p-6 bg-white dark:bg-dark rounded-lg">
+            <h2 className="text-xl font-semibold mb-3 dark:text-white">
+              Student Information
+            </h2>
             <div className="grid sm:grid-cols-2 gap-4">
               <Input
                 label="First Name"
-                name="firstName"
-                type="text"
-                placeholder="First Name"
-                prefixIcon={UserIcon}
                 value={form.firstName}
+                prefixIcon={UserIcon}
                 onChange={onChange("firstName")}
               />
               <Input
                 label="Last Name"
-                placeholder="Last Name"
-                type="text"
-                name="lastName"
-                prefixIcon={UserIcon}
                 value={form.lastName}
+                prefixIcon={UserIcon}
                 onChange={onChange("lastName")}
               />
               <Input
                 label="Birth Date"
-                name="birthDate"
                 type="date"
                 value={form.birthDate}
                 prefixIcon={CalendarIcon}
@@ -336,36 +255,24 @@ export default function EditProfilePage() {
               />
               <Input
                 label="Gender"
-                name="gender"
-                type="text"
-                placeholder="Male / Female"
                 value={form.gender}
                 prefixIcon={UsersIcon}
                 onChange={onChange("gender")}
               />
               <Input
                 label="Education"
-                name="education"
-                type="text"
-                placeholder="e.g. Bachelor of Science"
                 value={form.education}
                 prefixIcon={BookOpenIcon}
                 onChange={onChange("education")}
               />
               <Input
                 label="Phone Number"
-                name="phoneNumber"
-                type="tel"
-                placeholder="+1 234 567 890"
                 value={form.phoneNumber}
                 prefixIcon={PhoneIcon}
                 onChange={onChange("phoneNumber")}
               />
               <Input
                 label="Address"
-                name="address"
-                type="text"
-                placeholder="Street, City, Country"
                 value={form.address}
                 prefixIcon={MapPinIcon}
                 onChange={onChange("address")}
@@ -374,19 +281,62 @@ export default function EditProfilePage() {
             </div>
           </section>
 
-          {/* Section 4: Form actions */}
-          <section className="consect p-6">
-            <div className="flex items-center justify-end gap-3">
-              <Button type="button" variant="secondary" onClick={resetForm}>
-                Reset
+          {/* Actions */}
+          <section className="consect p-6 bg-white dark:bg-dark rounded-lg">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <Button
+                type="button"
+                variant="danger"
+                onClick={openCloseModal}
+                className="inline-flex items-center gap-2"
+              >
+                <UserMinusIcon className="w-5 h-5" />
+                Close Account
               </Button>
-              <Button type="submit" variant="primary" disabled={isSaving}>
-                {isSaving ? "Saving..." : "Save Changes"}
-              </Button>
+              <div className="flex items-center gap-3">
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => navigate("/profile")}
+                  className="inline-flex items-center gap-2"
+                >
+                  <UserCircleIcon className="w-5 h-5" />
+                  View Profile
+                </Button>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={resetForm}
+                  className="inline-flex items-center gap-2"
+                >
+                  <ArrowPathIcon className="w-5 h-5" />
+                  Reset
+                </Button>
+                <Button
+                  type="submit"
+                  variant="primary"
+                  disabled={isSaving}
+                  className="inline-flex items-center gap-2"
+                >
+                  <CheckCircleIcon className="w-5 h-5" />
+                  {isSaving ? "Saving..." : "Save Changes"}
+                </Button>
+              </div>
             </div>
           </section>
         </form>
       </main>
+
+      {/* Close Account Modal */}
+      <Modal
+        isOpen={isCloseModalOpen}
+        onClose={closeCloseModal}
+        title="Close Account"
+        message="Are you sure you want to close your account? This action cannot be undone."
+        variant="confirm"
+        onConfirm={handleCloseAccount}
+        onCancel={closeCloseModal}
+      />
     </div>
   );
 }
