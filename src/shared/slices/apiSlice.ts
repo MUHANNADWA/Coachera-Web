@@ -27,7 +27,8 @@ export const apiSlice = createApi({
     "Material",
     "Quiz",
     "Category",
-    "Instructor"
+    "Instructor",
+    "LearningPath"
   ],
   endpoints: () => ({}),
 });
