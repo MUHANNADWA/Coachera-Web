@@ -35,12 +35,12 @@ export default function CourseCard({
 
   const handleCategoryClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (course.categories?.[0]) {
-      const name =
-        typeof course.categories[0] === "string"
-          ? (course.categories[0] as unknown as string)
-          : course.categories[0]?.name ?? "";
-      if (name) navigate(`/search/${name}`);
+
+    const category = course.categories?.[0];
+    const name = typeof category === "string" ? category : category?.name;
+
+    if (name) {
+      navigate(`/search/${encodeURIComponent(name)}?type=categories`);
     }
   };
 

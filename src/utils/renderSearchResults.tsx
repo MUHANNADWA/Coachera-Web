@@ -1,8 +1,10 @@
 import CourseCard from "../features/courses/components/courseCard/CourseCard";
 import LearningPathCard from "../features/courses/components/courseCard/LearningPathCard";
 import Review from "../features/courses/components/Review";
+import CategoryCard from "../shared/components/CategoryCard";
 import Skills from "../shared/components/Skills";
 import {
+  Category,
   Course,
   LearningPath,
   Review as ReviewType,
@@ -24,6 +26,10 @@ export const renderSearchResults = (results: any[], entityType: string) => {
     case "reviews":
       return (results as ReviewType[]).map((review) => (
         <Review key={review.id} review={review} />
+      ));
+    case "categories":
+      return (results as Category[]).map((cat) => (
+        <CategoryCard key={cat.id} category={cat} />
       ));
     default:
       return (
