@@ -10,23 +10,24 @@ import {
   TrashIcon,
 } from "@heroicons/react/24/outline";
 import { Button } from "../../../../shared/components/form/Button";
+import Modal from "../../../../shared/components/Modal"; // <-- adjust path if needed
+import { useState } from "react";
+import { useDeleteCourseMutation } from "../../apiSlices/coursesApiSlice";
 
 interface CourseCardProps {
   course: Course;
   className?: string;
   actionMode?: "none" | "org" | "inst";
-  onEditCourse?: (course: Course) => void;
-  onDeleteCourse?: (course: Course) => void;
 }
 
 export default function CourseCard({
   course,
   className,
   actionMode = "none",
-  onEditCourse,
-  onDeleteCourse,
 }: CourseCardProps) {
   const { navigate } = useAppHook();
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [deleteCourse] = useDeleteCourseMutation();
 
   const handleCardClick = () => {
     navigate(`/courses/${course.id}`);
@@ -54,6 +55,11 @@ export default function CourseCard({
   };
 
   const stop = (e: React.MouseEvent) => e.stopPropagation();
+
+  // async confirm delete
+  const onConfirmDelete = async () => {
+    await deleteCourse(course.id).unwrap();
+  };
 
   return (
     <article
@@ -102,7 +108,7 @@ export default function CourseCard({
               variant="dangerInverted"
               className="relative m-0! p-2! rounded-full!"
               aria-label="Delete course"
-              onClick={() => onDeleteCourse?.(course)}
+              onClick={() => setConfirmOpen(true)}
             >
               <TrashIcon className="w-5 h-5" />
             </Button>
@@ -112,7 +118,9 @@ export default function CourseCard({
               variant="primaryInverted"
               className="relative m-0! p-2! rounded-full!"
               aria-label="Edit course"
-              onClick={() => onEditCourse?.(course)}
+              onClick={() =>
+                navigate(`/edit-course`, { state: { courseId: course.id } })
+              }
             >
               <PencilSquareIcon className="w-5 h-5" />
             </Button>
@@ -188,6 +196,23 @@ export default function CourseCard({
           <div className="text-sm text-gray-800 dark:text-gray-300">course</div>
         </div>
       </div>
+
+      {/* Confirm Delete Modal */}
+      <Modal
+        isOpen={confirmOpen}
+        onClose={() => setConfirmOpen(false)}
+        variant="confirm"
+        title="Delete course?"
+        message={`Are you sure you want to delete "${course.title}"? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        confirmButtonVariant="danger"
+        onConfirm={() => {
+          stop;
+          onConfirmDelete();
+        }}
+        onCancel={() => setConfirmOpen(false)}
+      />
     </article>
   );
 }

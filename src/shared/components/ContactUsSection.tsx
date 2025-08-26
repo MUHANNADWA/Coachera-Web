@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import Input from "./form/Input";
 import { Button } from "./form/Button";
-import { EnvelopeIcon, UserIcon } from "@heroicons/react/24/outline";
+import {
+  DocumentTextIcon,
+  EnvelopeIcon,
+  UserIcon,
+} from "@heroicons/react/24/outline";
 import Textarea from "./form/Textarea";
 
 const ContactUsSection: React.FC = () => {
@@ -22,7 +26,8 @@ const ContactUsSection: React.FC = () => {
   return (
     <section
       aria-labelledby="contact-heading"
-      className="relative overflow-hidden">
+      className="relative overflow-hidden"
+    >
       {/* Decorative background accent */}
       <div>
         <div className="py-20 px-6 md:px-20 relative z-10">
@@ -30,7 +35,8 @@ const ContactUsSection: React.FC = () => {
             <div className="flex-1 flex flex-col justify-center">
               <h2
                 id="contact-heading"
-                className="text-4xl md:text-5xl font-extrabold mb-4 text-primary-lg tracking-tight">
+                className="text-4xl md:text-5xl font-extrabold mb-4 text-primary-lg tracking-tight"
+              >
                 Contact Us
               </h2>
               <p className="mb-8 text-lg text-gray-700 dark:text-gray-300 font-medium">
@@ -45,7 +51,8 @@ const ContactUsSection: React.FC = () => {
                 <form
                   onSubmit={handleSubmit}
                   className="space-y-6"
-                  aria-label="Contact form">
+                  aria-label="Contact form"
+                >
                   <Input
                     label="Name"
                     name="name"
@@ -69,6 +76,7 @@ const ContactUsSection: React.FC = () => {
                   />
                   <div>
                     <Textarea
+                      prefixIcon={DocumentTextIcon}
                       label="Message"
                       name="message"
                       value={form.message}

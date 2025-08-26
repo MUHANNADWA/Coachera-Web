@@ -1,9 +1,7 @@
 import { LearningPath } from "../../../../shared/types/types";
 import { renderStars } from "../../utils/Utils";
 import { useAppHook } from "../../../../shared/hooks/useAppHook";
-import { FavButton } from "./FavButton";
 import { ClockIcon, UserIcon } from "@heroicons/react/24/outline";
-import { Button } from "../../../../shared/components/form/Button";
 
 interface LearningPathCardProps {
   learningPath: LearningPath;
@@ -20,13 +18,6 @@ export default function LearningPathCard({
     navigate(`/learningPaths/${learningPath.id}`);
   };
 
-  const handleCategoryClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (learningPath.categories?.[0]) {
-      navigate(`/search/${learningPath.categories[0]}`);
-    }
-  };
-
   const formatPrice = (price: number | undefined): string => {
     if (price === undefined || price === null) return "$0";
     return price === 0 ? "Free" : `$${price.toFixed(2)}`;
@@ -39,7 +30,7 @@ export default function LearningPathCard({
 
   return (
     <article
-      className={`card group ${className} drop-shadow-[4px_4px_0px_#e3e3e3,8px_8px_0px_black]`}
+      className={`card group ${className} drop-shadow-[3px_3px_0px_#e1e1e1ee,4px_4px_0px_#b1b1b1ee] dark:drop-shadow-[3px_3px_0px_var(--color-primary-dark),4px_4px_0px_var(--color-primary-darkest)]`}
       onClick={handleCardClick}
       role="button"
       tabIndex={0}
@@ -54,36 +45,11 @@ export default function LearningPathCard({
       {/* Image Container */}
       <div className="relative overflow-hidden">
         <img
-          src={learningPath.image}
+          src={learningPath.imageUrl}
           alt={`LearningPath cover for ${learningPath.title}`}
           className="h-48 w-full object-cover transition-transform duration-300 group-hover:scale-105"
           loading="lazy"
         />
-        {/* Category Badge */}
-        {learningPath.categories?.[0] && (
-          <Button
-            onClick={handleCategoryClick}
-            className="absolute! top-3 left-3 text-xs font-medium py-1.5! px-3! m-0!"
-            variant="primaryInverted"
-            tabIndex={0}
-            type="button"
-            onKeyDown={(e) => e.stopPropagation()}
-            onClickCapture={(e) => {
-              e.stopPropagation();
-              handleCategoryClick(e);
-            }}
-          >
-            {learningPath.categories[0].name}
-          </Button>
-        )}
-
-        {/* Favorite Button */}
-        <div
-          className="absolute! top-3 right-3 z-10"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <FavButton course={learningPath} />
-        </div>
 
         {/* Level Badge */}
         <div className="absolute! bottom-3 right-3 z-10">
@@ -116,16 +82,16 @@ export default function LearningPathCard({
           <UserIcon className="w-4 h-4" />
           <span
             className="truncate"
-            title={learningPath.instructors[0] ?? "Abo Mahmoud Org"}
+            title={learningPath.level ?? "Abo Mahmoud Org"}
           >
-            {learningPath.instructors[0] ?? "Abo Mahmoud Org"}
+            {learningPath.level ?? "Abo Mahmoud Org"}
           </span>
         </div>
 
         {/* Duration */}
         <div className="flex items-center gap-2 text-sm dark:text-gray-400">
           <ClockIcon className="w-4 h-4" />
-          <span>{formatDuration(learningPath.durationHours)}</span>
+          <span>{formatDuration(learningPath.duration)}</span>
         </div>
 
         {/* Description */}

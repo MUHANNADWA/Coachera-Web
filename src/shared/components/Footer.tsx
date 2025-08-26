@@ -58,7 +58,7 @@ function SocialIcon({
 export default function Footer() {
   const [email, setEmail] = useState("");
   const [locale, setLocale] = useState("en");
-  const [msg, setMsg] = useState<null | "ok" | "err">(null);
+  const [_msg, setMsg] = useState<null | "ok" | "err">(null);
   const [showTopShadow, setShowTopShadow] = useState(false);
 
   useEffect(() => {

@@ -39,9 +39,9 @@ body {
 
 @layer components {
   .page {
-    @apply bg-fixed bg-center bg-cover min-h-[calc(100vh-63px)] text-primary-dark dark:text-white
+    @apply bg-fixed bg-center bg-cover min-h-[calc(100vh-77px)] text-primary-dark dark:text-white
     bg-[url("https://images.unsplash.com/photo-1723987513101-a1e2f775350b?q=80&w=387&auto=format&fit=crop")] 
-    before:absolute before:inset-0 before:z-0 before:bg-primary-lightest/90 dark:before:bg-dark/98;
+    before:absolute before:inset-0 before:z-0 before:bg-white/98 dark:before:bg-dark/98;
   }
 
   .consect {

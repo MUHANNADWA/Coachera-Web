@@ -83,7 +83,7 @@ export const coursesApiSlice = apiSlice.injectEndpoints({
         sortBy = "id",
         sortDirection = "desc",
       }) => ({
-        url: `${COURSES_URL}${INSTRUCTOR_URL}/${id}`,
+        url: `${INSTRUCTOR_URL}/${id}${COURSES_URL}`,
         params: { page, size, sortBy, sortDirection },
       }),
       providesTags: ["Course"],
@@ -116,12 +116,14 @@ export const coursesApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: ["Enrollments"],
     }),
     createCourse: builder.mutation({
-      query: () => ({
+      query: (data) => ({
         url: `${COURSES_URL}`,
         method: "POST",
+        body: data,
       }),
       invalidatesTags: ["Course"],
     }),
+
     updateCourse: builder.mutation({
       query: (data) => ({
         url: `${COURSES_URL}/${data.courseId}`,
@@ -142,6 +144,7 @@ export const coursesApiSlice = apiSlice.injectEndpoints({
         url: `${COURSES_URL}/${courseId}`,
         method: "DELETE",
       }),
+      invalidatesTags: ["Course"],
     }),
     createReview: builder.mutation({
       query: (data) => ({

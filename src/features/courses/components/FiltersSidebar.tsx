@@ -8,11 +8,6 @@ import {
   SORT_FIELDS,
 } from "../utils/Utils";
 import SidebarHeader from "./SidebarHeader";
-import {
-  ArrowPathIcon,
-  AdjustmentsHorizontalIcon,
-} from "@heroicons/react/24/outline";
-import { Button } from "../../../shared/components/form/Button";
 
 interface FiltersSidebarProps {
   setPage: React.Dispatch<React.SetStateAction<number>>;
@@ -38,7 +33,6 @@ export default function FiltersSidebar({
   setSortDirection,
   entityType,
   setEntityType,
-  onReset,
   className = "",
 }: FiltersSidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
@@ -60,18 +54,6 @@ export default function FiltersSidebar({
     [setSize, setPage]
   );
 
-  const handleReset = useCallback(() => {
-    setSize(10);
-    setSortBy("createdAt");
-    setSortDirection("desc");
-    if (setEntityType) {
-      setEntityType("courses");
-    }
-    setPage(0);
-    setIsDirty(false);
-    onReset?.();
-  }, [setSize, setSortBy, setSortDirection, setEntityType, setPage, onReset]);
-
   const hasActiveFilters =
     isDirty ||
     size !== 10 ||
@@ -85,7 +67,8 @@ export default function FiltersSidebar({
         collapsed
           ? `max-sm:h-15! max-sm:bg-transparent w-14 ${className}`
           : `w-70 max-sm:w-full ${className}`
-      }>
+      }
+    >
       <SidebarHeader
         label="Filters"
         collapsed={collapsed}
@@ -104,7 +87,8 @@ export default function FiltersSidebar({
                       setSize(10);
                       setIsDirty(true);
                     }}
-                    className="ml-1 text-primary hover:text-danger">
+                    className="ml-1 text-primary hover:text-danger"
+                  >
                     ×
                   </button>
                 </span>
@@ -117,7 +101,8 @@ export default function FiltersSidebar({
                       setSortBy("createdAt");
                       setIsDirty(true);
                     }}
-                    className="ml-1 text-primary hover:text-danger">
+                    className="ml-1 text-primary hover:text-danger"
+                  >
                     ×
                   </button>
                 </span>
@@ -130,7 +115,8 @@ export default function FiltersSidebar({
                       setSortDirection("desc");
                       setIsDirty(true);
                     }}
-                    className="ml-1 text-primary hover:text-danger">
+                    className="ml-1 text-primary hover:text-danger"
+                  >
                     ×
                   </button>
                 </span>
@@ -143,7 +129,8 @@ export default function FiltersSidebar({
                       setEntityType && setEntityType("courses");
                       setIsDirty(true);
                     }}
-                    className="ml-1 text-primary hover:text-danger">
+                    className="ml-1 text-primary hover:text-danger"
+                  >
                     ×
                   </button>
                 </span>
@@ -212,34 +199,6 @@ export default function FiltersSidebar({
               </div>
             )}
           </form>
-
-          {/* Action Buttons */}
-          <div className="flex gap-2 pt-4 border-t border-gray-100">
-            {hasActiveFilters && (
-              <Button type="button" onClick={handleReset} variant="secondary">
-                <ArrowPathIcon className="w-4 h-4" />
-                Reset
-              </Button>
-            )}
-            <Button type="button" onClick={() => setPage(0)} variant="primary">
-              <AdjustmentsHorizontalIcon className="w-4 h-4" />
-              Apply
-            </Button>
-          </div>
-
-          {/* Quick Stats */}
-          <div className="pt-4 border-t border-gray-100">
-            <div className="text-xs text-gray-500 space-y-1">
-              <p>Current settings:</p>
-              <ul className="space-y-0.5 ml-2">
-                <li>• {size} results per page</li>
-                <li>
-                  • Sorted by {sortBy} ({sortDirection})
-                </li>
-                {entityType && <li>• Type: {entityType}</li>}
-              </ul>
-            </div>
-          </div>
         </div>
       )}
     </Sidebar>

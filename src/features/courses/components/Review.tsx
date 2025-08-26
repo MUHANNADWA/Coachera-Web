@@ -26,7 +26,7 @@ export default function Review({ review }: ReviewProps) {
 
   if (isLoading) {
     return (
-      <div className="rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 p-5">
+      <div className="rounded-2xl border border-gray-100 dark:border-primary-dark bg-white dark:bg-dark p-5">
         <div className="flex items-start gap-3 animate-pulse">
           <div className="w-12 h-12 rounded-full bg-gray-200 dark:bg-gray-700" />
           <div className="flex-1 space-y-2">
@@ -57,14 +57,14 @@ export default function Review({ review }: ReviewProps) {
   }).format(createdAt);
 
   return (
-    <article className="rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 p-5">
+    <article className="rounded-2xl border border-gray-100 dark:border-primary-dark bg-white dark:bg-dark p-5">
       {/* Header: Avatar + Name + Meta */}
       <header className="flex items-start gap-3">
         <div className="relative">
           <img
             src={PROFILE_IMAGE}
             alt={`${student.firstName} ${student.lastName}`}
-            className="w-12 h-12 rounded-full object-cover ring-1 ring-gray-100 dark:ring-gray-800"
+            className="w-12 h-12 rounded-full object-cover ring-1 ring-gray-100 dark:ring-primborder-primary-dark"
           />
           <span
             className="absolute -bottom-0.5 -right-0.5 inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary text-white"
@@ -104,7 +104,7 @@ export default function Review({ review }: ReviewProps) {
       </section>
 
       {/* Footer: Meta + Actions */}
-      <footer className="mt-4 flex items-center justify-end pt-2 border-gray-100 dark:border-gray-800">
+      <footer className="mt-4 flex items-center justify-end pt-2 border-gray-100 dark:border-primary-dark">
         <div className="text-sm text-gray-500 text-right">
           <time dateTime={createdAt.toISOString()}>{fullDate}</time>
         </div>

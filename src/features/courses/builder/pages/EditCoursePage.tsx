@@ -5,19 +5,19 @@ import { Button } from "../../../../shared/components/form/Button";
 import SortableItem from "../dnd/SortableItem";
 import { useDndSensors } from "../dnd/useDndSensors";
 import ModuleCard from "../components/ModuleCard";
-import { Curriculum, Lesson, Module, Section } from "../types";
+import { Module, Section } from "../types";
 import { reorderModules } from "../utils/reorder";
 import { useAppHook } from "../../../../shared/hooks/useAppHook";
 
 import {
   useCreateModuleMutation,
-  useUpdateModuleMutation,
+  // useUpdateModuleMutation,
   useDeleteModuleMutation,
   useGetModulesByCourseQuery,
 } from "../../apiSlices/moduleApiSlice";
 import {
   useCreateSectionMutation,
-  useUpdateSectionMutation,
+  // useUpdateSectionMutation,
   useDeleteSectionMutation,
 } from "../../apiSlices/sectionApiSlice";
 import {
@@ -27,16 +27,13 @@ import {
 
 export default function EditCoursePage() {
   const sensors = useDndSensors();
-  const { navigate, location } = useAppHook();
+  const { location } = useAppHook();
 
   const courseId = location.state.courseId;
 
   // Fetch from server
-  const {
-    data: fetchedModulesResponse,
-    isFetching,
-    refetch,
-  } = useGetModulesByCourseQuery(courseId);
+  const { data: fetchedModulesResponse, refetch } =
+    useGetModulesByCourseQuery(courseId);
 
   // Normalize fetched data to local state
   const fetchedModules: Module[] = useMemo(() => {
@@ -56,11 +53,11 @@ export default function EditCoursePage() {
 
   // Mutations
   const [createModule] = useCreateModuleMutation();
-  const [updateModule] = useUpdateModuleMutation();
+  // const [updateModule] = useUpdateModuleMutation();
   const [deleteModule] = useDeleteModuleMutation();
 
   const [createSection] = useCreateSectionMutation();
-  const [updateSection] = useUpdateSectionMutation();
+  // const [updateSection] = useUpdateSectionMutation();
   const [deleteSection] = useDeleteSectionMutation();
 
   // DnD reorder (modules level)
@@ -208,7 +205,7 @@ export default function EditCoursePage() {
 
   return (
     <div className="max-w-5xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">Add New Course</h1>
+      <h1 className="text-2xl font-bold mb-6">Edit Course</h1>
 
       <DndContext
         sensors={sensors}

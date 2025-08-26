@@ -6,7 +6,7 @@ import Textarea from "../../../shared/components/form/Textarea";
 import {
   useCreateMaterialMutation,
   useUpdateMaterialMutation,
-} from "../../courses/apiSlices/MaterialApiSlice";
+} from "../../courses/apiSlices/materialApiSlice";
 import { useAppHook } from "../../../shared/hooks/useAppHook";
 
 export type LessonType = "video" | "article" | "quiz";

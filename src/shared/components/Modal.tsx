@@ -1,10 +1,15 @@
-// components/Modal.tsx
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import { Button } from "./form/Button";
 
 type ModalVariant = "info" | "confirm" | "success" | "danger";
+type ButtonVariant =
+  | "primary"
+  | "secondary"
+  | "danger"
+  | "primaryInverted"
+  | "dangerInverted";
 
 interface ModalProps {
   isOpen: boolean;
@@ -12,8 +17,13 @@ interface ModalProps {
   title?: string;
   message: string;
   variant?: ModalVariant;
-  onConfirm?: () => void;
+  onConfirm?: () => void | Promise<void>;
   onCancel?: () => void;
+  // new props:
+  confirmText?: string;
+  cancelText?: string;
+  confirmButtonVariant?: ButtonVariant;
+  closeOnConfirm?: boolean; // default: true (auto-close after confirm finishes)
 }
 
 export default function Modal({
@@ -24,17 +34,21 @@ export default function Modal({
   variant = "info",
   onConfirm,
   onCancel,
+  confirmText = "Confirm",
+  cancelText = "Cancel",
+  confirmButtonVariant = "primary",
+  closeOnConfirm = true,
 }: ModalProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
+  const [busy, setBusy] = useState(false);
 
-  // Close on Escape + trap focus
+  // Close on Escape + focus trap
   useEffect(() => {
     if (!isOpen) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape" && !busy) onClose();
       if (e.key === "Tab" && dialogRef.current) {
-        // Focus trap بسيط
         const focusables = dialogRef.current.querySelectorAll<HTMLElement>(
           'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
         );
@@ -53,7 +67,7 @@ export default function Modal({
 
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose, busy]);
 
   // Lock body scroll when open
   useEffect(() => {
@@ -76,6 +90,25 @@ export default function Modal({
 
   const showActions = variant === "confirm";
 
+  const handleConfirm = async () => {
+    if (!onConfirm) {
+      if (closeOnConfirm) onClose();
+      return;
+    }
+    try {
+      const ret = onConfirm();
+      if (ret && typeof (ret as Promise<void>).then === "function") {
+        setBusy(true);
+        await ret;
+      }
+      if (closeOnConfirm) onClose();
+    } catch (e) {
+      // keep modal open to let caller show a toast/error if needed
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const modal = (
     <div
       aria-modal="true"
@@ -83,24 +116,26 @@ export default function Modal({
       aria-labelledby={title ? "modal-title" : undefined}
       className="fixed inset-0 z-[9999] flex items-center justify-center"
     >
-      {/* Backdrop يغطي كامل الشاشة */}
+      {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/40 backdrop-blur-xs"
-        onClick={onClose}
+        onClick={() => !busy && onClose()}
       />
 
       {/* Dialog */}
       <div
         ref={dialogRef}
         className="relative w-full max-w-md mx-4 rounded-2xl p-6 shadow-xl border border-gray-200 dark:border-primary-dark bg-white dark:bg-dark"
+        onMouseDown={(e) => e.stopPropagation()}
       >
         {/* Close button */}
         <button
           type="button"
-          onClick={onClose}
+          onClick={() => !busy && onClose()}
           aria-label="Close"
           className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-2xl"
           autoFocus
+          disabled={busy}
         >
           <XMarkIcon className="w-6 h-6" />
         </button>
@@ -126,19 +161,18 @@ export default function Modal({
               className="m-0!"
               variant="secondary"
               onClick={onCancel || onClose}
+              disabled={busy}
             >
-              Cancel
+              {cancelText}
             </Button>
             <Button
               type="button"
               className="m-0!"
-              variant="primary"
-              onClick={() => {
-                onConfirm && onConfirm();
-                onClose();
-              }}
+              variant={confirmButtonVariant}
+              onClick={handleConfirm}
+              disabled={busy}
             >
-              Confirm
+              {busy ? "Please wait..." : confirmText}
             </Button>
           </div>
         ) : (
@@ -148,6 +182,7 @@ export default function Modal({
               className="m-0!"
               variant="secondary"
               onClick={onCancel || onClose}
+              disabled={busy}
             >
               Ok
             </Button>

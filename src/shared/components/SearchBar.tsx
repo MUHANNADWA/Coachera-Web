@@ -40,7 +40,7 @@ export default function SearchBar({ className }: { className?: string }) {
           prefixIcon={MagnifyingGlassIcon}
           className={className}
           suffixIcon={
-            <kbd className="h-5 w-5 px-2 py-1.5 text-xs text-gray-400 bg-gray-100 dark:bg-gray-800 rounded-2xl hidden sm:inline">
+            <kbd className="h-5 w-5 px-3 py-1.5 text-xs text-gray-500 bg-primary-light dark:bg-primary-dark rounded-lg hidden sm:inline">
               /
             </kbd>
           }

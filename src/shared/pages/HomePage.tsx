@@ -31,7 +31,7 @@ export default function HomePage() {
             <div className="flex gap-4 max-md:justify-center">
               <Button
                 variant="primary"
-                onClick={() => navigate("/get-started")}
+                onClick={() => navigate("/login?redirect=/search/ ")}
               >
                 Get Started
               </Button>

@@ -33,9 +33,9 @@ export default function Skills({
   const getSkillClasses = () => {
     switch (variant) {
       case "compact":
-        return "inline-flex items-center gap-1.5 px-2 py-1 text-xs font-medium bg-primary/10 text-primary border-2 border-primary/20 rounded-lg hover:bg-primary/20 hover:border-primary/30 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-1";
+        return "inline-flex items-center gap-3 px-2 py-1 text-sm font-medium bg-primary/10 text-primary border-2 border-primary/20 rounded-lg hover:bg-primary/20 hover:border-primary/30 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-1";
       case "detailed":
-        return "flex items-center gap-2 px-4 py-3 text-sm font-medium bg-white text-gray-700 border-2 border-gray-200 rounded-xl hover:bg-primary/5 hover:border-primary/30 hover:text-primary transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50";
+        return "flex items-center gap-2 px-4 py-3 text-sm font-medium bg-white dark:bg-dark text-gray-700 dark:text-gray-200 border-2 border-gray-200 dark:border-white/10 rounded-xl hover:bg-primary/5 hover:border-primary/30 hover:text-primary transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50";
       default:
         return "inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium bg-primary text-white rounded-full hover:bg-primary/90 hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-1";
     }
@@ -43,7 +43,9 @@ export default function Skills({
 
   if (!skills || skills.length === 0) {
     return (
-      <div className={`text-center py-8 text-gray-500 ${className}`}>
+      <div
+        className={`text-center py-8 text-gray-500 dark:text-gray-400 ${className}`}
+      >
         <AcademicCapIcon className="w-8 h-8 mx-auto mb-2 text-gray-300" />
         <p className="text-sm">No skills available</p>
       </div>
@@ -55,7 +57,7 @@ export default function Skills({
       {showCount && (
         <div className="flex items-center gap-2 mb-3">
           <AcademicCapIcon className="w-4 h-4 text-primary" />
-          <span className="text-sm font-medium text-gray-700">
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
             {skills.length} skill{skills.length !== 1 ? "s" : ""}
           </span>
         </div>
@@ -67,7 +69,8 @@ export default function Skills({
             <button
               type="button"
               className={getSkillClasses()}
-              aria-label={`Skill: ${skill.name}`}>
+              aria-label={`Skill: ${skill.name}`}
+            >
               {variant === "detailed" && (
                 <AcademicCapIcon className="w-4 h-4" />
               )}

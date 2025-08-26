@@ -50,7 +50,8 @@ export default function Pagination({
       <Button
         disabled={page === 0}
         onClick={() => setPage((prev) => Math.max(prev - 1, 0))}
-        className="px-4 py-2 bg-gray-200 rounded-2xl disabled:opacity-50 hover:bg-gray-300 transition">
+        className="px-4 py-2 bg-gray-200 dark:bg-primary-darkest rounded-2xl disabled:opacity-50 hover:bg-gray-300 transition"
+      >
         Previous
       </Button>
 
@@ -66,8 +67,9 @@ export default function Pagination({
             className={`px-4 py-2 rounded-2xl transition ${
               Number(p) === page
                 ? "bg-primary text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-            }`}>
+                : "bg-gray-200 dark:bg-primary-darkest text-gray-700 dark:text-gray-200 hover:bg-gray-300"
+            }`}
+          >
             {Number(p) + 1}
           </Button>
         )
@@ -76,7 +78,8 @@ export default function Pagination({
       <Button
         disabled={page === totalPages - 1}
         onClick={() => setPage((prev) => Math.min(prev + 1, totalPages - 1))}
-        className="px-4 py-2 bg-gray-200 rounded-2xl disabled:opacity-50 hover:bg-gray-300 transition">
+        className="px-4 py-2 bg-gray-200 dark:bg-primary-darkest rounded-2xl disabled:opacity-50 hover:bg-gray-300 transition"
+      >
         Next
       </Button>
     </div>

@@ -1,6 +1,13 @@
 import CourseCard from "../features/courses/components/courseCard/CourseCard";
+import LearningPathCard from "../features/courses/components/courseCard/LearningPathCard";
+import Review from "../features/courses/components/Review";
 import Skills from "../shared/components/Skills";
-import { Course, Skill } from "../shared/types/types";
+import {
+  Course,
+  LearningPath,
+  Review as ReviewType,
+  Skill,
+} from "../shared/types/types";
 
 export const renderSearchResults = (results: any[], entityType: string) => {
   switch (entityType) {
@@ -10,6 +17,14 @@ export const renderSearchResults = (results: any[], entityType: string) => {
       ));
     case "skills":
       return <Skills skills={results as Skill[]} />;
+    case "learning-paths":
+      return (results as LearningPath[]).map((lp) => (
+        <LearningPathCard key={lp.id} learningPath={lp} />
+      ));
+    case "reviews":
+      return (results as ReviewType[]).map((review) => (
+        <Review key={review.id} review={review} />
+      ));
     default:
       return (
         <table className="min-w-full text-sm text-left">

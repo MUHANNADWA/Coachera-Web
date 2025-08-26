@@ -4,7 +4,7 @@ import { Button } from "../../../../shared/components/form/Button";
 import Modal from "../../../../shared/components/Modal";
 import { useModal } from "../../../../shared/hooks/useModal";
 import toastPromise from "../../../../utils/toast";
-import { useVerifyQuizMutation } from "../../apiSlices/QuizApiSlice";
+import { useVerifyQuizMutation } from "../../apiSlices/quizApiSlice";
 
 interface QuizPageProps {
   material: Material;

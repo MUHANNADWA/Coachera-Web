@@ -31,7 +31,7 @@ export function CourseModules({ course }: CourseModulesProps) {
         </h2>
       </header>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 text-sm text-gray-700">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 text-sm text-gray-700 dark:text-gray-300">
         <SummaryItem
           icon={RectangleStackIcon}
           label="Modules"
@@ -78,7 +78,7 @@ function SummaryItem({ icon: Icon, label, value }: SummaryItemProps) {
     <div className="consect flex items-center gap-2 px-3 py-2">
       <Icon className="h-5 w-5 text-primary" />
       <span className="font-semibold">{value}</span>
-      <span className="text-gray-500">{label}</span>
+      <span className="text-gray-500 dark:text-gray-400">{label}</span>
     </div>
   );
 }
@@ -110,13 +110,14 @@ function ModuleCard({ module }: ModuleCardProps) {
         onClick={handleToggle}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") handleToggle(e);
-        }}>
+        }}
+      >
         <div>
-          <h3 className="text-xl font-semibold text-primary-dark flex items-center gap-2">
+          <h3 className="text-xl font-semibold text-primary-dark dark:text-primary-light flex items-center gap-2">
             <RectangleStackIcon className="w-5 h-5 text-primary" />
             {module.title}
           </h3>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
             Module • {module.sections.length} section
             {module.sections.length > 1 ? "s" : ""}
           </p>
@@ -132,10 +133,11 @@ function ModuleCard({ module }: ModuleCardProps) {
 
       <div
         id={`module-sections-${module.id}`}
-        className={`overflow-hidden transition-all duration-300 ${
-          expanded ? "max-h-[1000px] py-4 px-6" : "max-h-0 p-0"
+        className={`overflow-auto transition-all duration-300 ${
+          expanded ? "max-h-[500px] py-4 px-6" : "max-h-0 p-0"
         }`}
-        aria-hidden={!expanded}>
+        aria-hidden={!expanded}
+      >
         {expanded && (
           <div className="space-y-6">
             {module.sections.map((section) => {
@@ -145,7 +147,7 @@ function ModuleCard({ module }: ModuleCardProps) {
 
               return (
                 <section key={section.id} className="mb-4">
-                  <h4 className="font-semibold text-lg mb-2 text-primary-dark flex items-center gap-2">
+                  <h4 className="font-semibold text-lg mb-2 text-primary-dark dark:text-primary-light flex items-center gap-2">
                     <ListBulletIcon className="w-4 h-4 text-primary" />
                     {section.title}
                   </h4>
@@ -183,16 +185,18 @@ function MaterialList({ materials, label, Icon }: MaterialListProps) {
   if (!materials.length) return null;
   return (
     <div className="mb-2">
-      <h5 className="flex items-center font-medium text-gray-700 mb-1 text-sm">
+      <h5 className="flex items-center font-medium text-primary-darkest dark:text-primary-lightest mb-1 text-sm">
         <Icon className="h-4 w-4 mr-1 text-primary" />
         {label} • {materials.length} item{materials.length > 1 ? "s" : ""} •{" "}
         {totalDuration(materials)} min
       </h5>
-      <ul className="ml-7 space-y-1 text-sm text-gray-700 list-disc">
+      <ul className="ml-7 space-y-1 text-sm text-gray-700 dark:text-gray-300 list-disc">
         {materials.map((item) => (
           <li key={item.id} className="flex justify-between items-center">
             <span>{item.title}</span>
-            <span className="text-gray-500 text-xs">{item.duration} min</span>
+            <span className="text-gray-500 dark:text-gray-400 text-xs">
+              {item.duration} min
+            </span>
           </li>
         ))}
       </ul>

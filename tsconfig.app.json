@@ -22,5 +22,9 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src", "src/features/courses/pages/.tsx", "src/features/courses/pages/quiz/.tsx"]
+  "include": [
+    "src",
+    "src/features/courses/pages/.tsx",
+    "src/features/courses/pages/quiz/.tsx"
+  ]
 }

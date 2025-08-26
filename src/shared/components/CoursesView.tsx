@@ -14,6 +14,7 @@ import { Course } from "../types/types";
 import CourseCard from "../../features/courses/components/courseCard/CourseCard";
 import { Button } from "./form/Button";
 import { AddCourseCard } from "./CourseCardOverlay";
+import { useNavigate } from "react-router-dom";
 
 type LayoutMode = "carousel" | "grid";
 
@@ -24,9 +25,6 @@ interface CoursesViewProps {
   layout?: LayoutMode;
   gridPageSize?: number;
   showLayoutToggle?: boolean;
-  onAddCourseClick?: () => void;
-  onEditCourse?: (course: Course) => void;
-  onDeleteCourse?: (course: Course) => void;
 }
 
 export default function CoursesView({
@@ -36,9 +34,6 @@ export default function CoursesView({
   layout,
   gridPageSize = 8,
   showLayoutToggle = true,
-  onAddCourseClick,
-  onEditCourse,
-  onDeleteCourse,
 }: CoursesViewProps) {
   const {
     // all
@@ -192,9 +187,11 @@ export default function CoursesView({
       break;
   }
 
+  const navigate = useNavigate();
+
   const maybeAddCard =
     variant === "org" ? (
-      <AddCourseCard onClick={() => onAddCourseClick?.()} />
+      <AddCourseCard onClick={() => navigate("/add-course")} />
     ) : null;
 
   const canLoadMore = data.list.length < data.total && !data.last;
@@ -346,8 +343,6 @@ export default function CoursesView({
                         ? "inst"
                         : "none"
                     }
-                    onEditCourse={onEditCourse}
-                    onDeleteCourse={onDeleteCourse}
                   />
                 </div>
               ))}
@@ -392,8 +387,6 @@ export default function CoursesView({
                       ? "inst"
                       : "none"
                   }
-                  onEditCourse={onEditCourse}
-                  onDeleteCourse={onDeleteCourse}
                 />
               ))}
             </div>

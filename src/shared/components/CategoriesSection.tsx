@@ -47,12 +47,11 @@ const CategoriesSection: React.FC = () => {
       icon: string | null;
     }>;
 
+    // @ts-ignore
     return list.map((c) => ({
       id: c.id,
       name: c.name,
-      // الـAPI يرجّع icon=null، فنعطي أيقونة افتراضية حسب الاسم
       icon: iconByName[c.name] ?? undefined,
-      // الوصف اختياري، نملأه من قاموس (أو اتركه undefined)
       description: descByName[c.name],
     })) as Category[];
   }, [data]);

@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { Button } from "../../../shared/components/form/Button";
 import { useAppHook } from "../../../shared/hooks/useAppHook";
 
@@ -24,7 +23,8 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
                 {index > 0 && ">"}
                 <Button
                   onClick={() => navigate(item.path ?? "#")}
-                  className="ml-2 min-w-8 max-w-40 truncate hover:text-primary hover:underline hover:bg-transparent!">
+                  className="ml-2 min-w-8 max-w-40 truncate hover:text-primary hover:underline hover:bg-transparent!"
+                >
                   {" "}
                   {item.label}{" "}
                 </Button>
