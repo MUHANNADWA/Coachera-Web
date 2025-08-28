@@ -83,7 +83,7 @@ export const coursesApiSlice = apiSlice.injectEndpoints({
         sortBy = "id",
         sortDirection = "desc",
       }) => ({
-        url: `${INSTRUCTOR_URL}/${id}${COURSES_URL}`,
+        url: `${INSTRUCTOR_URL}${COURSES_URL}`,
         params: { page, size, sortBy, sortDirection },
       }),
       providesTags: ["Course"],
