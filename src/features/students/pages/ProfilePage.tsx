@@ -17,6 +17,10 @@ import {
   UsersIcon,
 } from "@heroicons/react/24/outline";
 
+import {
+  useGetMeQuery,
+} from "../../students/api/studentsApiSlice";
+
 export default function ProfilePage() {
   const { user, navigate, wishlistCourses, enrolledCourses } = useAppHook();
 

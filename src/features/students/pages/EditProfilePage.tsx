@@ -26,6 +26,13 @@ import SidebarHeader from "../../courses/components/SidebarHeader";
 import { profileSidebar } from "../../courses/utils/Utils";
 import Modal from "../../../shared/components/Modal";
 
+import {
+  useGetMeQuery,
+  useUpdateStudentMutation,
+  useDeleteStudentMutation,
+} from "../../students/api/studentsApiSlice";
+
+
 type FormState = {
   username: string;
   email: string;
@@ -42,6 +49,9 @@ type FormState = {
 export default function EditProfilePage() {
   const { user, navigate } = useAppHook();
 
+  const [updateStudent] = useUpdateStudentMutation();
+  const [deleteStudent] = useDeleteStudentMutation();
+  
   const [form, setForm] = useState<FormState>({
     username: user?.username || "",
     email: user?.email || "",
@@ -86,12 +96,24 @@ export default function EditProfilePage() {
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isSaving) return;
+
     try {
       setIsSaving(true);
-      // TODO: save profile changes
+      await updateStudent({
+        firstName: form.firstName,
+        lastName: form.lastName,
+        birthDate: form.birthDate,
+        gender: form.gender,
+        education: form.education,
+        phoneNumber: form.phoneNumber,
+        address: form.address,
+      }).unwrap();
+      navigate("/profile"); // go back to profile after saving
+    } catch (err) {
+      console.error("Update failed", err);
     } finally {
       setIsSaving(false);
     }
@@ -144,7 +166,7 @@ export default function EditProfilePage() {
                   onClick={handlePhotoPick}
                   className="inline-flex items-center gap-2"
                 >
-                  <PhotoIcon className="w-5 h-5" />
+                <PhotoIcon className="w-5 h-5" />
                   Change Photo
                 </Button>
                 <Button
@@ -292,6 +314,7 @@ export default function EditProfilePage() {
                   variant="primary"
                   disabled={isSaving}
                   className="inline-flex items-center gap-2"
+                  onClick={onSubmit}
                 >
                   <CheckCircleIcon className="w-5 h-5" />
                   {isSaving ? "Saving..." : "Save Changes"}
