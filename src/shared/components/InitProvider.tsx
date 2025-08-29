@@ -75,11 +75,11 @@ const InitProvider = () => {
     }
   }, [enrolledSuccess, enrolled, dispatch]);
 
-  // useEffect(() => {
-  //   if (!token) {
-  //     navigate("/login");
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (!token) {
+      navigate("/login");
+    }
+  }, []);
 
   return null;
 };

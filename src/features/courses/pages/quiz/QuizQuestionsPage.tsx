@@ -52,9 +52,11 @@ export default function QuizQuestionsPage({
       loadingMessage: "Submitting your quiz...",
       successMessage: "Quiz submitted successfully!",
       errorMessage: "Failed to submit quiz",
-      onSuccess: () => {
+      onSuccess: (res) => {
         setSubmitted(true);
-        const result = { score: 7, total: 10 }; // مؤقت
+        const score = res.data.correctAnswers;
+        const total = res.data.totalQuestions;
+        const result = { score: score, total: total };
         onSubmit(result);
       },
     });
