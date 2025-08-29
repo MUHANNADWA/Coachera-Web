@@ -1,4 +1,4 @@
-//@ts-nocheck
+// @ts-nocheck
 import { useMemo } from "react";
 import { useAppHook } from "../../../shared/hooks/useAppHook";
 import { PROFILE_IMAGE } from "../../../constants/constants";
@@ -24,20 +24,26 @@ import {
 export default function ProfilePage() {
   const { user, navigate, wishlistCourses, enrolledCourses } = useAppHook();
 
+  // 🔑 fetch student by id
+  const { data: student, isLoading } = useGetMeQuery({
+    skip: !user?.id, // only call if user id is available
+  });
+
+  // fallback to local user while loading
   const profile = useMemo(
     () => ({
-      username: user?.username ?? "User",
-      email: user?.email ?? "No email",
-      firstName: user?.details?.firstName ?? "",
-      lastName: user?.details?.lastName ?? "",
-      birthDate: user?.details?.birthDate ?? "",
-      gender: user?.details?.gender ?? "",
-      education: user?.details?.education ?? "",
-      phoneNumber: user?.details?.phoneNumber ?? "",
-      address: user?.details?.address ?? "",
-      profileImage: user?.profileImage || PROFILE_IMAGE,
+      username: student?.data.username ?? user?.username ?? "User",
+      email: student?.data.email ?? user?.email ?? "No email",
+      firstName: student?.data.firstName ?? user?.details.firstName ?? "",
+      lastName: student?.data.lastName ?? user?.details.lastName ?? "",
+      birthDate: student?.data.birthDate ?? user?.details.birthDate ?? "",
+      gender: student?.data.gender ?? user?.details.gender ?? "",
+      education: student?.data.education ?? user?.details.education ?? "",
+      phoneNumber: student?.data.phoneNumber ?? user?.details.phoneNumber ?? "",
+      address: student?.data.address ?? user?.details.address ?? "",
+      profileImage: student?.data.profileImage ?? user?.profileImage ?? PROFILE_IMAGE,
     }),
-    [user]
+    [student, user]
   );
 
   const stats = [
@@ -58,15 +64,7 @@ export default function ProfilePage() {
     },
   ];
 
-  const InfoRow = ({
-    icon: Icon,
-    label,
-    value,
-  }: {
-    icon: any;
-    label: string;
-    value?: string;
-  }) => (
+  const InfoRow = ({ icon: Icon, label, value }) => (
     <div className="consect flex items-start gap-3 p-3">
       <div className="shrink-0 rounded-lg bg-primary/10 p-2">
         <Icon className="w-5 h-5 text-primary" />
@@ -80,15 +78,7 @@ export default function ProfilePage() {
     </div>
   );
 
-  const StatCard = ({
-    icon: Icon,
-    label,
-    value,
-  }: {
-    icon: any;
-    label: string;
-    value: number | string;
-  }) => (
+  const StatCard = ({ icon: Icon, label, value }) => (
     <div className="consect p-4 text-center">
       <div className="mx-auto mb-2 inline-flex rounded-xl bg-primary/10 p-2">
         <Icon className="h-5 w-5 text-primary" />
@@ -97,6 +87,12 @@ export default function ProfilePage() {
       <div className="text-sm text-gray-500">{label}</div>
     </div>
   );
+
+  if (isLoading) {
+    return (
+      <div className="text-center py-10 text-gray-500">Loading profile...</div>
+    );
+  }
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-10">
@@ -150,28 +146,12 @@ export default function ProfilePage() {
       <section className="mb-12">
         <h2 className="text-3xl font-bold mb-4 dark:text-white">About</h2>
         <div className="grid md:grid-cols-2 gap-4">
-          <InfoRow
-            icon={UserIcon}
-            label="First Name"
-            value={profile.firstName}
-          />
+          <InfoRow icon={UserIcon} label="First Name" value={profile.firstName} />
           <InfoRow icon={UserIcon} label="Last Name" value={profile.lastName} />
-          <InfoRow
-            icon={CalendarIcon}
-            label="Birth Date"
-            value={profile.birthDate}
-          />
+          <InfoRow icon={CalendarIcon} label="Birth Date" value={profile.birthDate} />
           <InfoRow icon={UsersIcon} label="Gender" value={profile.gender} />
-          <InfoRow
-            icon={AcademicCapIcon}
-            label="Education"
-            value={profile.education}
-          />
-          <InfoRow
-            icon={PhoneIcon}
-            label="Phone Number"
-            value={profile.phoneNumber}
-          />
+          <InfoRow icon={AcademicCapIcon} label="Education" value={profile.education} />
+          <InfoRow icon={PhoneIcon} label="Phone Number" value={profile.phoneNumber} />
           <InfoRow icon={MapPinIcon} label="Address" value={profile.address} />
         </div>
       </section>
@@ -179,9 +159,7 @@ export default function ProfilePage() {
       {/* Currently Learning */}
       <section className="mb-16">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-3xl font-bold dark:text-white">
-            Currently Learning
-          </h2>
+          <h2 className="text-3xl font-bold dark:text-white">Currently Learning</h2>
           {enrolledCourses?.length > 0 && (
             <Button
               variant="secondary"
@@ -214,9 +192,7 @@ export default function ProfilePage() {
       {/* Favorites */}
       <section className="mb-16" id="wishlist">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-3xl font-bold dark:text-white">
-            Favorited Courses
-          </h2>
+          <h2 className="text-3xl font-bold dark:text-white">Favorited Courses</h2>
         </div>
 
         {!wishlistCourses || wishlistCourses.length === 0 ? (

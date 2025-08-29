@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAppHook } from "../../../shared/hooks/useAppHook";
 import { Button } from "../../../shared/components/form/Button";
 import { PROFILE_IMAGE } from "../../../constants/constants";
@@ -18,12 +18,9 @@ import {
   PhotoIcon,
   TrashIcon,
   UserCircleIcon,
-  ArrowPathIcon,
   CheckCircleIcon,
 } from "@heroicons/react/24/outline";
 import Input from "../../../shared/components/form/Input";
-import SidebarHeader from "../../courses/components/SidebarHeader";
-import { profileSidebar } from "../../courses/utils/Utils";
 import Modal from "../../../shared/components/Modal";
 
 import {
@@ -31,7 +28,7 @@ import {
   useUpdateStudentMutation,
   useDeleteStudentMutation,
 } from "../../students/api/studentsApiSlice";
-
+import toastPromise from "../../../shared/utils/toast";
 
 type FormState = {
   username: string;
@@ -47,34 +44,49 @@ type FormState = {
 };
 
 export default function EditProfilePage() {
-  const { user, navigate } = useAppHook();
+  const { navigate, user } = useAppHook();
 
+  const { data: me, isLoading } = useGetMeQuery({});
   const [updateStudent] = useUpdateStudentMutation();
   const [deleteStudent] = useDeleteStudentMutation();
-  
+
   const [form, setForm] = useState<FormState>({
-    username: user?.username || "",
-    email: user?.email || "",
+    username: "",
+    email: "",
     newPassword: "",
-    firstName: user?.details?.firstName || "",
-    lastName: user?.details?.lastName || "",
-    birthDate: user?.details?.birthDate || "",
-    gender: user?.details?.gender || "",
-    education: user?.details?.education || "",
-    phoneNumber: user?.details?.phoneNumber || "",
-    address: user?.details?.address || "",
+    firstName: "",
+    lastName: "",
+    birthDate: "",
+    gender: "",
+    education: "",
+    phoneNumber: "",
+    address: "",
   });
 
+  useEffect(() => {
+    if (me) {
+      setForm({
+        username: user?.username || "",
+        email: user?.email || "",
+        newPassword: "",
+        firstName: me.data.firstName || "",
+        lastName: me.data.lastName || "",
+        birthDate: me.data.birthDate || "",
+        gender: me.data.gender || "",
+        education: me.data.education || "",
+        phoneNumber: me.data.phoneNumber || "",
+        address: me.data.address || "",
+      });
+    }
+  }, [me]);
+
   const [isPasswordVisible, setPasswordVisibility] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
   const [isCloseModalOpen, setIsCloseModalOpen] = useState(false);
 
-  const initialPhoto = user?.profileImage || PROFILE_IMAGE;
+  const initialPhoto = me?.profileImage || PROFILE_IMAGE;
   const [photoPreview, setPhotoPreview] = useState<string>(initialPhoto);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-
-  const sidebarItems = useMemo(() => profileSidebar, []);
 
   const onChange =
     (name: keyof FormState) =>
@@ -96,37 +108,47 @@ export default function EditProfilePage() {
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (isSaving) return;
 
-    try {
-      setIsSaving(true);
-      await updateStudent({
-        firstName: form.firstName,
-        lastName: form.lastName,
-        birthDate: form.birthDate,
-        gender: form.gender,
-        education: form.education,
-        phoneNumber: form.phoneNumber,
-        address: form.address,
-      }).unwrap();
-      navigate("/profile"); // go back to profile after saving
-    } catch (err) {
-      console.error("Update failed", err);
-    } finally {
-      setIsSaving(false);
-    }
+    const data = {
+      firstName: form.firstName,
+      lastName: form.lastName,
+      birthDate: form.birthDate,
+      gender: form.gender,
+      education: form.education,
+      phoneNumber: form.phoneNumber,
+      address: form.address,
+    };
+
+    await toastPromise(updateStudent(data).unwrap(), {
+      loadingMessage: "Saving changes...",
+      successMessage: "Profile updated successfully!",
+      errorMessage: "Failed to update profile",
+      onSuccess: () => navigate("/profile"),
+    });
   };
 
   const openCloseModal = () => setIsCloseModalOpen(true);
   const closeCloseModal = () => setIsCloseModalOpen(false);
 
   const handleCloseAccount = async () => {
-    // TODO: call API
+    await toastPromise(deleteStudent(me.id).unwrap(), {
+      loadingMessage: "Closing your account...",
+      successMessage: "Account closed successfully",
+      errorMessage: "Failed to close account",
+      onSuccess: () => navigate("/goodbye"),
+    });
     setIsCloseModalOpen(false);
-    navigate("/goodbye");
   };
+
+  if (isLoading) {
+    return (
+      <div className="max-w-6xl mx-auto px-4 py-10 text-center text-gray-500">
+        Loading profile...
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-10 dark:bg-dark">
@@ -166,7 +188,7 @@ export default function EditProfilePage() {
                   onClick={handlePhotoPick}
                   className="inline-flex items-center gap-2"
                 >
-                <PhotoIcon className="w-5 h-5" />
+                  <PhotoIcon className="w-5 h-5" />
                   Change Photo
                 </Button>
                 <Button
@@ -312,12 +334,10 @@ export default function EditProfilePage() {
                 <Button
                   type="submit"
                   variant="primary"
-                  disabled={isSaving}
                   className="inline-flex items-center gap-2"
-                  onClick={onSubmit}
                 >
                   <CheckCircleIcon className="w-5 h-5" />
-                  {isSaving ? "Saving..." : "Save Changes"}
+                  Save Changes
                 </Button>
               </div>
             </div>
