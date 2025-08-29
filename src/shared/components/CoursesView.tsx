@@ -207,8 +207,6 @@ export default function CoursesView({
     }
   };
 
-  console.log(data.list);
-
   return (
     <section className="flex-1 relative">
       <div className="max-sm:px-4 px-16 py-10">
@@ -270,7 +268,7 @@ export default function CoursesView({
                 className="p-4 flex overflow-x-auto space-x-4 snap-x snap-mandatory scroll-smooth"
                 style={{ scrollbarWidth: "none" }}
               >
-                {variant === "org" && (
+                {(variant === "org" || variant === "inst") && (
                   <div className="snap-start min-w-[300px]">
                     <CourseCardSkeleton />
                   </div>
@@ -286,7 +284,9 @@ export default function CoursesView({
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {variant === "org" && <CourseCardSkeleton />}
+              {(variant === "org" || variant === "inst") && (
+                <CourseCardSkeleton />
+              )}
               {Array(Math.min(gridPageSize, data.getSize()))
                 .fill(0)
                 .map((_, i) => (

@@ -37,9 +37,6 @@ const CategoriesSection: React.FC = () => {
     sortDirection: "desc",
   });
 
-  // شكل الاستجابة لديك:
-  // { status, message, data: { content: [...] , ... }, timestamp }
-  // نطبّعها إلى مصفوفة Category للواجهة
   const categories: Category[] = useMemo(() => {
     const list = (data?.data?.content ?? []) as Array<{
       id: number | string;

@@ -23,11 +23,12 @@ export default function LearnPage() {
 
   if (isLoading) return <Loader logo />;
 
-  if (!course || !module || !material || !currentMaterial) {
-    return <Loader logo />;
+  // After loading finishes, if course or module is missing, show 404
+  if (!course || !module) {
+    return <NotFoundPage />;
   }
 
-  if (!module || !material) {
+  if (!material || !currentMaterial) {
     return <NotFoundPage />;
   }
 
@@ -49,13 +50,8 @@ export default function LearnPage() {
           prevExists={prevExists}
         />
 
-        {/* if Matrial is Video */}
         {material.type === "VIDEO" && <VideoPage material={material} />}
-
-        {/* if Matrial is Article */}
         {material.type === "ARTICLE" && <ArticlePage material={material} />}
-
-        {/* if Matrial is Quiz */}
         {material.type === "QUIZ" && <QuizPage material={material} />}
       </main>
     </div>

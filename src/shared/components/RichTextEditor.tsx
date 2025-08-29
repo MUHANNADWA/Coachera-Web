@@ -10,7 +10,6 @@ export default function RichTextEditor() {
   const handleSave = () => {
     const editor = editorRef.current;
     const html = editor?.getContent();
-    console.log("HTML content to save:", html);
     setContent(html!);
     // TODO: Send HTML to backend
   };

@@ -55,7 +55,6 @@ export default function useOtpVerification() {
   const handleSubmit = async (e?: React.FormEvent) => {
     e!.preventDefault();
     const code = otp.join("");
-    console.log("Verifying OTP:", code);
 
     await toastPromise(validate({ email, otp: code }).unwrap(), {
       loadingMessage: "Logging in...",
@@ -70,7 +69,6 @@ export default function useOtpVerification() {
   };
 
   const handleResend = () => {
-    console.log("Resending OTP...");
     setOtp(Array(6).fill(""));
     setExpired(false);
     setTimer({ minute: 4, second: 59 });

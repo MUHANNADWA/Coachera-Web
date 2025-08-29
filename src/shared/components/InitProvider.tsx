@@ -38,7 +38,7 @@ interface EnrolledApiResponse {
 }
 
 const InitProvider = () => {
-  const { theme, user, dispatch } = useAppHook();
+  const { token, theme, user, dispatch, navigate, location } = useAppHook();
 
   const isStudent = user?.role === UserRole.STUDENT;
 
@@ -74,6 +74,12 @@ const InitProvider = () => {
       dispatch(setEnrolledCourses(enrolledCourses));
     }
   }, [enrolledSuccess, enrolled, dispatch]);
+
+  // useEffect(() => {
+  //   if (!token) {
+  //     navigate("/login");
+  //   }
+  // }, []);
 
   return null;
 };

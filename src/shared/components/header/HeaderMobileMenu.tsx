@@ -1,5 +1,4 @@
 import { PROFILE_URL } from "../../../constants/constants";
-import { HeaderUserDropdown } from "./HeaderUserDropdown";
 import { useAppHook } from "../../hooks/useAppHook";
 import { Button } from "../form/Button";
 
@@ -35,21 +34,21 @@ export default function HeaderMobileMenu({
       <div
         className="fixed inset-0 z-40"
         aria-hidden="true"
-        onClick={onClose}></div>
+        onClick={onClose}
+      ></div>
 
       <aside
         id="mobile-menu"
         className="fixed top-0 right-0 w-72 h-full p-6 flex flex-col gap-6"
         role="dialog"
         aria-modal="true"
-        aria-label="Mobile navigation menu">
-        {/* User Dropdown (if logged in) */}
-        {user && <HeaderUserDropdown />}
-
+        aria-label="Mobile navigation menu"
+      >
         {/* Navigation Links */}
         <nav
           className="consect flex flex-col rounded-2xl items-start space-y-4 text-lg mt-9"
-          aria-label="Mobile navigation">
+          aria-label="Mobile navigation"
+        >
           {navLinks.map((link) => {
             return (
               <Button
@@ -60,7 +59,8 @@ export default function HeaderMobileMenu({
                 }}
                 className={
                   "m-0! w-full px-2 py-2 rounded-2xl transition font-semibold hover:bg-primary/10 hover:text-primary"
-                }>
+                }
+              >
                 {link.title}
               </Button>
             );
