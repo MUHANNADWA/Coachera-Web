@@ -1,4 +1,3 @@
-import { Meta } from "react-router-dom";
 import { useAppHook } from "../../../shared/hooks/useAppHook";
 import { Course } from "../../../shared/types/types";
 import { Button } from "../../../shared/components/form/Button";
@@ -9,29 +8,24 @@ import HighlightsSection from "../../../shared/components/HighlightsSection";
 import CategoriesSection from "../../../shared/components/CategoriesSection";
 import FAQAccordion from "../../../shared/components/Faq";
 
-// Helper: derive a "continue" target (customize as needed)
 function getNextLessonLink(course: Course): string {
-  // If you track progress, compute next lesson id; fallback to first module
-  return `/learn/${course.id}/${course.modules?.[0]?.id ?? "intro"}`;
+  return `/learn/${course.id}/${course.modules?.[0]?.id ?? "1"}`;
 }
 
 export default function StudentHomePage() {
   const { navigate, user, enrolledCourses, wishlistCourses } = useAppHook();
 
-  // Simple hero title depending on user (first name if available)
   const firstName =
     (user as any)?.details?.firstName || (user as any)?.username || "there";
 
   return (
     <div className="alternate-sections">
-      <Meta />
-
       {/* Student Welcome */}
       <section>
         <div className="py-16 px-6 max-w-7xl mx-auto grid md:grid-cols-2 gap-10 items-center">
           <div>
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              Welcome back, <span className="text-primary">{firstName}</span> 👋
+              Welcome back, <span className="text-primary">{firstName}</span>
             </h1>
             <p className="text-gray-700 dark:text-gray-300 mb-6">
               Pick up where you left off or discover new courses tailored for
@@ -92,8 +86,8 @@ export default function StudentHomePage() {
 
       {/* Continue learning (if enrolled) */}
       {enrolledCourses?.length > 0 && (
-        <section>
-          <div className="px-6 md:px-16">
+        <section className="flex-1 relative">
+          <div className="max-sm:px-4 px-16 py-10">
             <h2 className="text-3xl font-bold mb-4">Continue learning</h2>
             {/* Reuse CoursesView with a grid layout by passing layout="grid" */}
             {/* If you want exactly the user's enrolled list, render custom cards instead. */}
@@ -123,9 +117,9 @@ export default function StudentHomePage() {
       )}
 
       {/* Recommended / Trending / Popular for students */}
-      <CoursesView variant="recommended" layout="carousel" />
-      <CoursesView variant="trending" layout="grid" />
-      <CoursesView variant="popular" layout="grid" />
+      <CoursesView variant="recommended" />
+      <CoursesView variant="trending" />
+      <CoursesView variant="popular" />
 
       {/* Keep common marketing sections (students still benefit) */}
       <FeaturesSection />

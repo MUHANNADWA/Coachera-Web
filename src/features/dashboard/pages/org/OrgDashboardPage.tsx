@@ -1,15 +1,127 @@
+import {
+  UsersIcon,
+  PlusCircleIcon,
+  BuildingOfficeIcon,
+  BookOpenIcon,
+  ChartPieIcon,
+  BanknotesIcon,
+} from "@heroicons/react/24/outline";
+import { useAppHook } from "../../../../shared/hooks/useAppHook";
+import { Button } from "../../../../shared/components/form/Button";
 import CoursesView from "../../../../shared/components/CoursesView";
 
-export default function OrgDashboardPage() {
+/** Small KPI card */
+function KpiCard({
+  title,
+  value,
+  icon: Icon,
+  hint,
+}: {
+  title: string;
+  value: string | number;
+  icon: React.ComponentType<any>;
+  hint?: string;
+}) {
   return (
-    <div className="container mx-auto py-8 px-4">
-      <div className="flex flex-col gap-4">
-        <h1 className="text-4xl font-bold dark:text-white text-center">
-          My Orgazniztion Courses
-        </h1>
-        {/* My Org Courses */}
-        <CoursesView variant="org" orgId={1} />
+    <div className="consect p-5 rounded-2xl flex items-start gap-4">
+      <div className="bg-primary/10 text-primary rounded-xl p-3">
+        <Icon className="w-6 h-6" aria-hidden="true" />
       </div>
+      <div className="flex-1">
+        <p className="text-sm text-gray-500 dark:text-gray-400">{title}</p>
+        <p className="text-2xl font-bold mt-1">{value}</p>
+        {hint && (
+          <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+            {hint}
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default function OrgDashboardPage() {
+  const { navigate, user } = useAppHook();
+
+  // Mock KPIs (plug your org analytics here)
+  const kpis = [
+    {
+      title: "Total Courses",
+      value: 24,
+      icon: BookOpenIcon,
+      hint: "+3 this quarter",
+    },
+    {
+      title: "Members",
+      value: 1_280,
+      icon: UsersIcon,
+      hint: "+4% vs last month",
+    },
+    {
+      title: "Active Learners",
+      value: 740,
+      icon: BuildingOfficeIcon,
+      hint: "Last 30 days",
+    },
+    {
+      title: "Spend (30d)",
+      value: "$12,300",
+      icon: BanknotesIcon,
+      hint: "-$500 vs prev 30d",
+    },
+  ];
+
+  return (
+    <div className="max-w-7xl container mx-auto py-8 px-4">
+      {/* Header */}
+      <div className="flex items-center justify-between flex-wrap gap-3 mb-6">
+        <div>
+          <h1 className="text-3xl font-bold dark:text-white">
+            Organization Dashboard
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400">
+            Manage your organization’s courses, members, and performance.
+          </p>
+        </div>
+
+        <div className="flex gap-2">
+          <Button
+            variant="primary"
+            onClick={() => navigate("/add-course")}
+            className="flex items-center gap-2"
+          >
+            <PlusCircleIcon className="w-5 h-5" />
+            Add Course
+          </Button>
+        </div>
+      </div>
+
+      {/* KPIs */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
+        {kpis.map((k) => (
+          <KpiCard key={k.title} {...k} />
+        ))}
+      </div>
+
+      {/* Overview */}
+      <section className="flex-1">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-2xl font-bold dark:text-white">
+            My Organization Courses
+          </h2>
+          <Button
+            variant="secondary"
+            onClick={() => navigate("/org/analytics")}
+            className="flex items-center gap-2"
+          >
+            <ChartPieIcon className="w-5 h-5" />
+            View Analytics
+          </Button>
+        </div>
+
+        {/* Org courses feed */}
+        <CoursesView variant="org" orgId={user?.id} showLayoutToggle />
+      </section>
     </div>
   );
 }

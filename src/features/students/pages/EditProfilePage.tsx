@@ -86,22 +86,6 @@ export default function EditProfilePage() {
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  const resetForm = () => {
-    setForm({
-      username: user?.username || "",
-      email: user?.email || "",
-      newPassword: "",
-      firstName: "",
-      lastName: "",
-      birthDate: "",
-      gender: "",
-      education: "",
-      phoneNumber: "",
-      address: "",
-    });
-    handlePhotoRemove();
-  };
-
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isSaving) return;
@@ -302,15 +286,6 @@ export default function EditProfilePage() {
                 >
                   <UserCircleIcon className="w-5 h-5" />
                   View Profile
-                </Button>
-                <Button
-                  type="button"
-                  variant="secondary"
-                  onClick={resetForm}
-                  className="inline-flex items-center gap-2"
-                >
-                  <ArrowPathIcon className="w-5 h-5" />
-                  Reset
                 </Button>
                 <Button
                   type="submit"

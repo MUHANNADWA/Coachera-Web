@@ -14,7 +14,7 @@ export interface User {
 }
 
 interface BaseUserinfo {
-  id: string;
+  id: number;
   username: string;
   email: string;
   profileImage: string;

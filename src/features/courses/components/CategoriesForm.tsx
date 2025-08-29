@@ -85,7 +85,6 @@
 //       title,
 //       icon: selectedIcon,
 //     };
-//     console.log("Submit:", payload);
 //   };
 
 //   const SelectedPreview =

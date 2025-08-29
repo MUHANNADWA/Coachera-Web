@@ -33,7 +33,7 @@ body {
   }
 
   .alternate-sections > section:nth-child(even) > :first-child {
-    @apply bg-primary-lightest/90 dark:bg-dark/90;
+    @apply bg-primary-lightest/95 dark:bg-dark/95;
   }
 }
 

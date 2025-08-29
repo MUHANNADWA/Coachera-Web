@@ -129,8 +129,6 @@ export default function useRegister() {
       };
     }
 
-    console.log(payload);
-
     await toastPromise(register(payload), {
       loadingMessage: "Registering...",
       successMessage: "Registered successfully!",

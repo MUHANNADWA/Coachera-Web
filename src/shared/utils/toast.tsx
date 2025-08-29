@@ -21,8 +21,6 @@ export default function toastPromise<T>(
   return toast.promise(promise, {
     loading: loadingMessage,
     success: (response) => {
-      console.log("res= ", response as Map<string, string>);
-
       const res = response as any;
 
       const message =
