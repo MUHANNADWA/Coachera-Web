@@ -35,7 +35,8 @@ export default function CourseSidebar({
         courseSidebarCollapsed
           ? `max-sm:h-15! max-sm:bg-transparent w-14`
           : `w-70 max-sm:w-full`
-      }>
+      }
+    >
       <SidebarHeader
         label={module.title}
         collapsed={courseSidebarCollapsed}
@@ -49,7 +50,8 @@ export default function CourseSidebar({
             <Button
               className="flex items-center"
               full
-              onClick={() => toggleSectionCollapse(section.id)}>
+              onClick={() => toggleSectionCollapse(section.id)}
+            >
               <h4 className="font-semibold p-2 rounded-2xl">{section.title}</h4>
               {collapsedSections.has(section.id) ? (
                 <ChevronDownIcon className="w-4 h-4" />
@@ -79,14 +81,16 @@ export default function CourseSidebar({
                         materialId: material.id,
                       });
                       window.innerWidth <= 768 && toggleCollapse();
-                    }}>
+                    }}
+                  >
                     <div className="flex items-center relative">
                       <div
                         className={`w-4 h-4 flex items-center justify-center mr-5 before:absolute before:top-[3] before:left-[-10] before:w-7 before:h-7 before:rounded-2xl [&>*:first-child]:z-45 ${
                           isCurrentMaterial(section.id, material.id)
                             ? "before:bg-primary text-white dark:text-primary-darkest"
                             : "before:bg-gray-200 dark:before:bg-primary-darkest text-gray-600 dark:text-primary/70"
-                        }`}>
+                        }`}
+                      >
                         {getMaterialIcon(material.type)}
                       </div>
                       <div>
@@ -95,7 +99,8 @@ export default function CourseSidebar({
                             isCurrentMaterial(section.id, material.id)
                               ? "font-semibold text-primary"
                               : "text-gray-700 dark:text-gray-300"
-                          }`}>
+                          }`}
+                        >
                           {material.title}
                         </p>
                         <p className="text-xs text-gray-500 flex justify-self-start">
