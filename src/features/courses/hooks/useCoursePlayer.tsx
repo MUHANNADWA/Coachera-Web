@@ -7,70 +7,109 @@ import { CurrentMaterial } from "../types";
 
 export default function useCoursePlayer() {
   const { navigate, location } = useAppHook();
-  const { courseId, moduleId } = useParams();
+  const { courseId, moduleId } = useParams<{
+    courseId: string;
+    moduleId: string;
+  }>();
 
-  const moduleIndex = Number(moduleId);
+  // Fetch course details; refetch when courseId changes
+  const { data, isLoading, isFetching } = useGetCourseDetailsQuery(
+    Number(courseId),
+    {
+      // this ensures we refetch when courseId changes
+      refetchOnMountOrArgChange: true,
+    }
+  );
+
+  const course: Course | undefined = data?.data;
+
+  // Resolve module:
+  // 1) try by id equality (string compare to be safe)
+  // 2) if moduleId is numeric and not found by id, fallback to index
+  const module = useMemo(() => {
+    if (!course?.modules) return undefined;
+
+    const byId = course.modules.find((m) => String(m.id) === String(moduleId));
+    if (byId) return byId;
+
+    const idx = Number(moduleId);
+    if (!Number.isNaN(idx)) {
+      return course.modules[idx];
+    }
+
+    return undefined;
+  }, [course, moduleId]);
 
   const [currentMaterial, setCurrentMaterial] =
     useState<CurrentMaterial | null>(null);
 
-  const { data, isLoading } = useGetCourseDetailsQuery(Number(courseId));
-  const course: Course = data?.data;
-
-  const module = course?.modules.find((m) => m.id === moduleIndex);
+  // Initialize current material whenever module or navigation state changes
   useEffect(() => {
     if (!module) return;
 
     const isNavigatedFromPrev = location.state?.fromNav === "prev";
+    const sections = module.sections ?? [];
+    if (!sections.length) return;
+
     const targetSection = isNavigatedFromPrev
-      ? module.sections[module.sections.length - 1]
-      : module.sections[0];
+      ? sections[sections.length - 1]
+      : sections[0];
+    const materials = targetSection?.materials ?? [];
+    if (!materials.length) return;
 
     const targetMaterial = isNavigatedFromPrev
-      ? targetSection?.materials[targetSection.materials.length - 1]
-      : targetSection?.materials[0];
+      ? materials[materials.length - 1]
+      : materials[0];
 
-    if (targetSection && targetMaterial) {
-      setCurrentMaterial({
-        sectionId: targetSection.id,
-        materialId: targetMaterial.id,
-      });
-    }
+    setCurrentMaterial({
+      sectionId: targetSection.id,
+      materialId: targetMaterial.id,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [module, location.state]);
 
-  const activeSection = module?.sections.find(
-    (s) => s.id === currentMaterial?.sectionId
+  const activeSection = useMemo(
+    () => module?.sections.find((s) => s.id === currentMaterial?.sectionId),
+    [module, currentMaterial]
   );
-  const material = activeSection?.materials.find(
-    (m) => m.id === currentMaterial?.materialId
+
+  const material = useMemo(
+    () =>
+      activeSection?.materials.find(
+        (m) => m.id === currentMaterial?.materialId
+      ),
+    [activeSection, currentMaterial]
   );
 
   const allMaterials = useMemo(
     () =>
       module?.sections.flatMap((section) =>
-        section.materials.map((material) => ({
-          ...material,
+        (section.materials ?? []).map((mat) => ({
+          ...mat,
           sectionId: section.id,
         }))
-      ) || [],
+      ) ?? [],
     [module]
   );
 
-  const currentIndex = useMemo(
-    () =>
-      allMaterials.findIndex(
-        (m) =>
-          m.id === currentMaterial?.materialId &&
-          m.sectionId === currentMaterial?.sectionId
-      ),
-    [allMaterials, currentMaterial]
-  );
+  const currentIndex = useMemo(() => {
+    return allMaterials.findIndex(
+      (m) =>
+        m.id === currentMaterial?.materialId &&
+        m.sectionId === currentMaterial?.sectionId
+    );
+  }, [allMaterials, currentMaterial]);
 
-  const handleNavigateToModule = (
-    newModuleIndex: number,
-    from: "prev" | "next"
-  ) => {
-    navigate(`/learn/${courseId}/${newModuleIndex}`, {
+  // Helper: get module position inside course.modules (by id)
+  const modulePos = useMemo(() => {
+    if (!course?.modules || !module) return -1;
+    return course.modules.findIndex((m) => String(m.id) === String(module.id));
+  }, [course, module]);
+
+  const handleNavigateToModule = (targetPos: number, from: "prev" | "next") => {
+    if (!course?.modules?.[targetPos]) return;
+    const targetModuleId = course.modules[targetPos].id; // navigate by ID, not index
+    navigate(`/learn/${courseId}/${targetModuleId}`, {
       state: { fromNav: from },
     });
   };
@@ -80,11 +119,14 @@ export default function useCoursePlayer() {
 
     const isLastMaterialInModule = currentIndex === allMaterials.length - 1;
     const isLastModule =
-      module.id === course.modules[course.modules.length - 1].id;
+      modulePos !== -1 && modulePos === course.modules.length - 1;
 
     if (isLastMaterialInModule && !isLastModule) {
-      handleNavigateToModule(moduleIndex + 1, "next");
-    } else if (currentIndex < allMaterials.length - 1) {
+      handleNavigateToModule(modulePos + 1, "next");
+      return;
+    }
+
+    if (currentIndex < allMaterials.length - 1) {
       const nextMaterial = allMaterials[currentIndex + 1];
       setCurrentMaterial({
         sectionId: nextMaterial.sectionId,
@@ -97,11 +139,14 @@ export default function useCoursePlayer() {
     if (!module || !course || currentIndex === -1) return;
 
     const isFirstMaterialInModule = currentIndex === 0;
-    const isFirstModule = module.id === course.modules[0].id;
+    const isFirstModule = modulePos === 0;
 
     if (isFirstMaterialInModule && !isFirstModule) {
-      handleNavigateToModule(moduleIndex - 1, "prev");
-    } else if (currentIndex > 0) {
+      handleNavigateToModule(modulePos - 1, "prev");
+      return;
+    }
+
+    if (currentIndex > 0) {
       const prevMaterial = allMaterials[currentIndex - 1];
       setCurrentMaterial({
         sectionId: prevMaterial.sectionId,
@@ -111,22 +156,16 @@ export default function useCoursePlayer() {
   };
 
   const nextExists =
-    (module &&
-      course &&
-      ((module.id !== course.modules[course.modules.length - 1].id &&
-        currentIndex === allMaterials.length - 1) ||
-        currentIndex < allMaterials.length - 1)) ??
-    false;
+    !!module &&
+    !!course &&
+    (modulePos < (course.modules?.length ?? 0) - 1 ||
+      currentIndex < allMaterials.length - 1);
 
   const prevExists =
-    (module &&
-      course &&
-      ((module.id !== course.modules[0].id && currentIndex === 0) ||
-        currentIndex > 0)) ??
-    false;
+    !!module && !!course && (modulePos > 0 || currentIndex > 0);
 
   return {
-    isLoading,
+    isLoading: isLoading || isFetching,
     course,
     module,
     material,

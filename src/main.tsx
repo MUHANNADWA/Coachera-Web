@@ -40,6 +40,7 @@ import LearnPage from "./features/courses/pages/LearnPage";
 import NotificationsPage from "./features/courses/pages/NotificationsPage";
 
 // Students (you put profile under students)
+import StudentHomePage from "./features/students/pages/StudentHomePage";
 import ProfilePage from "./features/students/pages/ProfilePage";
 import EditProfilePage from "./features/students/pages/EditProfilePage";
 
@@ -51,8 +52,7 @@ import AddCoursePage from "./features/courses/builder/pages/AddCoursePage";
 import EditCoursePage from "./features/courses/builder/pages/EditCoursePage";
 
 // Others
-import CheckoutButton from "./shared/components/Stripe";
-import StudentHomePage from "./features/students/pages/StudentHomePage";
+// import CheckoutButton from "./shared/components/Stripe";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -80,7 +80,7 @@ const router = createBrowserRouter(
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/edit-profile" element={<EditProfilePage />} />
         <Route path="/learn/:courseId/:moduleId" element={<LearnPage />} />
-        <Route path="/stripe" element={<CheckoutButton />} />
+        {/* <Route path="/stripe" element={<CheckoutButton />} /> */}
         <Route path="/notifications" element={<NotificationsPage />} />
         <Route path="/search/:query" element={<SearchPage />} />
         <Route path="/categories" element={<CategoriesPage />} />
