@@ -19,8 +19,6 @@ const levelOptions = [
 ];
 
 export default function AddCoursePage() {
-  const navigate = useNavigate();
-
   const { data: instructorsData, isLoading: loadingInstructors } =
     useGetInstructorsQuery({});
 
@@ -109,11 +107,6 @@ export default function AddCoursePage() {
       const created: any = await createCourse(payload).unwrap();
       const createdData = created?.data ?? created;
       const newId = createdData?.id;
-
-      // Navigate to edit builder view
-      if (goToBuilder && newId) {
-        navigate("/edit-course", { state: { courseId: newId } });
-      }
     };
 
     await toastPromise(doCreate(), {
