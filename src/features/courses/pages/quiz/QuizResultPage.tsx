@@ -19,19 +19,26 @@ export default function QuizResultPage({
   return (
     <section className="consect relative flex flex-col items-center justify-center h-[60vh] p-8 text-center space-y-6">
       <FaceSmileIcon
-        className={`text-6xl ${isPassed ? "text-primary" : "text-danger"}`}
+        className={`text-6xl rotate-180 ${
+          isPassed ? "text-primary" : "text-danger"
+        }`}
         aria-hidden="true"
       />
       <h2 className="text-2xl font-bold">Quiz Result</h2>
       <p className="text-lg font-medium">
         You scored{" "}
-        <span className="text-primary font-bold">{result.score}</span> out of{" "}
-        <span className="font-bold">{result.total}</span>
+        <span
+          className={`font-bold ${isPassed ? "text-primary" : "text-danger"}`}
+        >
+          {result.score}
+        </span>{" "}
+        out of <span className="font-bold">{result.total}</span>
       </p>
       <p
         className={`text-base ${
           isPassed ? "text-primary" : "text-danger"
-        } font-semibold`}>
+        } font-semibold`}
+      >
         {isPassed
           ? "Great job! You passed the quiz."
           : "Keep practicing! You can try again."}
