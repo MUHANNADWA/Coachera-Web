@@ -261,8 +261,8 @@ import Dropdown from "../../../../shared/components/form/Dropdown"; // make sure
 import {
   useCreateCourseMutation,
   useUploadCourseImageMutation,
-} from "../../apiSlices/coursesApiSlice";
-import toastPromise from "../../../../utils/toast";
+} from "../../api/coursesApiSlice";
+import toastPromise from "../../../../shared/utils/toast";
 
 type Level = "Beginner" | "Intermediate" | "Advanced";
 

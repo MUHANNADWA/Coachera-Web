@@ -1,10 +1,11 @@
 import { useAppHook } from "../hooks/useAppHook";
 import { useEffect } from "react";
-import { useGetWishlistQuery } from "../../features/courses/apiSlices/wishlistApiSlice";
+import { useGetWishlistQuery } from "../../features/courses/api/wishlistApiSlice";
 import { setWishlist } from "../../features/courses/slices/wishlistSlice";
-import { useGetEnrolledCoursesQuery } from "../../features/courses/apiSlices/coursesApiSlice";
+import { useGetEnrolledCoursesQuery } from "../../features/courses/api/coursesApiSlice";
 import { setEnrolledCourses } from "../../features/courses/slices/enrolledCoursesSlice";
 import { Course } from "../types/types";
+import { UserRole } from "../../features/auth/types";
 
 interface WishlistItem {
   createdAt: string;
@@ -39,6 +40,8 @@ interface EnrolledApiResponse {
 const InitProvider = () => {
   const { theme, user, dispatch } = useAppHook();
 
+  const isStudent = user?.role === UserRole.STUDENT;
+
   useEffect(() => {
     if (theme === "dark") {
       document.documentElement.classList.add("dark");
@@ -49,12 +52,10 @@ const InitProvider = () => {
 
   const { data: wishlist, isSuccess: wishlistSuccess } = useGetWishlistQuery(
     {},
-    { skip: !user }
+    { skip: !isStudent }
   );
   const { data: enrolled, isSuccess: enrolledSuccess } =
-    useGetEnrolledCoursesQuery({}, { skip: !user });
-
-  console.log("enrolled from server = ", enrolled);
+    useGetEnrolledCoursesQuery({}, { skip: !isStudent });
 
   useEffect(() => {
     if (wishlistSuccess && wishlist) {

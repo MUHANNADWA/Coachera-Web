@@ -13,11 +13,11 @@ import {
 import {
   useEnrollCourseMutation,
   useGetCourseDetailsQuery,
-} from "../apiSlices/coursesApiSlice";
+} from "../api/coursesApiSlice";
 import {
   useAddToWishlistMutation,
   useRemoveFromWishlistMutation,
-} from "../apiSlices/wishlistApiSlice";
+} from "../api/wishlistApiSlice";
 import { Course, Review as ReviewType } from "../../../shared/types/types";
 import Loader from "../../../shared/components/Loader";
 import Meta from "../../../shared/components/Meta";
@@ -25,9 +25,8 @@ import Skills from "../../../shared/components/Skills";
 import { skills } from "../../../shared/data/sampleData";
 import { CourseModules } from "../components/CourseModules";
 import Review from "../components/Review";
-import { useGetCourseReviewsQuery } from "../apiSlices/reviewsApiSlice";
+import { useGetCourseReviewsQuery } from "../api/reviewsApiSlice";
 import { Button } from "../../../shared/components/form/Button";
-import toastPromise from "../../../utils/toast";
 import { useAppHook } from "../../../shared/hooks/useAppHook";
 import {
   addToWishlistSlice,
@@ -35,6 +34,7 @@ import {
 } from "../slices/wishlistSlice";
 import { LEARN_URL } from "../../../constants/constants";
 import { useRequiresAuth } from "../../../shared/hooks/useRequiresAuth";
+import toastPromise from "../../../shared/utils/toast";
 
 export default function CourseDetailsPage() {
   const { id } = useParams();

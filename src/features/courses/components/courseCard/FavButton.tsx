@@ -2,8 +2,7 @@ import { useAppHook } from "../../../../shared/hooks/useAppHook";
 import {
   useAddToWishlistMutation,
   useRemoveFromWishlistMutation,
-} from "../../apiSlices/wishlistApiSlice";
-import toastPromise from "../../../../utils/toast";
+} from "../../api/wishlistApiSlice";
 import {
   addToWishlistSlice,
   removeFromWishlistSlice,
@@ -14,6 +13,7 @@ import { HeartIcon as HeartFilledIcon } from "@heroicons/react/16/solid";
 import { Button } from "../../../../shared/components/form/Button";
 import { useRequiresAuth } from "../../../../shared/hooks/useRequiresAuth";
 import { Course } from "../../../../shared/types/types";
+import toastPromise from "../../../../shared/utils/toast";
 
 export const FavButton = ({
   course,

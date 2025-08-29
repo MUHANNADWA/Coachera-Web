@@ -23,6 +23,7 @@ export interface Course {
   level: string;
   categories: Category[];
   orgId: number;
+  orgTitle: string;
   learningPathIds: number[];
   modules: Module[];
   reviews?: Review[];

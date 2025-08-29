@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useAppHook } from "../../../shared/hooks/useAppHook";
-import { useValidateOtpMutation } from "../authApiSlice";
-import toastPromise from "../../../utils/toast";
+import { useValidateOtpMutation } from "../api/authApiSlice";
+import toastPromise from "../../../shared/utils/toast";
 
 export default function useOtpVerification() {
   const { location, navigate } = useAppHook();

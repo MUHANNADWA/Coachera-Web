@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useAppHook } from "../../../shared/hooks/useAppHook";
-import { useLoginMutation } from "../authApiSlice";
 import { useLocation } from "react-router-dom";
-import toastPromise from "../../../utils/toast";
 import { setCredentials } from "../authSlice";
+import { useLoginMutation } from "../api/authApiSlice";
+import toastPromise from "../../../shared/utils/toast";
 
 export function useLogin() {
   const { navigate, dispatch, token } = useAppHook();

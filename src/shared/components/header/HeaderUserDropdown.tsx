@@ -1,7 +1,5 @@
 import { PROFILE_IMAGE } from "../../../constants/constants";
-import { useLogoutMutation } from "../../../features/auth/authApiSlice";
 import { logout } from "../../../features/auth/authSlice";
-import toastPromise from "../../../utils/toast";
 import { useAppHook } from "../../hooks/useAppHook";
 import { useModal } from "../../hooks/useModal";
 import { Button } from "../form/Button";
@@ -10,10 +8,11 @@ import {
   BellIcon,
   UserCircleIcon,
   AcademicCapIcon,
-  PresentationChartLineIcon,
   PencilSquareIcon,
 } from "@heroicons/react/24/outline";
 import Modal from "../Modal";
+import { useLogoutMutation } from "../../../features/auth/api/authApiSlice";
+import toastPromise from "../../utils/toast";
 
 export function HeaderUserDropdown() {
   const { navigate, dispatch, user, token } = useAppHook();
@@ -38,11 +37,6 @@ export function HeaderUserDropdown() {
       label: "Notifications",
       icon: BellIcon,
       action: () => navigate("/notifications"),
-    },
-    {
-      label: "Teach on Coachera",
-      icon: PresentationChartLineIcon,
-      action: () => navigate("/teach"),
     },
   ];
 

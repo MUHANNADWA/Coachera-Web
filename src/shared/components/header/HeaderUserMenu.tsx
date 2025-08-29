@@ -9,9 +9,6 @@ export default function HeaderUserMenu() {
   const { user, navigate } = useAppHook();
   return user ? (
     <>
-      <Button className="px-4 py-2" onClick={() => navigate("/teach")}>
-        Teach on coachera
-      </Button>
       <HeaderThemeToggle />
       <HeaderFavorites />
       <HeaderNotifications />

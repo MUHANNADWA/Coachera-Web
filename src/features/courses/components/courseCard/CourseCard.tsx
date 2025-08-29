@@ -12,7 +12,7 @@ import {
 import { Button } from "../../../../shared/components/form/Button";
 import Modal from "../../../../shared/components/Modal"; // <-- adjust path if needed
 import { useState } from "react";
-import { useDeleteCourseMutation } from "../../apiSlices/coursesApiSlice";
+import { useDeleteCourseMutation } from "../../api/coursesApiSlice";
 
 interface CourseCardProps {
   course: Course;
@@ -149,11 +149,8 @@ export default function CourseCard({
         {/* Instructor/Org */}
         <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
           <UserIcon className="w-4 h-4" />
-          <span
-            className="truncate"
-            title={course.instructors?.[0] ?? "Organization"}
-          >
-            {course.instructors?.[0] ?? "Organization"}
+          <span className="truncate" title={course.orgTitle ?? "Organization"}>
+            {course.orgTitle ?? "Organization"}
           </span>
         </div>
 

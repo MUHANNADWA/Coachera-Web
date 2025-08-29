@@ -19,7 +19,7 @@ import {
   useCreateQuizMutation,
   // useDeleteQuizMutation,
   // useVerifyQuizMutation,
-} from "../../courses/apiSlices/quizApiSlice";
+} from "../../courses/api/quizApiSlice";
 
 // 🔹 Define consistent shape for quiz questions
 interface QuizOption {

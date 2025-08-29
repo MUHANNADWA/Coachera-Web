@@ -11,7 +11,7 @@ import {
   GlobeAltIcon,
   CircleStackIcon,
 } from "@heroicons/react/24/outline";
-import { useGetCategoriesQuery } from "../../features/courses/apiSlices/categoriesApiSlice";
+import { useGetCategoriesQuery } from "../../features/courses/api/categoriesApiSlice";
 
 const iconByName: Record<string, React.ComponentType<any>> = {
   AI: CpuChipIcon,

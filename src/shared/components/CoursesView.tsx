@@ -8,13 +8,13 @@ import {
 import { useRef, useState } from "react";
 import useCourses from "../../features/courses/hooks/useCourses";
 import CourseCardSkeleton from "../../features/skeletons/CourseCardSkeleton";
-import { showErrorMessage } from "../../utils/errorMessage";
 import Message from "./Message";
 import { Course } from "../types/types";
 import CourseCard from "../../features/courses/components/courseCard/CourseCard";
 import { Button } from "./form/Button";
 import { AddCourseCard } from "./CourseCardOverlay";
 import { useNavigate } from "react-router-dom";
+import { showErrorMessage } from "../utils/errorMessage";
 
 type LayoutMode = "carousel" | "grid";
 
@@ -206,6 +206,8 @@ export default function CoursesView({
       setTimeout(() => setLoadingMore(false), 600);
     }
   };
+
+  console.log(data.list);
 
   return (
     <section className="flex-1 relative">

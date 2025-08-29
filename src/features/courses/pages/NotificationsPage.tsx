@@ -1,7 +1,7 @@
 import {
   useGetMyNotificationsQuery,
   useMarkAllAsReadMutation,
-} from "../../../features/courses/apiSlices/notificationsApiSlice";
+} from "../api/notificationsApiSlice";
 import { Button } from "../../../shared/components/form/Button";
 
 export default function NotificationsPage() {

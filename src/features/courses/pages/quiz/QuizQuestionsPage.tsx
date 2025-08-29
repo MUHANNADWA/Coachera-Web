@@ -3,8 +3,8 @@ import { Material } from "../../../../shared/types/types";
 import { Button } from "../../../../shared/components/form/Button";
 import Modal from "../../../../shared/components/Modal";
 import { useModal } from "../../../../shared/hooks/useModal";
-import toastPromise from "../../../../utils/toast";
-import { useVerifyQuizMutation } from "../../apiSlices/quizApiSlice";
+import { useVerifyQuizMutation } from "../../api/quizApiSlice";
+import toastPromise from "../../../../shared/utils/toast";
 
 interface QuizPageProps {
   material: Material;

@@ -1,8 +1,8 @@
 import { Review as ReviewType, Student } from "../../../shared/types/types";
-import { useGetStudentQuery } from "../../../shared/slices/studentsApiSlice";
 import { renderStars } from "../utils/Utils";
 import { PROFILE_IMAGE } from "../../../constants/constants";
 import { CheckBadgeIcon } from "@heroicons/react/24/solid";
+import { useGetStudentQuery } from "../../students/api/studentsApiSlice";
 
 interface ReviewProps {
   review: ReviewType;

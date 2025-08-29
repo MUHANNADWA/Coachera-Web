@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAppHook } from "../../../shared/hooks/useAppHook";
-import { useForgotPasswordMutation } from "../authApiSlice";
-import toastPromise from "../../../utils/toast";
+import { useForgotPasswordMutation } from "../api/authApiSlice";
+import toastPromise from "../../../shared/utils/toast";
 
 export function useForgotPassword() {
   const { navigate } = useAppHook();

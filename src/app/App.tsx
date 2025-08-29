@@ -7,7 +7,7 @@ import ScrollToTop from "../shared/components/ScrollToTop";
 import InitProvider from "../shared/components/InitProvider";
 import { useUtils } from "../features/courses/utils/useUtils";
 
-function AppContent() {
+export default function App() {
   const { toastOptions } = useUtils();
 
   return (
@@ -27,8 +27,4 @@ function AppContent() {
       </div>
     </>
   );
-}
-
-export default function App() {
-  return <AppContent />;
 }

@@ -8,7 +8,7 @@ import {
   useGetTrendingCoursesQuery,
   useGetOrgCoursesQuery,
   useGetInstCoursesQuery,
-} from "../apiSlices/coursesApiSlice";
+} from "../api/coursesApiSlice";
 import { useAppHook } from "../../../shared/hooks/useAppHook";
 
 type HookArgs = { orgId?: number | string; instructorId?: number | string };

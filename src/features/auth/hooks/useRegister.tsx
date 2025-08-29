@@ -1,12 +1,15 @@
 // features/auth/hooks/useRegister.ts
 import { useEffect, useState } from "react";
 import { useAppHook } from "../../../shared/hooks/useAppHook";
-import { useRegisterMutation, useUploadPhotoMutation } from "../authApiSlice";
 import { useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
-import toastPromise from "../../../utils/toast";
 import { setCredentials } from "../authSlice";
 import { UserRole } from "../types";
+import toastPromise from "../../../shared/utils/toast";
+import {
+  useRegisterMutation,
+  useUploadPhotoMutation,
+} from "../api/authApiSlice";
 
 type Step = "first" | "second" | "third";
 

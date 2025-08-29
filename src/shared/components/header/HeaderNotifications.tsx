@@ -4,7 +4,7 @@ import {
   useGetMyNotificationsQuery,
   useGetUnreadCountQuery,
   useMarkAllAsReadMutation,
-} from "../../../features/courses/apiSlices/notificationsApiSlice";
+} from "../../../features/courses/api/notificationsApiSlice";
 import { Link } from "react-router-dom";
 
 export default function HeaderNotifications() {

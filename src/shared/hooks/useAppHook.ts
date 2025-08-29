@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "./hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { Course } from "../types/types";
 
 export function useAppHook() {

@@ -14,12 +14,12 @@ import {
   // useUpdateModuleMutation,
   useDeleteModuleMutation,
   useGetModulesByCourseQuery,
-} from "../../apiSlices/moduleApiSlice";
+} from "../../api/moduleApiSlice";
 import {
   useCreateSectionMutation,
   // useUpdateSectionMutation,
   useDeleteSectionMutation,
-} from "../../apiSlices/sectionApiSlice";
+} from "../../api/sectionApiSlice";
 import {
   SortableContext,
   verticalListSortingStrategy,
