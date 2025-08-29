@@ -6,7 +6,22 @@ export const instructorsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     // Get all instructors
     getInstructors: builder.query({
-      query: () => INSTRUCTOR_URL,
+      query: () => INSTRUCTOR_URL +"/no-page",
+      providesTags: ["Instructor"],
+      keepUnusedDataFor: 5,
+    }),
+
+    getPagedInstructors: builder.query<any, { page?: number; size?: number }>({
+      query: ({ page = 0, size = 10 }) => ({
+        url: INSTRUCTOR_URL,
+        method: "GET",
+        params: {
+          page,
+          size,
+          sortBy: "id",
+          sortDirection: "desc",
+        },
+      }),
       providesTags: ["Instructor"],
       keepUnusedDataFor: 5,
     }),
@@ -80,6 +95,7 @@ export const instructorsApiSlice = apiSlice.injectEndpoints({
 
 export const {
   useGetInstructorsQuery,
+  useGetPagedInstructorsQuery,
   useCreateInstructorMutation,
   useUpdateInstructorMutation,
   useDeleteInstructorMutation,
