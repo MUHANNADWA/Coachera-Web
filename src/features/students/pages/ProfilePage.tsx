@@ -17,9 +17,7 @@ import {
   UsersIcon,
 } from "@heroicons/react/24/outline";
 
-import {
-  useGetMeQuery,
-} from "../../students/api/studentsApiSlice";
+import { useGetMeQuery } from "../../students/api/studentsApiSlice";
 
 export default function ProfilePage() {
   const { user, navigate, wishlistCourses, enrolledCourses } = useAppHook();
@@ -35,7 +33,7 @@ export default function ProfilePage() {
       education: user?.details?.education ?? "",
       phoneNumber: user?.details?.phoneNumber ?? "",
       address: user?.details?.address ?? "",
-      profileImage: user?.profileImage || PROFILE_IMAGE,
+      profileImage: user?.profileImage ?? PROFILE_IMAGE,
     }),
     [user]
   );

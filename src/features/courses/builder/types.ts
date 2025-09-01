@@ -1,4 +1,3 @@
-// features/courses/builder/types.ts
 export type ID = string | number;
 
 export interface Lesson {

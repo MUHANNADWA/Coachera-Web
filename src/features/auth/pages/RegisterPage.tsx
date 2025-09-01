@@ -18,6 +18,7 @@ import {
   BuildingOfficeIcon,
   IdentificationIcon,
   DocumentTextIcon,
+  PhotoIcon,
 } from "@heroicons/react/24/outline";
 import { UserRole } from "../types";
 
@@ -35,6 +36,7 @@ export default function RegisterPage() {
     handleNext,
     step,
     setStep,
+    handleFileChange,
   } = useRegister();
 
   return (
@@ -43,7 +45,7 @@ export default function RegisterPage() {
         <div className="flex flex-col items-center space-y-3 mb-4">
           <h2 className="text-3xl font-extrabold">Create a new account</h2>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-            Already have an account?{" "}
+            Already have an account{" "}
             <Link
               className="text-primary font-semibold hover:underline"
               to="/login"
@@ -54,7 +56,7 @@ export default function RegisterPage() {
         </div>
 
         <form className="space-y-6" onSubmit={handleSubmit}>
-          {/* Step 1 */}
+          {/* Step 1: credentials */}
           {step === "first" && (
             <section className="space-y-4">
               <Input
@@ -116,10 +118,7 @@ export default function RegisterPage() {
                 minLength={8}
                 value={formData.confirmPassword}
                 onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    confirmPassword: e.target.value,
-                  })
+                  setFormData({ ...formData, confirmPassword: e.target.value })
                 }
                 prefixIcon={LockClosedIcon}
                 suffixIcon={
@@ -145,13 +144,11 @@ export default function RegisterPage() {
             </section>
           )}
 
-          {/* Step 2 */}
+          {/* Step 2: role + optional avatar */}
           {step === "second" && (
-            <section>
-              <h3 className="text-lg font-semibold">
-                What best describes you?
-              </h3>
-              <div className="mt-4 space-y-6">
+            <section className="space-y-6">
+              <h3 className="text-lg font-semibold">What best describes you</h3>
+              <div className="space-y-4">
                 <Checkbox
                   label="I am a student"
                   checked={formData.role === UserRole.STUDENT}
@@ -174,7 +171,50 @@ export default function RegisterPage() {
                   }
                 />
               </div>
-              <div className="flex gap-4 mt-6">
+
+              {/* Optional avatar upload */}
+              <div className="rounded-2xl border border-dashed p-4">
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 rounded-full bg-gray-100 dark:bg-dark flex items-center justify-center overflow-hidden">
+                    {formData.profileImageUrl ? (
+                      <img
+                        src={formData.profileImageUrl}
+                        alt="Avatar preview"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <PhotoIcon
+                        className="w-7 h-7 text-gray-400"
+                        aria-hidden="true"
+                      />
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">
+                      Profile photo (optional)
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      PNG, JPG, or WEBP up to 5MB
+                    </p>
+                    <label className="inline-flex mt-2">
+                      <input
+                        type="file"
+                        accept="image/png,image/jpeg,image/jpg,image/webp"
+                        onChange={handleFileChange}
+                        className="hidden"
+                      />
+                      <span className="px-3 py-2 rounded-2xl border cursor-pointer text-sm hover:bg-gray-50 dark:hover:bg-dark">
+                        Choose file
+                      </span>
+                    </label>
+                  </div>
+                </div>
+                {isUploading && (
+                  <p className="text-xs mt-2 text-gray-500">Uploading...</p>
+                )}
+              </div>
+
+              <div className="flex gap-4">
                 <Button
                   variant="secondary"
                   onClick={() => setStep("first")}
@@ -194,7 +234,7 @@ export default function RegisterPage() {
             </section>
           )}
 
-          {/* Step 3 (role-specific) */}
+          {/* Step 3: role-specific */}
           {step === "third" && (
             <section className="space-y-4">
               {formData.role === UserRole.STUDENT && (
@@ -205,6 +245,7 @@ export default function RegisterPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, firstName: e.target.value })
                     }
+                    required
                     prefixIcon={IdentificationIcon}
                   />
                   <Input
@@ -213,6 +254,7 @@ export default function RegisterPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, lastName: e.target.value })
                     }
+                    required
                     prefixIcon={IdentificationIcon}
                   />
                   <Input
@@ -222,6 +264,7 @@ export default function RegisterPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, birthDate: e.target.value })
                     }
+                    required
                     prefixIcon={CalendarIcon}
                   />
                   <Input
@@ -230,6 +273,7 @@ export default function RegisterPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, gender: e.target.value })
                     }
+                    required
                     prefixIcon={UsersIcon}
                   />
                   <Input
@@ -238,6 +282,7 @@ export default function RegisterPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, education: e.target.value })
                     }
+                    required
                     prefixIcon={AcademicCapIcon}
                   />
                   <Input
@@ -246,6 +291,7 @@ export default function RegisterPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, phoneNumber: e.target.value })
                     }
+                    required
                     prefixIcon={PhoneIcon}
                   />
                   <Input
@@ -254,6 +300,7 @@ export default function RegisterPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, address: e.target.value })
                     }
+                    required
                     prefixIcon={MapPinIcon}
                   />
                 </>
@@ -266,6 +313,7 @@ export default function RegisterPage() {
                   onChange={(e) =>
                     setFormData({ ...formData, bio: e.target.value })
                   }
+                  required
                   prefixIcon={DocumentTextIcon}
                 />
               )}
@@ -278,6 +326,7 @@ export default function RegisterPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, orgName: e.target.value })
                     }
+                    required
                     prefixIcon={BuildingOfficeIcon}
                   />
                   <Input
@@ -289,6 +338,7 @@ export default function RegisterPage() {
                         orgDescription: e.target.value,
                       })
                     }
+                    required
                     prefixIcon={DocumentTextIcon}
                   />
                 </>

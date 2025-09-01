@@ -61,6 +61,20 @@ export const coursesApiSlice = apiSlice.injectEndpoints({
       providesTags: ["Course"],
       keepUnusedDataFor: 5,
     }),
+    getSimilarCourses: builder.query({
+      query: ({
+        id,
+        page = 0,
+        size = 10,
+        sortBy = "id",
+        sortDirection = "desc",
+      }) => ({
+        url: `${COURSES_URL}/${id}/similar`,
+        params: { page, size, sortBy, sortDirection },
+      }),
+      providesTags: ["Course"],
+      keepUnusedDataFor: 5,
+    }),
     getOrgCourses: builder.query({
       query: ({
         id,
@@ -161,6 +175,7 @@ export const {
   useGetRecommendedCoursesQuery,
   useGetTrendingCoursesQuery,
   useGetPopularCoursesQuery,
+  useGetSimilarCoursesQuery,
   useGetOrgCoursesQuery,
   useGetInstCoursesQuery,
   useGetCourseDetailsQuery,

@@ -35,6 +35,7 @@ import {
 import { LEARN_URL } from "../../../constants/constants";
 import { useRequiresAuth } from "../../../shared/hooks/useRequiresAuth";
 import toastPromise from "../../../shared/utils/toast";
+import CoursesView from "../../../shared/components/CoursesView";
 
 export default function CourseDetailsPage() {
   const { id } = useParams();
@@ -316,6 +317,11 @@ export default function CourseDetailsPage() {
             </div>
           </aside>
         </div>
+        <div className="mt-6">
+          <CardSection>
+            <CoursesView variant="similar" courseId={course.id} />
+          </CardSection>
+        </div>
       </div>
     </div>
   );
@@ -352,7 +358,7 @@ function CardSection({
   children,
   headerRight,
 }: {
-  title: string;
+  title?: string;
   children: React.ReactNode;
   headerRight?: React.ReactNode;
 }) {

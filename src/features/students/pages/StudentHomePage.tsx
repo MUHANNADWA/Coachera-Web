@@ -117,9 +117,9 @@ export default function StudentHomePage() {
       )}
 
       {/* Recommended / Trending / Popular for students */}
-      <CoursesView variant="recommended" />
-      <CoursesView variant="trending" />
-      <CoursesView variant="popular" />
+      <CoursesView variant="recommended" className="px-16" />
+      <CoursesView variant="trending" className="px-16" />
+      <CoursesView variant="popular" className="px-16" />
 
       {/* Keep common marketing sections (students still benefit) */}
       <FeaturesSection />

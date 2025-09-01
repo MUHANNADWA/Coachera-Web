@@ -35,9 +35,9 @@ import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 import { Course } from "../../../shared/types/types";
 
 import {
-  ClipboardDocumentCheckIcon,
   DocumentTextIcon,
-  PlayIcon,
+  PlayCircleIcon,
+  QuestionMarkCircleIcon,
 } from "@heroicons/react/16/solid";
 
 // ------------------------------------------------------
@@ -64,13 +64,18 @@ export const renderStars = (rating: number) => {
 
 // ---------------------------------------------------------------
 
-export const getMaterialIcon = (type: string) => {
-  {
-    if (type == "ARTICLE") return <DocumentTextIcon />;
-    else if (type == "VIDEO") return <PlayIcon />;
-    else return <ClipboardDocumentCheckIcon />;
+export function getMaterialIcon(type: string) {
+  switch (type) {
+    case "VIDEO":
+      return <PlayCircleIcon className="w-4 h-4" aria-hidden="true" />;
+    case "ARTICLE":
+      return <DocumentTextIcon className="w-4 h-4" aria-hidden="true" />;
+    case "QUIZ":
+      return <QuestionMarkCircleIcon className="w-4 h-4" aria-hidden="true" />;
+    default:
+      return <DocumentTextIcon className="w-4 h-4" aria-hidden="true" />;
   }
-};
+}
 
 // ---------------------------------------------------------------
 
