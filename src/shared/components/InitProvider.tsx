@@ -38,7 +38,7 @@ interface EnrolledApiResponse {
 }
 
 const InitProvider = () => {
-  const { token, theme, user, dispatch, navigate, location } = useAppHook();
+  const { theme, user, dispatch } = useAppHook();
 
   const isStudent = user?.role === UserRole.STUDENT;
 
@@ -50,13 +50,13 @@ const InitProvider = () => {
     }
   }, [theme]);
 
+  const { data: enrolled, isSuccess: enrolledSuccess } =
+    useGetEnrolledCoursesQuery({}, { skip: !isStudent });
+
   const { data: wishlist, isSuccess: wishlistSuccess } = useGetWishlistQuery(
     {},
     { skip: !isStudent }
   );
-  const { data: enrolled, isSuccess: enrolledSuccess } =
-    useGetEnrolledCoursesQuery({}, { skip: !isStudent });
-
   useEffect(() => {
     if (wishlistSuccess && wishlist) {
       const favs = wishlist as FavsApiResponse;
@@ -75,11 +75,7 @@ const InitProvider = () => {
     }
   }, [enrolledSuccess, enrolled, dispatch]);
 
-  useEffect(() => {
-    if (!token) {
-      navigate("/login");
-    }
-  }, []);
+  console.log("enrolled = ", enrolled);
 
   return null;
 };

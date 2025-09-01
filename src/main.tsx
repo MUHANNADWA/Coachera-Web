@@ -92,7 +92,7 @@ const router = createBrowserRouter(
       <Route element={<InstructorRoute />}>
         <Route path="/inst-dashboard" element={<InstructorDashboardPage />} />
         <Route path="/manage-lesson/:id" element={<ManageLessonPage />} />
-        <Route path="/edit-course" element={<EditCoursePage />} />
+        <Route path="/edit-course/:id" element={<EditCoursePage />} />
         <Route path="/courses/:id" element={<CourseDetailsPage />} />
       </Route>
 

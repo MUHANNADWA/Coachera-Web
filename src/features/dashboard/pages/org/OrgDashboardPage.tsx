@@ -3,7 +3,6 @@ import {
   PlusCircleIcon,
   BuildingOfficeIcon,
   BookOpenIcon,
-  ChartPieIcon,
   BanknotesIcon,
 } from "@heroicons/react/24/outline";
 import { useAppHook } from "../../../../shared/hooks/useAppHook";
@@ -28,10 +27,10 @@ function KpiCard({
         <Icon className="w-6 h-6" aria-hidden="true" />
       </div>
       <div className="flex-1">
-        <p className="text-sm text-gray-500 dark:text-gray-400">{title}</p>
-        <p className="text-2xl font-bold mt-1">{value}</p>
+        <p className="text-sm text-gray-600 dark:text-gray-300">{title}</p>
+        <p className="text-2xl font-bold mt-1 dark:text-white">{value}</p>
         {hint && (
-          <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
             {hint}
           </p>
         )}
@@ -103,25 +102,13 @@ export default function OrgDashboardPage() {
         ))}
       </div>
 
-      {/* Overview */}
-      <section className="flex-1">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-bold dark:text-white">
-            My Organization Courses
-          </h2>
-          <Button
-            variant="secondary"
-            onClick={() => navigate("/org/analytics")}
-            className="flex items-center gap-2"
-          >
-            <ChartPieIcon className="w-5 h-5" />
-            View Analytics
-          </Button>
-        </div>
-
-        {/* Org courses feed */}
-        <CoursesView variant="org" orgId={user?.id} showLayoutToggle />
-      </section>
+      {/* Org courses feed */}
+      <CoursesView
+        variant="org"
+        title="My Courses"
+        orgId={user?.id}
+        showLayoutToggle
+      />
     </div>
   );
 }

@@ -10,7 +10,7 @@ import CategoriesSection from "../components/CategoriesSection";
 import CoursesView from "../components/CoursesView";
 
 export default function HomePage() {
-  const { navigate, user } = useAppHook();
+  const { navigate } = useAppHook();
 
   return (
     <div className="alternate-sections">
@@ -77,14 +77,11 @@ export default function HomePage() {
       {/* Highlights */}
       <HighlightsSection />
 
-      {/* Recommended Courses */}
-      {user && <CoursesView variant="recommended" />}
-
       {/* Trending Courses */}
-      <CoursesView variant="trending" />
+      <CoursesView variant="trending" className="px-16" />
 
       {/* Popular Courses */}
-      <CoursesView variant="popular" />
+      <CoursesView variant="popular" className="px-16" />
 
       {/* Categories */}
       <CategoriesSection />

@@ -1,21 +1,34 @@
-import { useState } from "react";
+// features/courses/pages/quiz/QuizPage.tsx
+import { useCallback, useState } from "react";
 import QuizIntroPage from "./QuizIntroPage";
 import QuizQuestionPage from "./QuizQuestionsPage";
 import QuizResultPage from "./QuizResultPage";
 
-export default function QuizPage({ material }: { material: any }) {
-  const [step, setStep] = useState<"intro" | "quiz" | "result">("intro");
+type Step = "intro" | "quiz" | "result";
 
-  const [quizResult, setQuizResult] = useState<any>(null);
+interface QuizPageProps {
+  material: any; // If you have a Material type with quiz shape, replace 'any'
+}
 
-  const handleStartQuiz = () => {
+export default function QuizPage({ material }: QuizPageProps) {
+  const [step, setStep] = useState<Step>("intro");
+  const [quizResult, setQuizResult] = useState<{
+    score: number;
+    total: number;
+  } | null>(null);
+
+  const handleStartQuiz = useCallback(() => setStep("quiz"), []);
+  const handleSubmitQuiz = useCallback(
+    (result: { score: number; total: number }) => {
+      setQuizResult(result);
+      setStep("result");
+    },
+    []
+  );
+  const handleRetake = useCallback(() => {
+    setQuizResult(null);
     setStep("quiz");
-  };
-
-  const handleSubmitQuiz = (result: any) => {
-    setQuizResult(result);
-    setStep("result");
-  };
+  }, []);
 
   return (
     <div className="space-y-4">
@@ -27,7 +40,9 @@ export default function QuizPage({ material }: { material: any }) {
         <QuizQuestionPage material={material} onSubmit={handleSubmitQuiz} />
       )}
 
-      {step === "result" && <QuizResultPage result={quizResult} />}
+      {step === "result" && quizResult && (
+        <QuizResultPage result={quizResult} onRetake={handleRetake} />
+      )}
     </div>
   );
 }

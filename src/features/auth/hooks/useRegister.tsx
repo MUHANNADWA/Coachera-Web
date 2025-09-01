@@ -21,9 +21,9 @@ export interface RegisterFormData {
   confirmPassword: string;
 
   // step 2
-  role: UserRole | ""; // empty until selected
+  role: UserRole | "";
 
-  // optional avatar
+  // optional avatar (server URL)
   profileImageUrl?: string;
 
   // step 3 (student)
@@ -51,7 +51,7 @@ export default function useRegister() {
     email: "",
     password: "",
     confirmPassword: "",
-    role: "", // user picks on step 2
+    role: "",
   });
 
   const [step, setStep] = useState<Step>("first");
@@ -109,7 +109,6 @@ export default function useRegister() {
       profileImageUrl: formData.profileImageUrl,
     };
 
-    // attach role-specific details
     if (formData.role === UserRole.STUDENT) {
       payload.details = {
         firstName: formData.firstName?.trim(),
@@ -141,23 +140,40 @@ export default function useRegister() {
     });
   };
 
-  // avatar upload
+  // avatar upload (optional)
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     await toast.promise(
       (async () => {
         const file = e.target.files?.[0];
         if (!file) return;
 
+        // simple validation (<= 5MB, png/jpg/jpeg/webp)
+        const validTypes = [
+          "image/png",
+          "image/jpeg",
+          "image/jpg",
+          "image/webp",
+        ];
+        const maxSize = 5 * 1024 * 1024;
+
+        if (!validTypes.includes(file.type)) {
+          throw new Error("Only PNG, JPG, or WEBP are allowed");
+        }
+        if (file.size > maxSize) {
+          throw new Error("Max file size is 5MB");
+        }
+
         const formDataUpload = new FormData();
         formDataUpload.append("file", file);
 
         const res = await uploadImage(formDataUpload).unwrap();
+        // assuming res.data is the image URL from server
         setFormData((prev) => ({ ...prev, profileImageUrl: res.data }));
       })(),
       {
         loading: "Uploading...",
         success: "Upload successful!",
-        error: "Upload failed",
+        error: (err) => err?.message || "Upload failed",
       }
     );
   };

@@ -19,9 +19,19 @@ import { showErrorMessage } from "../utils/errorMessage";
 type LayoutMode = "carousel" | "grid";
 
 interface CoursesViewProps {
-  variant?: "all" | "recommended" | "trending" | "popular" | "org" | "inst";
+  variant?:
+    | "all"
+    | "recommended"
+    | "trending"
+    | "popular"
+    | "org"
+    | "inst"
+    | "similar";
   orgId?: number;
+  className?: string;
   instructorId?: number;
+  courseId?: number;
+  title?: string;
   layout?: LayoutMode;
   gridPageSize?: number;
   showLayoutToggle?: boolean;
@@ -31,6 +41,9 @@ export default function CoursesView({
   variant = "all",
   orgId,
   instructorId,
+  courseId,
+  className,
+  title,
   layout,
   gridPageSize = 8,
   showLayoutToggle = true,
@@ -68,6 +81,14 @@ export default function CoursesView({
     popularError,
     popularTotal,
     popularLast,
+    // similar
+    similarCourses,
+    similarSize,
+    setSimilarSize,
+    similarLoading,
+    similarError,
+    similarTotal,
+    similarLast,
     // org
     orgCourses,
     orgSize,
@@ -84,7 +105,7 @@ export default function CoursesView({
     instError,
     instTotal,
     instLast,
-  } = useCourses({ orgId, instructorId });
+  } = useCourses({ orgId, instructorId, courseId });
 
   const [localLayout, setLocalLayout] = useState<LayoutMode>("carousel");
   const effectiveLayout: LayoutMode = layout ?? localLayout;
@@ -159,6 +180,18 @@ export default function CoursesView({
         setSize: setPopularSize,
       };
       break;
+    case "similar":
+      data = {
+        title: "Similar Courses",
+        list: similarCourses,
+        isLoading: similarLoading,
+        error: similarError,
+        total: similarTotal,
+        last: similarLast,
+        getSize: () => similarSize,
+        setSize: setSimilarSize,
+      };
+      break;
     case "org":
       data = {
         title: "Organization Courses",
@@ -209,10 +242,10 @@ export default function CoursesView({
 
   return (
     <section className="flex-1 relative">
-      <div className="max-sm:px-4 px-16 py-10">
+      <div className={`max-sm:px-4 py-10 ${className}`}>
         <div className="mb-6 flex items-center justify-between max-sm:flex-col max-sm:gap-3">
           <h2 className="text-3xl font-bold text-center sm:text-left dark:text-white">
-            {data.title}
+            {title ?? data.title}
           </h2>
 
           {showLayoutToggle && !layout && (

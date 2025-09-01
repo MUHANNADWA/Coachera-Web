@@ -39,7 +39,8 @@ export default function QuizIntroPage({
           onClick={onStart}
           variant="primary"
           full
-          aria-label="Start Quiz">
+          aria-label="Start Quiz"
+        >
           Start Quiz
         </Button>
       </section>

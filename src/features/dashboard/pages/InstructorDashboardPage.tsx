@@ -1,16 +1,10 @@
 import {
-  PlusCircleIcon,
-  WrenchScrewdriverIcon,
-  BellAlertIcon,
-  ChartBarIcon,
   StarIcon,
   UsersIcon,
   BanknotesIcon,
   BookOpenIcon,
 } from "@heroicons/react/24/outline";
-import { useState } from "react";
 import { useAppHook } from "../../../shared/hooks/useAppHook";
-import { Button } from "../../../shared/components/form/Button";
 import CoursesView from "../../../shared/components/CoursesView";
 
 function KpiCard({
@@ -30,10 +24,10 @@ function KpiCard({
         <Icon className="w-6 h-6" aria-hidden="true" />
       </div>
       <div className="flex-1">
-        <p className="text-sm text-gray-500 dark:text-gray-400">{title}</p>
-        <p className="text-2xl font-bold mt-1">{value}</p>
+        <p className="text-sm text-gray-600 dark:text-gray-300">{title}</p>
+        <p className="text-2xl font-bold mt-1 dark:text-white">{value}</p>
         {hint && (
-          <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
             {hint}
           </p>
         )}
@@ -48,7 +42,7 @@ function Section({
   actions,
   children,
 }: {
-  title: string;
+  title?: string;
   actions?: React.ReactNode;
   children: React.ReactNode;
 }) {
@@ -64,8 +58,7 @@ function Section({
 }
 
 export default function InstructorDashboardPage() {
-  const { navigate, user } = useAppHook();
-  const [tab, setTab] = useState<"courses" | "analytics">("courses");
+  const { user } = useAppHook();
 
   // These can come from your analytics API later
   const kpis = [
@@ -101,42 +94,11 @@ export default function InstructorDashboardPage() {
       <div className="flex items-center justify-between flex-wrap gap-3 mb-6">
         <div>
           <h1 className="text-3xl font-bold dark:text-white">
-            Welcome back
-            {(user as any)?.details?.firstName
-              ? `, ${(user as any).details.firstName}`
-              : ""}{" "}
-            👋
+            Welcome back <p className="inline text-primary">{user?.username}</p>
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="mt-2 text-gray-600 dark:text-gray-400">
             Create, manage, and analyze your courses from one place.
           </p>
-        </div>
-
-        <div className="flex gap-2">
-          <Button
-            variant="primary"
-            onClick={() => navigate("/add-course")}
-            className="flex items-center gap-2"
-          >
-            <PlusCircleIcon className="w-5 h-5" />
-            Add Course
-          </Button>
-          <Button
-            variant="secondary"
-            onClick={() => navigate("/manage-lesson/1")}
-            className="flex items-center gap-2"
-          >
-            <WrenchScrewdriverIcon className="w-5 h-5" />
-            Manage Lessons
-          </Button>
-          <Button
-            variant="secondary"
-            onClick={() => navigate("/notifications")}
-            className="flex items-center gap-2"
-          >
-            <BellAlertIcon className="w-5 h-5" />
-            Notifications
-          </Button>
         </div>
       </div>
 
@@ -147,85 +109,16 @@ export default function InstructorDashboardPage() {
         ))}
       </div>
 
-      {/* Tabs */}
-      <div className="consect rounded-2xl p-2 inline-flex mb-6">
-        <button
-          className={`px-4 py-2 rounded-xl text-sm font-medium ${
-            tab === "courses"
-              ? "bg-primary text-white"
-              : "hover:bg-gray-100 dark:hover:bg-dark"
-          }`}
-          onClick={() => setTab("courses")}
-          type="button"
-        >
-          My Courses
-        </button>
-        <button
-          className={`px-4 py-2 rounded-xl text-sm font-medium ${
-            tab === "analytics"
-              ? "bg-primary text-white"
-              : "hover:bg-gray-100 dark:hover:bg-dark"
-          }`}
-          onClick={() => setTab("analytics")}
-          type="button"
-        >
-          Analytics
-        </button>
-      </div>
-
       {/* Content */}
-      {tab === "courses" ? (
-        <Section
-          title="Instructor Courses"
-          actions={
-            <div className="flex items-center gap-2">
-              <Button
-                variant="secondary"
-                onClick={() => navigate("/edit-course")}
-                className="flex items-center gap-2"
-              >
-                <WrenchScrewdriverIcon className="w-5 h-5" />
-                Edit Course
-              </Button>
-              <Button
-                variant="primary"
-                onClick={() => navigate("/add-course")}
-                className="flex items-center gap-2"
-              >
-                <PlusCircleIcon className="w-5 h-5" />
-                Add Course
-              </Button>
-            </div>
-          }
-        >
-          {/* Instructor courses feed */}
-          <CoursesView
-            variant="inst"
-            instructorId={user?.id}
-            showLayoutToggle
-          />
-        </Section>
-      ) : (
-        <Section
-          title="Performance Overview"
-          actions={
-            <div className="flex items-center gap-2">
-              <Button variant="secondary" className="flex items-center gap-2">
-                <ChartBarIcon className="w-5 h-5" />
-                Export
-              </Button>
-            </div>
-          }
-        >
-          <div className="consect rounded-2xl p-6">
-            {/* You can inject charts here later */}
-            <p className="text-gray-600 dark:text-gray-400">
-              Add your analytics charts (enrollments, completion rate, earnings)
-              here.
-            </p>
-          </div>
-        </Section>
-      )}
+      <Section>
+        {/* Instructor courses feed */}
+        <CoursesView
+          title="My Courses"
+          variant="inst"
+          instructorId={user?.id}
+          showLayoutToggle
+        />
+      </Section>
     </div>
   );
 }

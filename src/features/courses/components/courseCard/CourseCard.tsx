@@ -118,9 +118,7 @@ export default function CourseCard({
               variant="primaryInverted"
               className="relative m-0! p-2! rounded-full!"
               aria-label="Edit course"
-              onClick={() =>
-                navigate(`/edit-course`, { state: { courseId: course.id } })
-              }
+              onClick={() => navigate(`/edit-course/${course.id}`)}
             >
               <PencilSquareIcon className="w-5 h-5" />
             </Button>

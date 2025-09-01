@@ -1,4 +1,7 @@
-import { PlusCircleIcon } from "@heroicons/react/24/outline";
+import {
+  PlusCircleIcon,
+  RectangleStackIcon,
+} from "@heroicons/react/24/outline";
 import { DndContext, closestCenter, DragEndEvent } from "@dnd-kit/core";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "../../../../shared/components/form/Button";
@@ -7,73 +10,83 @@ import { useDndSensors } from "../dnd/useDndSensors";
 import ModuleCard from "../components/ModuleCard";
 import { Module, Section } from "../types";
 import { reorderModules } from "../utils/reorder";
-import { useAppHook } from "../../../../shared/hooks/useAppHook";
-
+import { useGetCourseDetailsQuery } from "../../api/coursesApiSlice";
 import {
   useCreateModuleMutation,
-  // useUpdateModuleMutation,
   useDeleteModuleMutation,
-  useGetModulesByCourseQuery,
 } from "../../api/moduleApiSlice";
 import {
   useCreateSectionMutation,
-  // useUpdateSectionMutation,
   useDeleteSectionMutation,
 } from "../../api/sectionApiSlice";
 import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import { useParams } from "react-router-dom";
+import Loader from "../../../../shared/components/Loader";
+import Message from "../../../../shared/components/Message";
+
+/** Normalize server course -> builder shape */
+function normalizeCourseToModules(course: any): Module[] {
+  const modules = course?.modules ?? [];
+  return (modules as any[]).map((m, mIdx) => ({
+    id: m.id ?? `m_${mIdx}`,
+    name: m.title ?? m.name ?? `Module ${mIdx + 1}`,
+    sections: (m.sections ?? []).map((s: any, sIdx: number) => ({
+      id: s.id ?? `s_${mIdx}_${sIdx}`,
+      name: s.title ?? s.name ?? `Section ${sIdx + 1}`,
+      // keep lessons/materials raw for the editor
+      lessons: s.lessons ?? s.materials ?? [],
+    })),
+  }));
+}
 
 export default function EditCoursePage() {
   const sensors = useDndSensors();
-  const { location } = useAppHook();
+  const { id: courseIdParam } = useParams<{ id: string }>();
+  const courseId = Number(courseIdParam);
 
-  const courseId = location.state.courseId;
+  // fetch course
+  const {
+    data: courseResp,
+    isLoading,
+    isFetching,
+    error,
+    refetch: refetchCourse,
+  } = useGetCourseDetailsQuery(courseId, {
+    skip: Number.isNaN(courseId),
+    refetchOnMountOrArgChange: true,
+  });
 
-  // Fetch from server
-  const { data: fetchedModulesResponse, refetch } =
-    useGetModulesByCourseQuery(courseId);
+  const serverCourse = useMemo(
+    () => (courseResp?.data ?? courseResp) as any,
+    [courseResp]
+  );
 
-  // Normalize fetched data to local state
-  const fetchedModules: Module[] = useMemo(() => {
-    // Expecting something like [{ id, name, sections: [{ id, name, lessons: [...] }] }]
-    const list =
-      (fetchedModulesResponse as any)?.data ?? fetchedModulesResponse ?? [];
-    return Array.isArray(list) ? list : [];
-  }, [fetchedModulesResponse]);
-
+  // local state mirrors server
   const [modules, setModules] = useState<Module[]>([]);
-
   useEffect(() => {
-    if (fetchedModules && fetchedModules.length >= 0) {
-      setModules(fetchedModules);
-    }
-  }, [fetchedModules]);
+    if (!serverCourse) return;
+    setModules(normalizeCourseToModules(serverCourse));
+  }, [serverCourse]);
 
-  // Mutations
+  // mutations
   const [createModule] = useCreateModuleMutation();
-  // const [updateModule] = useUpdateModuleMutation();
   const [deleteModule] = useDeleteModuleMutation();
-
   const [createSection] = useCreateSectionMutation();
-  // const [updateSection] = useUpdateSectionMutation();
   const [deleteSection] = useDeleteSectionMutation();
 
-  // DnD reorder (modules level)
-  const onModulesDragEnd = async (e: DragEndEvent) => {
+  // reorder modules (local)
+  const onModulesDragEnd = (e: DragEndEvent) => {
     const { active, over } = e;
     if (!over || active.id === over.id) return;
     const next = reorderModules(modules, String(active.id), String(over.id));
     setModules(next);
-
-    // Optional: persist order to server (send orderIndex per module)
-    // await Promise.all(
-    //   next.map((m, idx) => updateModule({ id: m.id, data: { name: m.name, orderIndex: idx } }))
-    // );
+    // TODO: persist orderIndex if API available, then refetch
   };
 
-  // Actions: Module
+  // module actions
   const addModuleHandler = async () => {
     const tmp: Module = {
       id: `m_${Date.now()}`,
@@ -83,27 +96,25 @@ export default function EditCoursePage() {
     setModules((prev) => [...prev, tmp]);
 
     try {
-      // Create on server
       const created: any = await createModule({
         courseId,
         data: { name: tmp.name },
       }).unwrap();
       const real = created?.data ?? created;
-      // Replace temp id with real id if returned
       setModules((prev) =>
         prev.map((m) => (m.id === tmp.id ? { ...m, id: real.id ?? m.id } : m))
       );
     } finally {
-      refetch();
+      await refetchCourse();
     }
   };
 
   const removeModuleHandler = async (moduleId: string | number) => {
     setModules((prev) => prev.filter((m) => m.id !== moduleId));
     try {
-      await deleteModule(moduleId as any).unwrap();
+      await deleteModule(Number(moduleId)).unwrap();
     } finally {
-      refetch();
+      await refetchCourse();
     }
   };
 
@@ -116,19 +127,19 @@ export default function EditCoursePage() {
     );
   };
 
-  // Actions: Section
+  // section actions
   const addSectionHandler = async (moduleId: string | number) => {
     const nextSection: Section = {
       id: `s_${Date.now()}`,
       name: "Section",
       lessons: [],
     };
-    updateModuleLocal(moduleId, {
-      sections: [
-        ...(modules.find((m) => m.id === moduleId)?.sections ?? []),
-        nextSection,
-      ],
-    });
+
+    setModules((prev) =>
+      prev.map((m) =>
+        m.id !== moduleId ? m : { ...m, sections: [...m.sections, nextSection] }
+      )
+    );
 
     try {
       const created: any = await createSection({
@@ -136,6 +147,7 @@ export default function EditCoursePage() {
         data: { title: nextSection.name, orderIndex: 0, materials: [] },
       }).unwrap();
       const real = created?.data ?? created;
+
       setModules((prev) =>
         prev.map((m) =>
           m.id !== moduleId
@@ -149,7 +161,7 @@ export default function EditCoursePage() {
         )
       );
     } finally {
-      refetch();
+      await refetchCourse();
     }
   };
 
@@ -167,7 +179,7 @@ export default function EditCoursePage() {
     try {
       await deleteSection({ moduleId, sectionId }).unwrap();
     } finally {
-      refetch();
+      await refetchCourse();
     }
   };
 
@@ -195,17 +207,40 @@ export default function EditCoursePage() {
     setModules((prev) =>
       prev.map((m) => (m.id === moduleId ? { ...m, sections } : m))
     );
-    // Optional: persist orderIndex of sections
-    // await Promise.all(
-    //   sections.map((s, idx) =>
-    //     updateSection({ moduleId, sectionId: s.id, data: { title: s.name, orderIndex: idx, materials: [] } })
-    //   )
-    // );
+    // TODO: persist orderIndex if API available
   };
+
+  // UI states
+  if (isLoading || isFetching) return <Loader logo />;
+  if (error) {
+    // @ts-ignore
+    const msg = (error as any)?.data?.message ?? "Failed to load course";
+    return (
+      <div className="max-w-3xl mx-auto p-6">
+        <Message variant="danger">{msg}</Message>
+      </div>
+    );
+  }
+  if (!serverCourse) {
+    return (
+      <div className="max-w-3xl mx-auto p-6">
+        <Message variant="warning">Course not found.</Message>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-5xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">Edit Course</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold flex items-center gap-2">
+          <RectangleStackIcon className="w-6 h-6 text-primary" />
+          Edit Course —{" "}
+          <span className="text-primary">{serverCourse.title}</span>
+        </h1>
+        <span className="text-sm text-gray-500 dark:text-gray-400">
+          Modules: {modules.length}
+        </span>
+      </div>
 
       <DndContext
         sensors={sensors}
@@ -222,8 +257,6 @@ export default function EditCoursePage() {
                 module={module}
                 onChangeName={(name) => {
                   updateModuleLocal(module.id, { name });
-                  // Optionally persist name change
-                  // updateModule({ id: module.id, data: { name } });
                 }}
                 onRemove={() => removeModuleHandler(module.id)}
                 onAddSection={() => addSectionHandler(module.id)}
@@ -244,13 +277,16 @@ export default function EditCoursePage() {
         </SortableContext>
       </DndContext>
 
-      <Button
-        onClick={addModuleHandler}
-        className="items-center"
-        variant="primary"
-      >
-        <PlusCircleIcon className="w-6 mr-2" /> Add Module
-      </Button>
+      <div className="mt-4">
+        <Button
+          onClick={addModuleHandler}
+          className="items-center"
+          variant="primary"
+        >
+          <PlusCircleIcon className="w-6 mr-2" />
+          Add Module
+        </Button>
+      </div>
     </div>
   );
 }

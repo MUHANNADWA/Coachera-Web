@@ -8,12 +8,21 @@ import {
   useGetTrendingCoursesQuery,
   useGetOrgCoursesQuery,
   useGetInstCoursesQuery,
+  useGetSimilarCoursesQuery,
 } from "../api/coursesApiSlice";
 import { useAppHook } from "../../../shared/hooks/useAppHook";
 
-type HookArgs = { orgId?: number | string; instructorId?: number | string };
+type HookArgs = {
+  orgId?: number | string;
+  instructorId?: number | string;
+  courseId?: number | string;
+};
 
-export default function useCourses({ orgId, instructorId }: HookArgs = {}) {
+export default function useCourses({
+  orgId,
+  instructorId,
+  courseId,
+}: HookArgs = {}) {
   const { user } = useAppHook();
 
   // sizes you can grow to "load more"
@@ -21,6 +30,7 @@ export default function useCourses({ orgId, instructorId }: HookArgs = {}) {
   const [recommendedSize, setRecommendedSize] = useState(8);
   const [trendingSize, setTrendingSize] = useState(8);
   const [popularSize, setPopularSize] = useState(8);
+  const [similarSize, setSimilarSize] = useState(8);
   const [orgSize, setOrgSize] = useState(8);
   const [instSize, setInstSize] = useState(8);
 
@@ -38,7 +48,7 @@ export default function useCourses({ orgId, instructorId }: HookArgs = {}) {
   const allTotal = data?.data?.totalElements ?? 0;
   const allLast = data?.data?.last ?? true;
 
-  // Recommended (fix: send size not "recommendedSize")
+  // Recommended
   const {
     data: recommendedData,
     isLoading: recommendedLoading,
@@ -80,6 +90,22 @@ export default function useCourses({ orgId, instructorId }: HookArgs = {}) {
   const popularCourses: Course[] = popularData?.data?.content ?? [];
   const popularTotal = popularData?.data?.totalElements ?? 0;
   const popularLast = popularData?.data?.last ?? true;
+
+  // Similar
+  const {
+    data: similarData,
+    isLoading: similarLoading,
+    error: similarError,
+  } = useGetSimilarCoursesQuery({
+    id: courseId,
+    page: 0,
+    size: similarSize,
+    sortBy,
+    sortDirection,
+  });
+  const similarCourses: Course[] = similarData?.data?.content ?? [];
+  const similarTotal = similarData?.data?.totalElements ?? 0;
+  const similarLast = similarData?.data?.last ?? true;
 
   // Org
   const {
@@ -149,6 +175,15 @@ export default function useCourses({ orgId, instructorId }: HookArgs = {}) {
     popularError,
     popularTotal,
     popularLast,
+
+    // similar
+    similarCourses,
+    similarSize,
+    setSimilarSize,
+    similarLoading,
+    similarError,
+    similarTotal,
+    similarLast,
 
     // org
     orgCourses,
