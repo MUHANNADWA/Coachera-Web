@@ -68,7 +68,7 @@ const router = createBrowserRouter(
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/otp-verification" element={<OtpVerificationPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
-        <Route path="/search/:query" element={<SearchPage />} />
+        <Route path="/search" element={<SearchPage />} />
         <Route path="/categories" element={<CategoriesPage />} />
         <Route path="/courses" element={<CoursesPage />} />
         <Route path="/courses/:id" element={<CourseDetailsPage />} />
@@ -82,7 +82,7 @@ const router = createBrowserRouter(
         <Route path="/learn/:courseId/:moduleId" element={<LearnPage />} />
         {/* <Route path="/stripe" element={<CheckoutButton />} /> */}
         <Route path="/notifications" element={<NotificationsPage />} />
-        <Route path="/search/:query" element={<SearchPage />} />
+        <Route path="/search" element={<SearchPage />} />
         <Route path="/categories" element={<CategoriesPage />} />
         <Route path="/courses" element={<CoursesPage />} />
         <Route path="/courses/:id" element={<CourseDetailsPage />} />

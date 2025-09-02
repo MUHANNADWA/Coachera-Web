@@ -12,7 +12,7 @@ const cols = [
     links: [
       { to: "/courses", label: "Courses" },
       { to: "/categories", label: "Categories" },
-      { to: "/search/free", label: "Free Courses" },
+      { to: "/search?q=free", label: "Free Courses" },
     ],
   },
   {

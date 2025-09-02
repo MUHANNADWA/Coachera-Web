@@ -40,7 +40,7 @@ export default function CourseCard({
     const name = typeof category === "string" ? category : category?.name;
 
     if (name) {
-      navigate(`/search/${encodeURIComponent(name)}?type=categories`);
+      navigate(`/search?q=${encodeURIComponent(name)}?type=categories`);
     }
   };
 
@@ -78,9 +78,9 @@ export default function CourseCard({
       {/* Image */}
       <div className="relative overflow-hidden">
         <img
-          src={course.image}
+          src={`https://placehold.co/800?text=${course.title}`}
           alt={`Course cover for ${course.title}`}
-          className="h-48 w-full object-cover transition-transform duration-300 group-hover:scale-105"
+          className="h-48 w-full object-cover transition-transform duration-300 group-hover:scale-[1.3]"
           loading="lazy"
         />
 

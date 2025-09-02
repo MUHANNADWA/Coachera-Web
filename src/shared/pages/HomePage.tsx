@@ -31,7 +31,7 @@ export default function HomePage() {
             <div className="flex gap-4 max-md:justify-center">
               <Button
                 variant="primary"
-                onClick={() => navigate("/login?redirect=/search/ ")}
+                onClick={() => navigate("/login?redirect=/search?q= ")}
               >
                 Get Started
               </Button>
@@ -78,10 +78,10 @@ export default function HomePage() {
       <HighlightsSection />
 
       {/* Trending Courses */}
-      <CoursesView variant="trending" className="px-16" />
+      <CoursesView variant="trending" className="px-20" />
 
       {/* Popular Courses */}
-      <CoursesView variant="popular" className="px-16" />
+      <CoursesView variant="popular" className="px-20" />
 
       {/* Categories */}
       <CategoriesSection />
