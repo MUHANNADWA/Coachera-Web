@@ -9,17 +9,17 @@ import { DndContext, closestCenter, DragEndEvent } from "@dnd-kit/core";
 import Input from "../../../../shared/components/form/Input";
 import { Button } from "../../../../shared/components/form/Button";
 import SectionCard from "./SectionCard";
-import { Lesson, Module, Section } from "../types";
 import { reorderSections } from "../utils/reorder";
 import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { useState } from "react";
+import { Material, Module, Section } from "../../../../shared/types/types";
 
 interface Props {
   module: Module;
-  onChangeName: (name: string) => void;
+  onChangeTitle: (title: string) => void;
   onRemove: () => void;
   onAddSection: () => void;
   onUpdateSection: (index: number, next: Section) => void;
@@ -29,7 +29,7 @@ interface Props {
 
 export default function ModuleCard({
   module,
-  onChangeName,
+  onChangeTitle,
   onRemove,
   onAddSection,
   onUpdateSection,
@@ -67,8 +67,8 @@ export default function ModuleCard({
           <RectangleStackIcon className="w-5 h-5 text-primary" />
           <Input
             type="text"
-            value={module.name}
-            onChange={(e) => onChangeName(e.target.value)}
+            value={module.title}
+            onChange={(e) => onChangeTitle(e.target.value)}
             className="text-lg font-semibold border-b px-2 py-1 focus:outline-none w-full"
             placeholder="Module title"
             prefixIcon={RectangleStackIcon}
@@ -98,36 +98,36 @@ export default function ModuleCard({
                 <SectionCard
                   key={section.id}
                   section={section}
-                  onChangeName={(name) =>
-                    onUpdateSection(sIndex, { ...section, name })
+                  onChangeTitle={(title) =>
+                    onUpdateSection(sIndex, { ...section, title })
                   }
                   onRemove={() => onRemoveSection(sIndex)}
                   onAddLesson={() => {
-                    const next: Lesson = {
+                    const next: Material = {
                       id: `l_${Date.now()}`,
-                      name: `Lesson ${section.lessons.length + 1}`,
+                      title: `Lesson ${section.materials.length + 1}`,
                     };
                     const updated = {
                       ...section,
-                      lessons: [...section.lessons, next],
+                      materials: [...section.materials, next],
                     };
                     onUpdateSection(sIndex, updated);
                   }}
                   onUpdateLesson={(lIndex, nextLesson) => {
-                    const lessons = [...section.lessons];
-                    lessons[lIndex] = nextLesson;
-                    onUpdateSection(sIndex, { ...section, lessons });
+                    const materials = [...section.materials];
+                    materials[lIndex] = nextLesson;
+                    onUpdateSection(sIndex, { ...section, materials });
                   }}
                   onRemoveLesson={(lIndex) => {
-                    const lessons = section.lessons.filter(
+                    const materials = section.materials.filter(
                       (_, i) => i !== lIndex
                     );
-                    onUpdateSection(sIndex, { ...section, lessons });
+                    onUpdateSection(sIndex, { ...section, materials });
                   }}
                   onReorderLessons={(nextLessons) =>
                     onUpdateSection(sIndex, {
                       ...section,
-                      lessons: nextLessons,
+                      materials: nextLessons,
                     })
                   }
                 />

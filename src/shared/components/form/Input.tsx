@@ -15,6 +15,7 @@ interface InputProps {
   required?: boolean;
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
   onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
+  onBlur?: React.FocusEventHandler<HTMLInputElement>;
   inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"];
   prefixIcon?: React.FC<React.SVGProps<SVGSVGElement>>;
   suffixIcon?: React.ReactNode;
@@ -48,6 +49,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       helperText,
       error,
       autoFocus = false,
+      onBlur,
     },
     ref
   ) => {
@@ -81,6 +83,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             required={required}
             onChange={onChange}
             onKeyDown={onKeyDown}
+            onBlur={onBlur}
             inputMode={inputMode}
             className={`peer placeholder:text-gray-400 dark:placeholder:text-gray-600 dark:text-white w-full py-2 rounded-2xl transition-colors duration-300 border-2 focus:ring-1 focus:ring-primary focus:border-primary focus:bg-primary-lightest dark:focus:bg-primary-darkest outline-none ${
               PrefixIcon ? "pl-10" : "pl-3"

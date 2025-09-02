@@ -1,26 +1,89 @@
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "../../../shared/components/form/Button";
 import QuizSection from "./QuizSection";
 import Input from "../../../shared/components/form/Input";
-import Textarea from "../../../shared/components/form/Textarea";
 import {
   useCreateMaterialMutation,
   useUpdateMaterialMutation,
 } from "../../courses/api/materialApiSlice";
 import { useAppHook } from "../../../shared/hooks/useAppHook";
+import { Material } from "../../../shared/types/types";
+
+// Markdown preview
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 export type LessonType = "video" | "article" | "quiz";
 
-const ManageLessonPage = () => {
-  const { location } = useAppHook();
+const typeToApi = (t: LessonType): "VIDEO" | "ARTICLE" | "QUIZ" =>
+  t === "video" ? "VIDEO" : t === "article" ? "ARTICLE" : "QUIZ";
 
-  const sectionId = location.state.sectionId;
-  const materialId = location.state.materialId;
+/** Insert helpers for the markdown toolbar */
+function surroundSelection(
+  textarea: HTMLTextAreaElement,
+  before: string,
+  after: string = ""
+) {
+  const { selectionStart, selectionEnd, value } = textarea;
+  const selected = value.slice(selectionStart, selectionEnd) || "text";
+  const next =
+    value.slice(0, selectionStart) +
+    before +
+    selected +
+    after +
+    value.slice(selectionEnd);
+  const caret = selectionStart + before.length + selected.length + after.length;
+  return { next, caret };
+}
+
+function insertAtLineStart(textarea: HTMLTextAreaElement, prefix: string) {
+  const { selectionStart, selectionEnd, value } = textarea;
+  const startOfLine = value.lastIndexOf("\n", selectionStart - 1) + 1;
+  const next = value.slice(0, startOfLine) + prefix + value.slice(startOfLine);
+  const caret = selectionEnd + prefix.length;
+  return { next, caret };
+}
+
+function insertSnippet(textarea: HTMLTextAreaElement, snippet: string) {
+  const { selectionStart, selectionEnd, value } = textarea;
+  const next =
+    value.slice(0, selectionStart) + snippet + value.slice(selectionEnd);
+  const caret = selectionStart + snippet.length;
+  return { next, caret };
+}
+
+const ManageLessonPage = () => {
+  const { location, navigate } = useAppHook();
+
+  // identifiers coming from SectionCard navigate(..., { state: { sectionId, materialId, initial } })
+  const sectionId = location?.state?.sectionId as number | string | undefined;
+  const materialId = location?.state?.materialId as number | string | undefined;
+  const initial: Material | undefined = location?.state?.initial;
 
   const [lessonType, setLessonType] = useState<LessonType>("video");
   const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+  const [content, setContent] = useState(""); // holds markdown for article
   const [quizQuestions, setQuizQuestions] = useState<any[]>([]);
+  const [showCheatsheet, setShowCheatsheet] = useState(true);
+
+  // keep a ref to control caret insertion in markdown textarea
+  const mdRef = useRef<HTMLTextAreaElement | null>(null);
+
+  // hydrate initial values if editing
+  useEffect(() => {
+    if (!initial) return;
+    setTitle(initial.title ?? "");
+    if (initial.type === "VIDEO") {
+      setLessonType("video");
+      setContent(initial.videoUrl ?? "");
+    } else if (initial.type === "ARTICLE") {
+      setLessonType("article");
+      setContent(initial.article ?? "");
+    } else if (initial.type === "QUIZ") {
+      setLessonType("quiz");
+      setQuizQuestions(initial.quiz?.questions ?? []);
+    }
+  }, [initial]);
 
   // RTK Query mutations
   const [createMaterial, { isLoading: isCreating }] =
@@ -28,48 +91,125 @@ const ManageLessonPage = () => {
   const [updateMaterial, { isLoading: isUpdating }] =
     useUpdateMaterialMutation();
 
+  const payload = useMemo(() => {
+    const base = {
+      title,
+      orderIndex: 1, // adjust if you support ordering
+      type: typeToApi(lessonType),
+    } as any;
+
+    if (lessonType === "quiz") {
+      base.quiz = { questions: quizQuestions };
+    } else if (lessonType === "video") {
+      base.videoUrl = content;
+    } else {
+      // store markdown as article content
+      base.article = content;
+    }
+    return base;
+  }, [title, lessonType, content, quizQuestions]);
+
   const handleSave = async () => {
     try {
-      const payload =
-        lessonType === "quiz"
-          ? {
-              title,
-              orderIndex: 1,
-              type: "QUIZ",
-              quiz: { questions: quizQuestions },
-            }
-          : lessonType === "video"
-          ? {
-              title,
-              orderIndex: 1,
-              type: "VIDEO",
-              videoUrl: content,
-            }
-          : {
-              title,
-              orderIndex: 1,
-              type: "ARTICLE",
-              article: content,
-            };
-
       if (materialId) {
-        // update
-        await updateMaterial({ sectionId, materialId, data: payload }).unwrap();
+        await updateMaterial({
+          sectionId,
+          materialId,
+          data: payload,
+        }).unwrap();
         alert("Lesson updated!");
       } else {
-        // create
-        await createMaterial({ data: payload }).unwrap();
+        await createMaterial({
+          sectionId,
+          data: payload,
+        }).unwrap();
         alert("Lesson created!");
       }
+      navigate(-1);
     } catch (err: any) {
       console.error("Failed to save lesson:", err);
       alert("Error saving lesson.");
     }
   };
 
+  // Toolbar action dispatcher
+  const doAction = (kind: string) => {
+    const ta = mdRef.current;
+    if (!ta) return;
+    let res: { next: string; caret: number } | null = null;
+
+    switch (kind) {
+      case "bold":
+        res = surroundSelection(ta, "**", "**");
+        break;
+      case "italic":
+        res = surroundSelection(ta, "_", "_");
+        break;
+      case "h1":
+        res = insertAtLineStart(ta, "# ");
+        break;
+      case "h2":
+        res = insertAtLineStart(ta, "## ");
+        break;
+      case "h3":
+        res = insertAtLineStart(ta, "### ");
+        break;
+      case "link":
+        res = surroundSelection(ta, "[", "](https://example.com)");
+        break;
+      case "image":
+        res = insertSnippet(
+          ta,
+          "![alt](https://via.placeholder.com/800x400)\n"
+        );
+        break;
+      case "inline-code":
+        res = surroundSelection(ta, "`", "`");
+        break;
+      case "codeblock":
+        res = insertSnippet(ta, "```ts\n// code here\n```\n");
+        break;
+      case "quote":
+        res = insertAtLineStart(ta, "> ");
+        break;
+      case "ul":
+        res = insertAtLineStart(ta, "- ");
+        break;
+      case "ol":
+        res = insertAtLineStart(ta, "1. ");
+        break;
+      case "task":
+        res = insertAtLineStart(ta, "- [ ] ");
+        break;
+      case "table":
+        res = insertSnippet(
+          ta,
+          `| Feature | Support |\n|--------|:------:|\n| GFM    |   ✅   |\n| Tables |   ✅   |\n\n`
+        );
+        break;
+      case "hr":
+        res = insertSnippet(ta, `\n---\n\n`);
+        break;
+      default:
+        break;
+    }
+
+    if (res) {
+      setContent(res.next);
+      // set caret after state update
+      requestAnimationFrame(() => {
+        if (!mdRef.current) return;
+        mdRef.current.selectionStart = mdRef.current.selectionEnd = res!.caret;
+        mdRef.current.focus();
+      });
+    }
+  };
+
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-6">
-      <h1 className="text-2xl font-bold">Manage Lesson</h1>
+    <div className="max-w-5xl mx-auto p-6 space-y-6">
+      <h1 className="text-2xl font-bold">
+        {materialId ? "Edit Lesson" : "Create Lesson"}
+      </h1>
 
       {/* Lesson Title */}
       <div>
@@ -83,7 +223,7 @@ const ManageLessonPage = () => {
       </div>
 
       {/* Type Tabs */}
-      <div className="flex space-x-2 border-b mb-4">
+      <div className="flex gap-2 border-b mb-4">
         {(["video", "article", "quiz"] as LessonType[]).map((type) => (
           <button
             key={type}
@@ -120,19 +260,145 @@ const ManageLessonPage = () => {
       )}
 
       {lessonType === "article" && (
-        <div>
-          <label className="block font-medium mb-1">Article Content</label>
-          <Textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="Write your article..."
-            className="h-40"
-          />
-          {content && (
-            <div className="mt-2 p-4 border rounded bg-gray-50 dark:bg-dark">
-              {content}
+        <div className="space-y-4">
+          {/* Toolbar */}
+          <div className="flex flex-wrap gap-2 p-2 rounded-xl border-2 border-gray-200 dark:border-white/10 bg-white dark:bg-[#0b0f19]">
+            <span className="text-xs opacity-60 self-center pr-2">
+              Markdown
+            </span>
+            <Button type="button" onClick={() => doAction("h1")}>
+              H1
+            </Button>
+            <Button type="button" onClick={() => doAction("h2")}>
+              H2
+            </Button>
+            <Button type="button" onClick={() => doAction("h3")}>
+              H3
+            </Button>
+            <Button type="button" onClick={() => doAction("bold")}>
+              Bold
+            </Button>
+            <Button type="button" onClick={() => doAction("italic")}>
+              Italic
+            </Button>
+            <Button type="button" onClick={() => doAction("inline-code")}>
+              Code
+            </Button>
+            <Button type="button" onClick={() => doAction("codeblock")}>
+              Code Block
+            </Button>
+            <Button type="button" onClick={() => doAction("link")}>
+              Link
+            </Button>
+            <Button type="button" onClick={() => doAction("image")}>
+              Image
+            </Button>
+            <Button type="button" onClick={() => doAction("quote")}>
+              Quote
+            </Button>
+            <Button type="button" onClick={() => doAction("ul")}>
+              List
+            </Button>
+            <Button type="button" onClick={() => doAction("ol")}>
+              Numbered
+            </Button>
+            <Button type="button" onClick={() => doAction("task")}>
+              Task
+            </Button>
+            <Button type="button" onClick={() => doAction("table")}>
+              Table
+            </Button>
+            <Button type="button" onClick={() => doAction("hr")}>
+              Rule
+            </Button>
+            <div className="ml-auto">
+              <Button
+                type="button"
+                onClick={() => setShowCheatsheet((v) => !v)}
+              >
+                {showCheatsheet ? "Hide Cheatsheet" : "Show Cheatsheet"}
+              </Button>
             </div>
-          )}
+          </div>
+
+          {/* Editor + Cheatsheet */}
+          <div className="grid md:grid-cols-2 gap-4">
+            {/* Editor */}
+            <div>
+              <label className="block font-medium mb-1">Markdown Content</label>
+              <textarea
+                ref={mdRef}
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                placeholder="Write your markdown (supports **bold**, _italic_, lists, tables, links...)"
+                className="w-full h-64 font-mono text-sm rounded-xl border-2 border-gray-200 dark:border-white/10 bg-white dark:bg-[#0b0f19] p-3 outline-none focus:ring-1 focus:ring-primary"
+              />
+              <div className="flex justify-between text-xs text-gray-500 mt-1">
+                <span>GitHub Flavored Markdown (GFM)</span>
+                <span>{content.length} chars</span>
+              </div>
+
+              {/* Cheatsheet */}
+              {showCheatsheet && (
+                <div className="mt-3 rounded-xl border-2 border-dashed border-gray-200 dark:border-white/10 p-4 text-sm">
+                  <div className="font-semibold mb-2 opacity-80">
+                    Markdown Cheatsheet
+                  </div>
+                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <li>
+                      <code># Heading 1</code>, <code>## Heading 2</code>,{" "}
+                      <code>### Heading 3</code>
+                    </li>
+                    <li>
+                      <code>**bold**</code>, <code>_italic_</code>,{" "}
+                      <code>~~strikethrough~~</code>
+                    </li>
+                    <li>
+                      <code>[text](https://example.com)</code>
+                    </li>
+                    <li>
+                      <code>![alt](https://...)</code>
+                    </li>
+                    <li>
+                      <code>`inline code`</code> /{" "}
+                      <code>```lang\ncode\n```</code>
+                    </li>
+                    <li>
+                      <code>- item</code> / <code>1. item</code> /{" "}
+                      <code>- [ ] task</code>
+                    </li>
+                    <li>
+                      <code>&gt; quote</code>
+                    </li>
+                    <li>
+                      Table:
+                      <br />
+                      <code>| Col | Col |</code>
+                      <br />
+                      <code>|-----|:---:|</code>
+                      <br />
+                      <code>| A | B |</code>
+                    </li>
+                    <li>
+                      <code>---</code> (horizontal rule)
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
+
+            {/* Live Preview */}
+            <div>
+              <div className="text-sm font-semibold mb-2 opacity-70">
+                Preview
+              </div>
+              <article className="prose dark:prose-invert max-w-none rounded-xl border-2 border-gray-200 dark:border-white/10 p-4">
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {content || "_Nothing to preview yet..._"}
+                </ReactMarkdown>
+              </article>
+            </div>
+          </div>
         </div>
       )}
 

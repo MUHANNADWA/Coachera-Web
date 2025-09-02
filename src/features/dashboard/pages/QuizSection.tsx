@@ -152,6 +152,7 @@ export default function QuizSection({
               <PlusCircleIcon className="w-5 mr-1" /> Add Question
             </Button>
             <Button
+              variant="primary"
               onClick={saveQuiz}
               disabled={isCreating}
               className="flex items-center"

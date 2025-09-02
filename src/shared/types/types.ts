@@ -42,10 +42,10 @@ export interface Section {
 }
 
 export interface Material {
-  id: number;
+  id: number | string;
   title: string;
-  duration: string;
-  type: "VIDEO" | "ARTICLE" | "QUIZ";
+  duration?: string;
+  type?: "VIDEO" | "ARTICLE" | "QUIZ";
   videoUrl?: string;
   article?: string;
   quiz?: Quiz;

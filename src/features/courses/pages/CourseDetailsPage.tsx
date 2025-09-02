@@ -127,7 +127,7 @@ export default function CourseDetailsPage() {
               <div className="flex flex-wrap gap-3">
                 <StatPill
                   icon={<UserIcon className="h-5 w-5" />}
-                  label={course.instructors?.[0] ?? "Organization"}
+                  label={course.orgTitle ?? "Organization"}
                 />
                 <StatPill
                   icon={<ClockIcon className="h-5 w-5" />}

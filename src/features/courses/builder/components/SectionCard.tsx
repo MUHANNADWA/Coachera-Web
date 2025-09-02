@@ -10,27 +10,28 @@ import Input from "../../../../shared/components/form/Input";
 import { Button } from "../../../../shared/components/form/Button";
 import SortableItem from "../dnd/SortableItem";
 import LessonRow from "./LessonRow";
-import { Lesson, Section } from "../types";
 import { reorderLessons } from "../utils/reorder";
 import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { useState } from "react";
+import { Material, Section } from "../../../../shared/types/types";
+import { useAppHook } from "../../../../shared/hooks/useAppHook";
 
 interface Props {
   section: Section;
-  onChangeName: (name: string) => void;
+  onChangeTitle: (name: string) => void;
   onRemove: () => void;
   onAddLesson: () => void;
-  onUpdateLesson: (index: number, next: Lesson) => void;
+  onUpdateLesson: (index: number, next: Material) => void;
   onRemoveLesson: (index: number) => void;
-  onReorderLessons: (nextLessons: Lesson[]) => void;
+  onReorderLessons: (nextLessons: Material[]) => void;
 }
 
 export default function SectionCard({
   section,
-  onChangeName,
+  onChangeTitle,
   onRemove,
   onAddLesson,
   onUpdateLesson,
@@ -38,22 +39,24 @@ export default function SectionCard({
   onReorderLessons,
 }: Props) {
   const [collapsed, setCollapsed] = useState(false);
+  const { navigate } = useAppHook();
 
   const handleDragEnd = (e: DragEndEvent) => {
     const { active, over } = e;
     if (!over || active.id === over.id) return;
+    // keep using helper that returns the next materials array
     const next = reorderLessons(section, String(active.id), String(over.id));
     onReorderLessons(next);
   };
 
   return (
-    <SortableItem id={section.id}>
+    <SortableItem id={String(section.id)}>
       <div className="consect ml-6 p-3 mb-3 rounded-2xl border-2 dark:border-white/10">
         <div className="flex items-center gap-2 mb-2">
           <Button
             type="button"
             variant="secondary"
-            className="p-2! rounded-2xl"
+            className="p-2 rounded-2xl"
             onClick={() => setCollapsed((v) => !v)}
             aria-expanded={!collapsed}
           >
@@ -68,8 +71,8 @@ export default function SectionCard({
             <Bars3BottomLeftIcon className="w-5 h-5 text-primary" />
             <Input
               type="text"
-              value={section.name}
-              onChange={(e) => onChangeName(e.target.value)}
+              value={section.title}
+              onChange={(e) => onChangeTitle(e.target.value)}
               className="font-medium border-b px-2 py-1 focus:outline-none w-full"
               placeholder="Section title"
               prefixIcon={Bars3BottomLeftIcon}
@@ -92,18 +95,25 @@ export default function SectionCard({
               onDragEnd={handleDragEnd}
             >
               <SortableContext
-                items={section.lessons.map((l) => String(l.id))}
+                items={section.materials.map((l) => String(l.id))}
                 strategy={verticalListSortingStrategy}
               >
-                {section.lessons.map((lesson, lIndex) => (
+                {section.materials.map((lesson, lIndex) => (
                   <LessonRow
                     key={lesson.id}
-                    lesson={lesson}
-                    onChangeName={(name) =>
-                      onUpdateLesson(lIndex, { ...lesson, name })
+                    material={lesson}
+                    onChangeTitle={(title) =>
+                      onUpdateLesson(lIndex, { ...lesson, title })
                     }
                     onEdit={() => {
-                      /* navigate to lesson editor if needed */
+                      // pass identifiers (and optionally initial data) via location.state
+                      navigate(`/manage-lesson/${lesson.id}`, {
+                        state: {
+                          sectionId: section.id,
+                          materialId: lesson.id,
+                          initial: lesson,
+                        },
+                      });
                     }}
                     onRemove={() => onRemoveLesson(lIndex)}
                   />

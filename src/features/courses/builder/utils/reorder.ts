@@ -1,6 +1,6 @@
 // features/courses/builder/utils/reorder.ts
 import { arrayMove } from "@dnd-kit/sortable";
-import { Lesson, Module, Section } from "../types";
+import { Material, Module, Section } from "../../../../shared/types/types";
 
 export function reorderModules(
   list: Module[],
@@ -32,13 +32,13 @@ export function reorderLessons(
   section: Section,
   activeId: string,
   overId: string
-): Lesson[] {
-  const oldIndex = section.lessons.findIndex(
+): Material[] {
+  const oldIndex = section.materials.findIndex(
     (l) => String(l.id) === String(activeId)
   );
-  const newIndex = section.lessons.findIndex(
+  const newIndex = section.materials.findIndex(
     (l) => String(l.id) === String(overId)
   );
-  if (oldIndex < 0 || newIndex < 0) return section.lessons;
-  return arrayMove(section.lessons, oldIndex, newIndex);
+  if (oldIndex < 0 || newIndex < 0) return section.materials;
+  return arrayMove(section.materials, oldIndex, newIndex);
 }

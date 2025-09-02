@@ -75,8 +75,6 @@ const InitProvider = () => {
     }
   }, [enrolledSuccess, enrolled, dispatch]);
 
-  console.log("enrolled = ", enrolled);
-
   return null;
 };
 

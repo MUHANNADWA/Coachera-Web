@@ -8,7 +8,6 @@ import { Button } from "../../../../shared/components/form/Button";
 import SortableItem from "../dnd/SortableItem";
 import { useDndSensors } from "../dnd/useDndSensors";
 import ModuleCard from "../components/ModuleCard";
-import { Module, Section } from "../types";
 import { reorderModules } from "../utils/reorder";
 import { useGetCourseDetailsQuery } from "../../api/coursesApiSlice";
 import {
@@ -26,18 +25,18 @@ import {
 import { useParams } from "react-router-dom";
 import Loader from "../../../../shared/components/Loader";
 import Message from "../../../../shared/components/Message";
+import { Module, Section } from "../../../../shared/types/types";
 
-/** Normalize server course -> builder shape */
+/** Normalize server course -> builder shape using title/materials */
 function normalizeCourseToModules(course: any): Module[] {
   const modules = course?.modules ?? [];
   return (modules as any[]).map((m, mIdx) => ({
-    id: m.id ?? `m_${mIdx}`,
-    name: m.title ?? m.name ?? `Module ${mIdx + 1}`,
+    id: m.id ?? mIdx, // ensure a stable id (number in your interface)
+    title: m.title ?? m.name ?? `Module ${mIdx + 1}`,
     sections: (m.sections ?? []).map((s: any, sIdx: number) => ({
-      id: s.id ?? `s_${mIdx}_${sIdx}`,
-      name: s.title ?? s.name ?? `Section ${sIdx + 1}`,
-      // keep lessons/materials raw for the editor
-      lessons: s.lessons ?? s.materials ?? [],
+      id: s.id ?? sIdx,
+      title: s.title ?? s.name ?? `Section ${sIdx + 1}`,
+      materials: s.materials ?? s.lessons ?? [], // keep raw materials for editor
     })),
   }));
 }
@@ -89,8 +88,8 @@ export default function EditCoursePage() {
   // module actions
   const addModuleHandler = async () => {
     const tmp: Module = {
-      id: `m_${Date.now()}`,
-      name: `Module ${modules.length + 1}`,
+      id: Date.now(), // temp number id
+      title: `Module ${modules.length + 1}`,
       sections: [],
     };
     setModules((prev) => [...prev, tmp]);
@@ -98,7 +97,7 @@ export default function EditCoursePage() {
     try {
       const created: any = await createModule({
         courseId,
-        data: { name: tmp.name },
+        data: { title: tmp.title }, // use title (not name)
       }).unwrap();
       const real = created?.data ?? created;
       setModules((prev) =>
@@ -109,7 +108,7 @@ export default function EditCoursePage() {
     }
   };
 
-  const removeModuleHandler = async (moduleId: string | number) => {
+  const removeModuleHandler = async (moduleId: number) => {
     setModules((prev) => prev.filter((m) => m.id !== moduleId));
     try {
       await deleteModule(Number(moduleId)).unwrap();
@@ -118,21 +117,18 @@ export default function EditCoursePage() {
     }
   };
 
-  const updateModuleLocal = (
-    moduleId: string | number,
-    patch: Partial<Module>
-  ) => {
+  const updateModuleLocal = (moduleId: number, patch: Partial<Module>) => {
     setModules((prev) =>
       prev.map((m) => (m.id === moduleId ? { ...m, ...patch } : m))
     );
   };
 
   // section actions
-  const addSectionHandler = async (moduleId: string | number) => {
+  const addSectionHandler = async (moduleId: number) => {
     const nextSection: Section = {
-      id: `s_${Date.now()}`,
-      name: "Section",
-      lessons: [],
+      id: Date.now(),
+      title: "Section",
+      materials: [],
     };
 
     setModules((prev) =>
@@ -144,7 +140,7 @@ export default function EditCoursePage() {
     try {
       const created: any = await createSection({
         moduleId,
-        data: { title: nextSection.name, orderIndex: 0, materials: [] },
+        data: { title: nextSection.title, orderIndex: 0, materials: [] },
       }).unwrap();
       const real = created?.data ?? created;
 
@@ -165,10 +161,7 @@ export default function EditCoursePage() {
     }
   };
 
-  const removeSectionHandler = async (
-    moduleId: string | number,
-    sectionId: string | number
-  ) => {
+  const removeSectionHandler = async (moduleId: number, sectionId: number) => {
     setModules((prev) =>
       prev.map((m) =>
         m.id !== moduleId
@@ -184,7 +177,7 @@ export default function EditCoursePage() {
   };
 
   const updateSectionLocal = (
-    moduleId: string | number,
+    moduleId: number,
     index: number,
     next: Section
   ) => {
@@ -201,7 +194,7 @@ export default function EditCoursePage() {
   };
 
   const reorderSectionsPersist = async (
-    moduleId: string | number,
+    moduleId: number,
     sections: Section[]
   ) => {
     setModules((prev) =>
@@ -255,8 +248,8 @@ export default function EditCoursePage() {
             <SortableItem key={module.id} id={module.id}>
               <ModuleCard
                 module={module}
-                onChangeName={(name) => {
-                  updateModuleLocal(module.id, { name });
+                onChangeTitle={(title) => {
+                  updateModuleLocal(module.id, { title });
                 }}
                 onRemove={() => removeModuleHandler(module.id)}
                 onAddSection={() => addSectionHandler(module.id)}
@@ -266,7 +259,7 @@ export default function EditCoursePage() {
                 onRemoveSection={(sIndex) => {
                   const sec = module.sections[sIndex];
                   if (!sec) return;
-                  removeSectionHandler(module.id, sec.id);
+                  removeSectionHandler(module.id, sec.id as number);
                 }}
                 onReorderSections={(next) =>
                   reorderSectionsPersist(module.id, next)

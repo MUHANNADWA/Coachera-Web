@@ -16,7 +16,7 @@ export default function VideoPage({ material }: VideoPageProps) {
   return (
     <div className="p-4">
       {/* Sticky Video Player */}
-      <div className="consect sticky top-16 z-20! rounded-2xl overflow-hidden">
+      <div className="consect sticky top-20 z-20! rounded-2xl overflow-hidden">
         {video}
       </div>
 

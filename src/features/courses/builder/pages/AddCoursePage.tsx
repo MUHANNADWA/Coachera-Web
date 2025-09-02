@@ -1,120 +1,290 @@
-import { useState, useMemo } from "react";
+import { useEffect, useMemo, useReducer, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../../../shared/components/form/Button";
 import Input from "../../../../shared/components/form/Input";
-import Dropdown from "../../../../shared/components/form/Dropdown"; // make sure path is correct
+import Dropdown from "../../../../shared/components/form/Dropdown";
 import {
   useCreateCourseMutation,
   useUploadCourseImageMutation,
 } from "../../api/coursesApiSlice";
 import toastPromise from "../../../../shared/utils/toast";
 import { useGetInstructorsQuery } from "../../api/instructorApiSlice";
+import { useGetCategoriesQuery } from "../../api/categoriesApiSlice"; // <- add categories hook
 
+/** Domain types */
 type Level = "Beginner" | "Intermediate" | "Advanced";
+type Option = { label: string; value: string };
 
-const levelOptions = [
+const levelOptions: Array<{ label: Level; value: Level }> = [
   { label: "Beginner", value: "Beginner" },
   { label: "Intermediate", value: "Intermediate" },
   { label: "Advanced", value: "Advanced" },
 ];
 
+/** Utilities */
+const toNumber = (v: string) => {
+  const n = Number(v);
+  return Number.isFinite(n) ? n : NaN;
+};
+const addUnique = <T,>(arr: T[], v: T) => (arr.includes(v) ? arr : [...arr, v]);
+const removeValue = <T,>(arr: T[], v: T) => arr.filter((x) => x !== v);
+
+/** Form state + reducer */
+type State = {
+  title: string;
+  description: string;
+  level: Level;
+  price: string;
+  durationHours: string;
+
+  /** Instructors multi-pick */
+  instructorIds: string[];
+  lastInstructorPick: string;
+
+  /** Categories multi-pick (exactly like instructors) */
+  categories: string[];
+  lastCategoryPick: string;
+
+  /** Image */
+  imageFile: File | null;
+  imagePreviewUrl: string | null;
+};
+
+type Action =
+  | { type: "FIELD"; name: keyof State; value: string }
+  | { type: "SET_LEVEL"; value: Level }
+  | { type: "ADD_INSTRUCTOR"; id: string }
+  | { type: "REMOVE_INSTRUCTOR"; id: string }
+  | { type: "ADD_CATEGORY"; id: string }
+  | { type: "REMOVE_CATEGORY"; id: string }
+  | { type: "SET_FILE"; file: File | null }
+  | { type: "RESET" };
+
+const initialState: State = {
+  title: "",
+  description: "",
+  level: "Beginner",
+  price: "0",
+  durationHours: "1",
+
+  instructorIds: [],
+  lastInstructorPick: "",
+
+  categories: [],
+  lastCategoryPick: "",
+
+  imageFile: null,
+  imagePreviewUrl: null,
+};
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case "FIELD":
+      return { ...state, [action.name]: action.value } as State;
+
+    case "SET_LEVEL":
+      return { ...state, level: action.value };
+
+    case "ADD_INSTRUCTOR":
+      return {
+        ...state,
+        lastInstructorPick: action.id,
+        instructorIds: addUnique(state.instructorIds, action.id),
+      };
+
+    case "REMOVE_INSTRUCTOR":
+      return {
+        ...state,
+        instructorIds: removeValue(state.instructorIds, action.id),
+      };
+
+    case "ADD_CATEGORY":
+      return {
+        ...state,
+        lastCategoryPick: action.id,
+        categories: addUnique(state.categories, action.id),
+      };
+
+    case "REMOVE_CATEGORY":
+      return {
+        ...state,
+        categories: removeValue(state.categories, action.id),
+      };
+
+    case "SET_FILE": {
+      if (state.imagePreviewUrl) URL.revokeObjectURL(state.imagePreviewUrl);
+      return {
+        ...state,
+        imageFile: action.file,
+        imagePreviewUrl: action.file ? URL.createObjectURL(action.file) : null,
+      };
+    }
+
+    case "RESET":
+      if (state.imagePreviewUrl) URL.revokeObjectURL(state.imagePreviewUrl);
+      return { ...initialState };
+
+    default:
+      return state;
+  }
+}
+
 export default function AddCoursePage() {
+  const navigate = useNavigate();
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  const {
+    title,
+    description,
+    level,
+    price,
+    durationHours,
+    instructorIds,
+    lastInstructorPick,
+    categories,
+    lastCategoryPick,
+    imageFile,
+    imagePreviewUrl,
+  } = state;
+
+  /** RTK Query hooks */
   const { data: instructorsData, isLoading: loadingInstructors } =
     useGetInstructorsQuery({});
 
-  const instructorOptions =
-    instructorsData?.data?.map((ins: any) => ({
-      label: ins.name,   // 👈 adjust key depending on API response (e.g. ins.fullName)
-      value: ins.id,
-    })) || [];
+  const { data: categoriesData, isLoading: loadingCategories } =
+    useGetCategoriesQuery({
+      page: 0,
+      size: 50,
+      sortBy: "id",
+      sortDirection: "desc",
+    });
 
-
-  // Form state
-  const [title, setTitle] = useState("");
-  const [instructorId, setInstructorId] = useState<string>("");
-  const [description, setDescription] = useState("");
-  const [level, setLevel] = useState<Level>("Beginner");
-  const [price, setPrice] = useState<string>("0");
-  const [durationHours, setDurationHours] = useState<string>("1");
-  const [categoriesInput, setCategoriesInput] = useState<string>("");
-  // const [language, setLanguage] = useState<string>("English");
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const imagePreview = useMemo(
-    () => (imageFile ? URL.createObjectURL(imageFile) : ""),
-    [imageFile]
+  const instructorOptions: Option[] = useMemo(
+    () =>
+      instructorsData?.data?.map((ins: any) => ({
+        label: ins.name ?? ins.fullName ?? `#${ins.id}`,
+        value: String(ins.id),
+      })) ?? [],
+    [instructorsData]
   );
 
-  // API mutations
+  const categoryOptions: Option[] = useMemo(
+    () =>
+      categoriesData?.data?.content?.map((cat: any) => ({
+        label: cat.name ?? `#${cat.id}`,
+        value: String(cat.id),
+      })) ?? [],
+    [categoriesData]
+  );
+
   const [createCourse, { isLoading: creating }] = useCreateCourseMutation();
   const [uploadCourseImage, { isLoading: uploading }] =
     useUploadCourseImageMutation();
 
-  // Simple validation
-  const errors = {
-    title: title.trim() === "" ? "Title is required" : "",
-    description:
-      description.trim().length < 20
-        ? "Description must be at least 20 characters"
-        : "",
-    price:
-      Number.isNaN(Number(price)) || Number(price) < 0
-        ? "Price must be a number >= 0"
-        : "",
-    duration:
-      Number.isNaN(Number(durationHours)) || Number(durationHours) <= 0
-        ? "Duration must be a number > 0"
-        : "",
-    instructor: instructorId === "" ? "Instructor is required" : "",
+  /** Simple (kept as-is) validation flags computed but not rendered here */
+  const errors = useMemo(() => {
+    const e: Record<string, string> = {};
+    if (!title.trim()) e.title = "Title is required";
+    if ((description ?? "").trim().length < 20)
+      e.description = "Description must be at least 20 characters";
+    if (instructorIds.length === 0)
+      e.instructors = "At least one instructor is required";
+
+    const p = toNumber(price);
+    if (!Number.isFinite(p) || p < 0) e.price = "Price must be a number >= 0";
+
+    const d = toNumber(durationHours);
+    if (!Number.isFinite(d) || d <= 0)
+      e.duration = "Duration must be a number > 0";
+
+    return e;
+  }, [title, description, instructorIds.length, price, durationHours]);
+
+  const hasErrors = Object.keys(errors).length > 0;
+
+  /** Handlers */
+  const handleInstructorPick = (id: string) => {
+    dispatch({ type: "ADD_INSTRUCTOR", id });
   };
-  const hasErrors = Object.values(errors).some(Boolean);
 
-  const onSubmit = async (goToBuilder: boolean) => {
-    if (hasErrors) return;
+  const handleCategoryPick = (id: string) => {
+    dispatch({ type: "ADD_CATEGORY", id });
+  };
 
-    const doCreate = async () => {
-      let uploadedUrl: string | undefined = undefined;
+  /** Submit */
+  const onSubmit = useCallback(
+    async (goToBuilder: boolean) => {
+      if (hasErrors) return;
 
-      // Upload image if provided
-      if (imageFile) {
-        const fd = new FormData();
-        fd.append("file", imageFile);
-        const uploaded: any = await uploadCourseImage(fd).unwrap();
-        uploadedUrl =
-          uploaded?.data?.url ||
-          uploaded?.data?.path ||
-          uploaded?.url ||
-          uploaded?.path ||
-          uploaded?.data ||
-          undefined;
-      }
+      const doCreate = async () => {
+        let uploadedUrl: string | undefined;
 
-      // Build payload — adjust keys to your backend DTO
-      const payload = {
-        title: title.trim(),
-        instructorId, 
-        description: description.trim(),
-        level,
-        price: Number(price),
-        durationHours: Number(durationHours),
-        categories: categoriesInput
-          .split(",")
-          .map((c) => c.trim())
-          .filter(Boolean),
-        // language: language.trim() || undefined,
-        image: uploadedUrl, // or keep undefined if no image
+        if (imageFile) {
+          const fd = new FormData();
+          fd.append("file", imageFile);
+          const uploaded: any = await uploadCourseImage(fd).unwrap();
+          uploadedUrl =
+            uploaded?.data?.url ??
+            uploaded?.data?.path ??
+            uploaded?.url ??
+            uploaded?.path ??
+            uploaded?.data ??
+            undefined;
+        }
+
+        // Send IDs for instructors and categories
+        const payload = {
+          title: title.trim(),
+          description: description.trim(),
+          level,
+          price: toNumber(price),
+          durationHours: toNumber(durationHours),
+          instructors: instructorIds, // array of instructor IDs
+          categories: categories, // array of category IDs
+          image: uploadedUrl,
+        };
+
+        const created: any = await createCourse(payload).unwrap();
+        const createdData = created?.data ?? created;
+        const newId: string | undefined = createdData?.id ?? createdData?._id;
+
+        dispatch({ type: "RESET" });
+
+        if (goToBuilder && newId) {
+          navigate(`/admin/courses/${newId}/builder`);
+        }
       };
 
-      const created: any = await createCourse(payload).unwrap();
-      const createdData = created?.data ?? created;
-      const newId = createdData?.id;
-    };
+      await toastPromise(doCreate(), {
+        loadingMessage: imageFile ? "Uploading image..." : "Creating course...",
+        successMessage: "Course created successfully",
+        errorMessage: "Failed to create course",
+      });
+    },
+    [
+      hasErrors,
+      imageFile,
+      uploadCourseImage,
+      title,
+      description,
+      level,
+      price,
+      durationHours,
+      instructorIds,
+      categories,
+      createCourse,
+      navigate,
+    ]
+  );
 
-    await toastPromise(doCreate(), {
-      loadingMessage: uploading ? "Uploading image..." : "Creating course...",
-      successMessage: "Course created successfully",
-      errorMessage: "Failed to create course",
-    });
-  };
+  /** Cleanup */
+  useEffect(() => {
+    return () => {
+      if (imagePreviewUrl) URL.revokeObjectURL(imagePreviewUrl);
+    };
+  }, [imagePreviewUrl]);
+
+  const isBusy = creating || uploading;
 
   return (
     <div className="max-w-4xl mx-auto p-6">
@@ -131,37 +301,68 @@ export default function AddCoursePage() {
             label="Title"
             name="title"
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e) =>
+              dispatch({ type: "FIELD", name: "title", value: e.target.value })
+            }
             placeholder="e.g. React for Beginners"
             required
-            error={errors.title}
           />
+
+          {/* Instructor picker (single-select that accumulates into a list) */}
           <div>
             <Dropdown
               label="Assign Instructor"
-              value={instructorId}
+              value={lastInstructorPick}
               options={instructorOptions}
-              onChange={(v) => setInstructorId(v)}
-              placeholder={loadingInstructors ? "Loading..." : "Select instructor"}
+              onChange={(v: string) => handleInstructorPick(v)}
+              placeholder={
+                loadingInstructors ? "Loading..." : "Select instructor"
+              }
               disabled={loadingInstructors}
             />
-            {errors.instructor && (
-              <p className="mt-1 text-xs text-danger">{errors.instructor}</p>
+
+            {/* Selected instructors as chips */}
+            {instructorIds.length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-2">
+                {instructorIds.map((id) => {
+                  const label =
+                    instructorOptions.find((o) => o.value === id)?.label ?? id;
+                  return (
+                    <span
+                      key={id}
+                      className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-lightest border-2 border-primary dark:bg-primary-darkest dark:text-gray-300 text-sm"
+                    >
+                      {label}
+                      <Button
+                        type="button"
+                        className="text-xs opacity-70 hover:opacity-100"
+                        onClick={() =>
+                          dispatch({ type: "REMOVE_INSTRUCTOR", id })
+                        }
+                        aria-label={`Remove ${label}`}
+                        title="Remove"
+                      >
+                        ✕
+                      </Button>
+                    </span>
+                  );
+                })}
+              </div>
             )}
           </div>
 
-
-          {/* Level Dropdown */}
           <div>
             <Dropdown
               label="Level"
               value={level}
               options={levelOptions}
-              onChange={(v) => setLevel(v as Level)}
+              onChange={(v: string) =>
+                dispatch({ type: "SET_LEVEL", value: v as Level })
+              }
               placeholder="Select level"
             />
           </div>
-          
+
           <Input
             label="Price"
             name="price"
@@ -169,28 +370,68 @@ export default function AddCoursePage() {
             step={0.01}
             min={0}
             value={price}
-            onChange={(e) => setPrice(e.target.value)}
+            onChange={(e) =>
+              dispatch({ type: "FIELD", name: "price", value: e.target.value })
+            }
             placeholder="0 = Free"
-            error={errors.price}
           />
+
           <Input
             label="Duration (hours)"
             name="durationHours"
             type="number"
             min={1}
             value={durationHours}
-            onChange={(e) => setDurationHours(e.target.value)}
+            onChange={(e) =>
+              dispatch({
+                type: "FIELD",
+                name: "durationHours",
+                value: e.target.value,
+              })
+            }
             placeholder="e.g. 12"
-            error={errors.duration}
           />
 
-          <Input
-            label="Categories (comma separated)"
-            name="categories"
-            value={categoriesInput}
-            onChange={(e) => setCategoriesInput(e.target.value)}
-            placeholder="e.g. Web, React, Frontend"
-          />
+          {/* Category picker (identical behavior to instructors) */}
+          <div>
+            <Dropdown
+              label="Assign Category"
+              value={lastCategoryPick}
+              options={categoryOptions}
+              onChange={(v: string) => handleCategoryPick(v)}
+              placeholder={loadingCategories ? "Loading..." : "Select category"}
+              disabled={loadingCategories}
+            />
+
+            {/* Selected categories as chips */}
+            {categories.length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-2">
+                {categories.map((id) => {
+                  const label =
+                    categoryOptions.find((o) => o.value === id)?.label ?? id;
+                  return (
+                    <span
+                      key={id}
+                      className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-lightest border-2 border-primary dark:bg-primary-darkest dark:text-gray-300 text-sm"
+                    >
+                      {label}
+                      <button
+                        type="button"
+                        className="text-xs opacity-70 hover:opacity-100"
+                        onClick={() =>
+                          dispatch({ type: "REMOVE_CATEGORY", id })
+                        }
+                        aria-label={`Remove ${label}`}
+                        title="Remove"
+                      >
+                        ✕
+                      </button>
+                    </span>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Description */}
@@ -200,14 +441,17 @@ export default function AddCoursePage() {
           </label>
           <textarea
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={(e) =>
+              dispatch({
+                type: "FIELD",
+                name: "description",
+                value: e.target.value,
+              })
+            }
             rows={6}
-            className={`w-full placeholder:text-gray-400 dark:placeholder:text-gray-600 dark:text-white p-3 rounded-2xl transition-colors duration-300 border-2 focus:ring-1 focus:ring-primary focus:border-primary focus:bg-primary-lightest dark:focus:bg-primary-darkest outline-none border-color`}
+            className="w-full placeholder:text-gray-400 dark:placeholder:text-gray-600 dark:text-white p-3 rounded-2xl transition-colors duration-300 border-2 focus:ring-1 focus:ring-primary focus:border-primary focus:bg-primary-lightest dark:focus:bg-primary-darkest outline-none border-color"
             placeholder="Explain what students will learn, prerequisites, and who this course is for..."
           />
-          {errors.description && (
-            <p className="mt-1 text-xs text-danger">{errors.description}</p>
-          )}
         </div>
 
         {/* Image upload */}
@@ -219,7 +463,12 @@ export default function AddCoursePage() {
             <input
               type="file"
               accept="image/*"
-              onChange={(e) => setImageFile(e.target.files?.[0] ?? null)}
+              onChange={(e) =>
+                dispatch({
+                  type: "SET_FILE",
+                  file: e.target.files?.[0] ?? null,
+                })
+              }
               className="block w-full text-sm text-gray-700 dark:text-gray-300 file:mr-3 file:py-2 file:px-4 file:rounded-2xl file:border-2 file:cursor-pointer file:bg-white dark:file:bg-gray-900 file:border-color dark:file:border-gray-700 hover:file:bg-gray-50 dark:hover:file:bg-gray-800"
             />
             <p className="mt-1 text-xs text-gray-500">
@@ -227,10 +476,10 @@ export default function AddCoursePage() {
             </p>
           </div>
 
-          {imagePreview && (
+          {imagePreviewUrl && (
             <div className="justify-self-end">
               <img
-                src={imagePreview}
+                src={imagePreviewUrl}
                 alt="Preview"
                 className="w-36 h-24 object-cover rounded-xl border-2 border-gray-200 dark:border-primary-dark"
               />
@@ -243,14 +492,14 @@ export default function AddCoursePage() {
           <Button
             onClick={() => onSubmit(false)}
             variant="secondary"
-            disabled={creating || uploading || hasErrors}
+            disabled={isBusy || hasErrors}
           >
             Save Draft
           </Button>
           <Button
             onClick={() => onSubmit(true)}
             variant="primary"
-            disabled={creating || uploading || hasErrors}
+            disabled={isBusy || hasErrors}
           >
             Create & Open Builder
           </Button>
