@@ -23,6 +23,7 @@ export default function LearnPage() {
 
   if (isLoading) return <Loader logo />;
 
+  console.log(material);
   // After loading finishes, if course or module is missing, show 404
   if (!course || !module) {
     return <NotFoundPage />;

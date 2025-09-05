@@ -389,6 +389,7 @@ export default function ManageLessonPage() {
 
       {lessonType === "QUIZ" && (
         <QuizSection
+          materialId={materialId!}
           quizQuestions={quizQuestions}
           setQuizQuestions={setQuizQuestions}
         />

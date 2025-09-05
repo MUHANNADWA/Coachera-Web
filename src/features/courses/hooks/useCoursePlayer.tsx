@@ -16,39 +16,60 @@ export default function useCoursePlayer() {
   const { data, isLoading, isFetching } = useGetCourseDetailsQuery(
     Number(courseId),
     {
-      // this ensures we refetch when courseId changes
       refetchOnMountOrArgChange: true,
     }
   );
 
   const course: Course | undefined = data?.data;
 
-  // Resolve module:
-  // 1) try by id equality (string compare to be safe)
-  // 2) if moduleId is numeric and not found by id, fallback to index
-  const module = useMemo(() => {
-    if (!course?.modules) return undefined;
+  // Resolve module with robust fallbacks:
+  // 1) try by exact id
+  // 2) try by numeric index
+  // 3) fallback to first module (if any)
+  const resolvedModule = useMemo(() => {
+    if (!course?.modules?.length) return undefined;
 
     const byId = course.modules.find((m) => String(m.id) === String(moduleId));
     if (byId) return byId;
 
     const idx = Number(moduleId);
-    if (!Number.isNaN(idx)) {
+    if (!Number.isNaN(idx) && course.modules[idx]) {
       return course.modules[idx];
     }
 
-    return undefined;
+    // Fallback to first module if URL param is stale or invalid
+    return course.modules[0];
   }, [course, moduleId]);
 
+  // Keep URL canonical: if the current URL moduleId doesn't match resolvedModule.id,
+  // replace the URL to use the correct module id (avoid stale params across courses).
+  useEffect(() => {
+    if (!course || !resolvedModule) return;
+    if (String(resolvedModule.id) !== String(moduleId)) {
+      navigate(`/learn/${courseId}/${resolvedModule.id}`, {
+        replace: true,
+        state: location.state,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [courseId, course, resolvedModule]);
+
+  // Current material state
   const [currentMaterial, setCurrentMaterial] =
     useState<CurrentMaterial | null>(null);
 
+  // Reset currentMaterial when module changes (prevent stale selection)
+  useEffect(() => {
+    setCurrentMaterial(null);
+  }, [resolvedModule?.id]);
+
   // Initialize current material whenever module or navigation state changes
   useEffect(() => {
-    if (!module) return;
+    const mod = resolvedModule;
+    if (!mod) return;
 
     const isNavigatedFromPrev = location.state?.fromNav === "prev";
-    const sections = module.sections ?? [];
+    const sections = mod.sections ?? [];
     if (!sections.length) return;
 
     const targetSection = isNavigatedFromPrev
@@ -63,14 +84,15 @@ export default function useCoursePlayer() {
 
     setCurrentMaterial({
       sectionId: targetSection.id,
-      materialId: targetMaterial.id,
+      materialId: Number(targetMaterial.id),
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [module, location.state]);
+  }, [resolvedModule, location.state]);
 
+  // Convenience getters
   const activeSection = useMemo(
-    () => module?.sections.find((s) => s.id === currentMaterial?.sectionId),
-    [module, currentMaterial]
+    () =>
+      resolvedModule?.sections.find((s) => s.id === currentMaterial?.sectionId),
+    [resolvedModule, currentMaterial]
   );
 
   const material = useMemo(
@@ -81,15 +103,16 @@ export default function useCoursePlayer() {
     [activeSection, currentMaterial]
   );
 
+  // Flatten materials across sections for prev/next
   const allMaterials = useMemo(
     () =>
-      module?.sections.flatMap((section) =>
+      resolvedModule?.sections.flatMap((section) =>
         (section.materials ?? []).map((mat) => ({
           ...mat,
           sectionId: section.id,
         }))
       ) ?? [],
-    [module]
+    [resolvedModule]
   );
 
   const currentIndex = useMemo(() => {
@@ -100,11 +123,13 @@ export default function useCoursePlayer() {
     );
   }, [allMaterials, currentMaterial]);
 
-  // Helper: get module position inside course.modules (by id)
+  // Position of current module inside course
   const modulePos = useMemo(() => {
-    if (!course?.modules || !module) return -1;
-    return course.modules.findIndex((m) => String(m.id) === String(module.id));
-  }, [course, module]);
+    if (!course?.modules || !resolvedModule) return -1;
+    return course.modules.findIndex(
+      (m) => String(m.id) === String(resolvedModule.id)
+    );
+  }, [course, resolvedModule]);
 
   const handleNavigateToModule = (targetPos: number, from: "prev" | "next") => {
     if (!course?.modules?.[targetPos]) return;
@@ -115,7 +140,7 @@ export default function useCoursePlayer() {
   };
 
   const handleNext = () => {
-    if (!module || !course || currentIndex === -1) return;
+    if (!resolvedModule || !course || currentIndex === -1) return;
 
     const isLastMaterialInModule = currentIndex === allMaterials.length - 1;
     const isLastModule =
@@ -130,13 +155,13 @@ export default function useCoursePlayer() {
       const nextMaterial = allMaterials[currentIndex + 1];
       setCurrentMaterial({
         sectionId: nextMaterial.sectionId,
-        materialId: nextMaterial.id,
+        materialId: Number(nextMaterial.id),
       });
     }
   };
 
   const handlePrev = () => {
-    if (!module || !course || currentIndex === -1) return;
+    if (!resolvedModule || !course || currentIndex === -1) return;
 
     const isFirstMaterialInModule = currentIndex === 0;
     const isFirstModule = modulePos === 0;
@@ -150,24 +175,24 @@ export default function useCoursePlayer() {
       const prevMaterial = allMaterials[currentIndex - 1];
       setCurrentMaterial({
         sectionId: prevMaterial.sectionId,
-        materialId: prevMaterial.id,
+        materialId: Number(prevMaterial.id),
       });
     }
   };
 
   const nextExists =
-    !!module &&
+    !!resolvedModule &&
     !!course &&
     (modulePos < (course.modules?.length ?? 0) - 1 ||
       currentIndex < allMaterials.length - 1);
 
   const prevExists =
-    !!module && !!course && (modulePos > 0 || currentIndex > 0);
+    !!resolvedModule && !!course && (modulePos > 0 || currentIndex > 0);
 
   return {
     isLoading: isLoading || isFetching,
     course,
-    module,
+    module: resolvedModule,
     material,
     currentMaterial,
     setCurrentMaterial,

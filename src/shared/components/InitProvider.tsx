@@ -1,3 +1,4 @@
+// src/app/initProvider.tsx
 import { useAppHook } from "../hooks/useAppHook";
 import { useEffect } from "react";
 import { useGetWishlistQuery } from "../../features/courses/api/wishlistApiSlice";
@@ -6,8 +7,12 @@ import { useGetEnrolledCoursesQuery } from "../../features/courses/api/coursesAp
 import { setEnrolledCourses } from "../../features/courses/slices/enrolledCoursesSlice";
 import { Course } from "../types/types";
 import { UserRole } from "../../features/auth/types";
-import { generateToken } from "../../features/notifications/firebase";
-import { onMessage } from "firebase/messaging";
+
+import {
+  requestFcmToken,
+  subscribeForegroundMessages,
+} from "../../features/notifications/firebase";
+import { useRegisterDeviceMutation } from "../../features/courses/api/notificationsApiSlice";
 
 interface WishlistItem {
   createdAt: string;
@@ -41,33 +46,58 @@ interface EnrolledApiResponse {
 
 const InitProvider = () => {
   const { theme, user, dispatch } = useAppHook();
-
   const isStudent = user?.role === UserRole.STUDENT;
 
-  useEffect(() => {
-    generateToken();
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker
-          .register("/firebase-messaging-sw.js")
-          .then((registration) => {
-            console.log("Service Worker registered:", registration);
-          })
-          .catch((err) => {
-            console.error("Service Worker registration failed:", err);
-          });
-      });
-    }
-  }, []);
+  // Register SW once, then get token and register device
+  const [registerDevice] = useRegisterDeviceMutation();
 
   useEffect(() => {
-    if (theme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
+    // Toggle theme class
+    if (theme === "dark") document.documentElement.classList.add("dark");
+    else document.documentElement.classList.remove("dark");
   }, [theme]);
 
+  useEffect(() => {
+    let unsubscribe: (() => void) | undefined;
+
+    (async () => {
+      // Register service worker as early as possible
+      if ("serviceWorker" in navigator) {
+        try {
+          await navigator.serviceWorker.register("/firebase-messaging-sw.js");
+          console.log("[SW] Registered firebase-messaging-sw.js");
+        } catch (err) {
+          console.error("[SW] Registration failed:", err);
+        }
+      }
+
+      // Now request FCM token
+      const token = await requestFcmToken();
+      if (token) {
+        try {
+          await registerDevice({
+            deviceToken: token,
+            platform: "web",
+          }).unwrap?.();
+          console.log("[FCM] Device registered");
+        } catch (e) {
+          console.error("[FCM] Failed to register device:", e);
+        }
+      }
+
+      // Foreground messages
+      unsubscribe = await subscribeForegroundMessages((payload) => {
+        console.log("[FCM] Foreground message:", payload);
+        // TODO: Show in-app toast/snackbar here
+      });
+    })();
+
+    return () => {
+      if (typeof unsubscribe === "function") unsubscribe();
+    };
+  }, [registerDevice]);
+
+  // Fetch lists for students
   const { data: enrolled, isSuccess: enrolledSuccess } =
     useGetEnrolledCoursesQuery({}, { skip: !isStudent });
 
@@ -75,11 +105,11 @@ const InitProvider = () => {
     {},
     { skip: !isStudent }
   );
+
   useEffect(() => {
     if (wishlistSuccess && wishlist) {
       const favs = wishlist as FavsApiResponse;
       const wishlistCourses = favs.data.map((item) => item.course);
-
       dispatch(setWishlist(wishlistCourses));
     }
   }, [wishlistSuccess, wishlist, dispatch]);
@@ -88,7 +118,6 @@ const InitProvider = () => {
     if (enrolledSuccess && enrolled) {
       const enrolledData = enrolled as EnrolledApiResponse;
       const enrolledCourses = enrolledData.data.map((item) => item.course);
-
       dispatch(setEnrolledCourses(enrolledCourses));
     }
   }, [enrolledSuccess, enrolled, dispatch]);

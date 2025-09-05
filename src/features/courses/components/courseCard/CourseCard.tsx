@@ -105,7 +105,7 @@ export default function CourseCard({
           {actionMode === "my_org" ? (
             <Button
               type="button"
-              variant="danger"
+              variant="dangerInverted"
               className="relative m-0! p-2! rounded-full!"
               aria-label="Delete course"
               onClick={() => setConfirmOpen(true)}

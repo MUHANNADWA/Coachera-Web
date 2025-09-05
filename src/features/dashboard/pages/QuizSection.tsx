@@ -35,11 +35,13 @@ interface QuizQuestion {
 }
 
 interface QuizSectionProps {
+  materialId: number | string;
   quizQuestions: QuizQuestion[];
   setQuizQuestions: React.Dispatch<React.SetStateAction<QuizQuestion[]>>;
 }
 
 export default function QuizSection({
+  materialId,
   quizQuestions,
   setQuizQuestions,
 }: QuizSectionProps) {
@@ -102,13 +104,14 @@ export default function QuizSection({
   // 🔹 Submit to backend
   const saveQuiz = async () => {
     const payload = {
+      materialId: materialId,
       questions: quizQuestions.map((q) => ({
         content: q.question,
         answer1: q.options[0]?.text || "",
         answer2: q.options[1]?.text || "",
         answer3: q.options[2]?.text || "",
         answer4: q.options[3]?.text || "",
-        // backend doesn’t support correct index yet
+        correctAnswerIndex: 1,
       })),
     };
     try {
