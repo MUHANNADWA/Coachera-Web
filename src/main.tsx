@@ -38,6 +38,7 @@ import CoursesPage from "./features/courses/pages/CoursesPage";
 import CourseDetailsPage from "./features/courses/pages/CourseDetailsPage";
 import LearnPage from "./features/courses/pages/LearnPage";
 import NotificationsPage from "./features/courses/pages/NotificationsPage";
+import LearningPathDetailsPage from "./features/courses/pages/LearningPathDetailsPage";
 
 // Students (you put profile under students)
 import StudentHomePage from "./features/students/pages/StudentHomePage";
@@ -72,6 +73,7 @@ const router = createBrowserRouter(
         <Route path="/categories" element={<CategoriesPage />} />
         <Route path="/courses" element={<CoursesPage />} />
         <Route path="/courses/:id" element={<CourseDetailsPage />} />
+        <Route path="/learningPaths/:id" element={<LearningPathDetailsPage />} />
       </Route>
 
       {/* Student area */}
@@ -86,6 +88,7 @@ const router = createBrowserRouter(
         <Route path="/categories" element={<CategoriesPage />} />
         <Route path="/courses" element={<CoursesPage />} />
         <Route path="/courses/:id" element={<CourseDetailsPage />} />
+        <Route path="/learningPaths/:id" element={<LearningPathDetailsPage />} />
       </Route>
 
       {/* Instructor area - main/homepage */}

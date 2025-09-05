@@ -8,6 +8,7 @@ import FeaturesSection from "../../../shared/components/FeaturesSection";
 import HighlightsSection from "../../../shared/components/HighlightsSection";
 import CategoriesSection from "../../../shared/components/CategoriesSection";
 import FAQAccordion from "../../../shared/components/Faq";
+import LearningPathsView from "../../../shared/components/LearningPathsView";
 
 // Icons
 import {
@@ -312,6 +313,7 @@ export default function StudentHomePage() {
       )}
 
       {/* ===================== FEEDS ===================== */}
+      <LearningPathsView className="px-24" />
       <CoursesView variant="recommended" className="px-24" />
       <CoursesView variant="trending" className="px-24" />
       <CoursesView variant="popular" className="px-24" />
