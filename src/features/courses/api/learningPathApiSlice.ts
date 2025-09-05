@@ -1,6 +1,6 @@
 import { apiSlice } from "../../../shared/api/apiSlice";
 
-const LEARNING_PATH_URL = "/api/learning-paths";
+const LEARNING_PATH_URL = "learning-paths";
 
 export const learningPathsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -85,6 +85,12 @@ export const learningPathsApiSlice = apiSlice.injectEndpoints({
       providesTags: ["LearningPath"],
       keepUnusedDataFor: 5,
     }),
+
+    getLearningPathCoursesDto: builder.query({
+      query: (id) => `${LEARNING_PATH_URL}/${id}/courses-dto`,
+      providesTags: ["LearningPath"],
+      keepUnusedDataFor: 5,
+    }),
   }),
   overrideExisting: false,
 });
@@ -98,4 +104,5 @@ export const {
   useAddCourseToLearningPathMutation,
   useRemoveCourseFromLearningPathMutation,
   useGetLearningPathsByOrganizationQuery,
+  useGetLearningPathCoursesDtoQuery,
 } = learningPathsApiSlice;
