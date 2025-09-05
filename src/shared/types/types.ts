@@ -27,6 +27,7 @@ export interface Course {
   learningPathIds: number[];
   modules: Module[];
   reviews?: Review[];
+  published?: boolean;
 }
 
 export interface Module {
@@ -45,11 +46,13 @@ export interface Material {
   id: number | string;
   title: string;
   duration?: string;
-  type?: "VIDEO" | "ARTICLE" | "QUIZ";
+  type?: MaterialType;
   videoUrl?: string;
   article?: string;
   quiz?: Quiz;
 }
+
+export type MaterialType = "VIDEO" | "ARTICLE" | "QUIZ";
 
 export interface Quiz {
   id: number;

@@ -73,7 +73,7 @@ export default function OrgDashboardPage() {
   return (
     <div className="max-w-7xl container mx-auto py-8 px-4">
       {/* Header */}
-      <div className="flex items-center justify-between flex-wrap gap-3 mb-6">
+      <div className="flex items-center justify-between flex-wrap gap-3 mb-6 text-center">
         <div>
           <h1 className="text-3xl font-bold dark:text-white">
             Organization Dashboard
@@ -104,7 +104,7 @@ export default function OrgDashboardPage() {
 
       {/* Org courses feed */}
       <CoursesView
-        variant="org"
+        variant="my_org"
         title="My Courses"
         orgId={user?.id}
         showLayoutToggle

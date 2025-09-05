@@ -9,6 +9,7 @@ import {
   useGetOrgCoursesQuery,
   useGetInstCoursesQuery,
   useGetSimilarCoursesQuery,
+  useGetMyOrgCoursesQuery,
 } from "../api/coursesApiSlice";
 import { useAppHook } from "../../../shared/hooks/useAppHook";
 
@@ -32,6 +33,7 @@ export default function useCourses({
   const [popularSize, setPopularSize] = useState(8);
   const [similarSize, setSimilarSize] = useState(8);
   const [orgSize, setOrgSize] = useState(8);
+  const [myOrgSize, setMyOrgSize] = useState(8);
   const [instSize, setInstSize] = useState(8);
 
   const [sortBy, setSortBy] = useState("createdAt");
@@ -96,13 +98,16 @@ export default function useCourses({
     data: similarData,
     isLoading: similarLoading,
     error: similarError,
-  } = useGetSimilarCoursesQuery({
-    id: courseId,
-    page: 0,
-    size: similarSize,
-    sortBy,
-    sortDirection,
-  });
+  } = useGetSimilarCoursesQuery(
+    {
+      id: courseId,
+      page: 0,
+      size: similarSize,
+      sortBy,
+      sortDirection,
+    },
+    { skip: !courseId }
+  );
   const similarCourses: Course[] = similarData?.data?.content ?? [];
   const similarTotal = similarData?.data?.totalElements ?? 0;
   const similarLast = similarData?.data?.last ?? true;
@@ -119,6 +124,19 @@ export default function useCourses({
   const orgCourses: Course[] = orgData?.data?.content ?? [];
   const orgTotal = orgData?.data?.totalElements ?? 0;
   const orgLast = orgData?.data?.last ?? true;
+
+  // My Org
+  const {
+    data: myOrgData,
+    isLoading: myOrgLoading,
+    error: myOrgError,
+  } = useGetMyOrgCoursesQuery(
+    { id: orgId, page: 0, size: myOrgSize, sortBy, sortDirection },
+    { skip: !orgId }
+  );
+  const myOrgCourses: Course[] = myOrgData?.data?.content ?? [];
+  const myOrgTotal = myOrgData?.data?.totalElements ?? 0;
+  const myOrgLast = myOrgData?.data?.last ?? true;
 
   // Inst
   const {
@@ -193,6 +211,15 @@ export default function useCourses({
     orgError,
     orgTotal,
     orgLast,
+
+    // my org
+    myOrgCourses,
+    myOrgSize,
+    setMyOrgSize,
+    myOrgLoading,
+    myOrgError,
+    myOrgTotal,
+    myOrgLast,
 
     // inst
     instCourses,

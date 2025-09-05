@@ -104,8 +104,9 @@ export default function ModuleCard({
                   onRemove={() => onRemoveSection(sIndex)}
                   onAddLesson={() => {
                     const next: Material = {
-                      id: `l_${Date.now()}`,
+                      id: `new_${Date.now()}`, // temporary local id; treated as new
                       title: `Lesson ${section.materials.length + 1}`,
+                      type: "ARTICLE",
                     };
                     const updated = {
                       ...section,

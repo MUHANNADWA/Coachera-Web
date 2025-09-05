@@ -89,6 +89,19 @@ export const coursesApiSlice = apiSlice.injectEndpoints({
       providesTags: ["Course"],
       keepUnusedDataFor: 5,
     }),
+    getMyOrgCourses: builder.query({
+      query: ({
+        page = 0,
+        size = 10,
+        sortBy = "id",
+        sortDirection = "desc",
+      }) => ({
+        url: `${ORGANZATION_URL}s${COURSES_URL}`,
+        params: { page, size, sortBy, sortDirection },
+      }),
+      providesTags: ["Course"],
+      keepUnusedDataFor: 5,
+    }),
     getInstCourses: builder.query({
       query: ({
         page = 0,
@@ -177,6 +190,7 @@ export const {
   useGetPopularCoursesQuery,
   useGetSimilarCoursesQuery,
   useGetOrgCoursesQuery,
+  useGetMyOrgCoursesQuery,
   useGetInstCoursesQuery,
   useGetCourseDetailsQuery,
   useCreateCourseMutation,

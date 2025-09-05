@@ -5,9 +5,9 @@ import { useAppHook } from "../../../../shared/hooks/useAppHook";
 import { FavButton } from "./FavButton";
 import {
   ClockIcon,
-  UserIcon,
   PencilSquareIcon,
   TrashIcon,
+  AcademicCapIcon,
 } from "@heroicons/react/24/outline";
 import { Button } from "../../../../shared/components/form/Button";
 import Modal from "../../../../shared/components/Modal"; // <-- adjust path if needed
@@ -17,7 +17,7 @@ import { useDeleteCourseMutation } from "../../api/coursesApiSlice";
 interface CourseCardProps {
   course: Course;
   className?: string;
-  actionMode?: "none" | "org" | "inst";
+  actionMode?: "none" | "my_org" | "inst";
 }
 
 export default function CourseCard({
@@ -40,7 +40,7 @@ export default function CourseCard({
     const name = typeof category === "string" ? category : category?.name;
 
     if (name) {
-      navigate(`/search?q=${encodeURIComponent(name)}?type=categories`);
+      navigate(`/search?q=${encodeURIComponent(name)}&type=categories`);
     }
   };
 
@@ -78,9 +78,9 @@ export default function CourseCard({
       {/* Image */}
       <div className="relative overflow-hidden">
         <img
-          src={`https://placehold.co/800?text=${course.title}`}
+          src={course.image || `https://placehold.co/800?text=${course.title}`}
           alt={`Course cover for ${course.title}`}
-          className="h-48 w-full object-cover transition-transform duration-300 group-hover:scale-[1.3]"
+          className="h-48 w-full object-cover transition-transform duration-300 group-hover:scale-[1.12]"
           loading="lazy"
         />
 
@@ -102,10 +102,10 @@ export default function CourseCard({
 
         {/* Top-right action */}
         <div className="absolute! top-3 right-3 z-10" onClick={stop}>
-          {actionMode === "org" ? (
+          {actionMode === "my_org" ? (
             <Button
               type="button"
-              variant="dangerInverted"
+              variant="danger"
               className="relative m-0! p-2! rounded-full!"
               aria-label="Delete course"
               onClick={() => setConfirmOpen(true)}
@@ -133,20 +133,35 @@ export default function CourseCard({
             {course.level ?? "Beginner"}
           </span>
         </div>
+
+        {/* Is Published Badge */}
+        {(actionMode === "inst" || actionMode === "my_org") && (
+          <div className="absolute! bottom-3 left-3 z-10">
+            <span
+              className={`text-xs font-semibold ${
+                course.published
+                  ? "text-white bg-secondary"
+                  : "text-white bg-danger-light"
+              } backdrop-blur-sm px-2 py-1 rounded-md`}
+            >
+              {course.published ? "Published" : "Not Published"}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Content */}
       <div className="p-5 space-y-3">
         <h3
-          className="font-bold text-xl line-clamp-2 group-hover:text-primary transition-colors duration-200"
+          className="font-bold text-xl line-clamp-2 group-hover:text-primary transition-colors duration-200 min-h-14"
           title={course.title}
         >
           {course.title}
         </h3>
 
-        {/* Instructor/Org */}
+        {/* Instructor/my_ */}
         <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-          <UserIcon className="w-4 h-4" />
+          <AcademicCapIcon className="w-4 h-4" />
           <span className="truncate" title={course.orgTitle ?? "Organization"}>
             {course.orgTitle ?? "Organization"}
           </span>
@@ -155,7 +170,7 @@ export default function CourseCard({
         {/* Duration */}
         <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
           <ClockIcon className="w-4 h-4" />
-          <span>{formatDuration(course.durationHours)}</span>
+          <span>{formatDuration(course.durationHours)} Hours</span>
         </div>
 
         {/* Description */}

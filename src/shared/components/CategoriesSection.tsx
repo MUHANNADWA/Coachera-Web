@@ -116,7 +116,7 @@ const CategoriesSection: React.FC = () => {
                 key={cat.id}
                 category={cat}
                 onClick={() =>
-                  navigate(`/search?q=${cat.name}?type=categories`)
+                  navigate(`/search?q=${cat.name}&type=categories`)
                 }
               />
             ))}

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 
 interface DropdownOption {
   label: string;
@@ -13,7 +13,19 @@ interface DropdownProps {
   className?: string;
   placeholder?: string;
   disabled?: boolean;
+
+  /** Enable creating a new option from the search text */
+  allowCreate?: boolean; // default: false
+  /** Callback when user chooses to create a new option.
+   *  If you return the newly created option's value, the dropdown will select it automatically. */
+  onCreateOption?: (label: string) => string | void;
+  /** Customize the create-row label. Defaults to: Create "text" */
+  getCreateLabel?: (text: string) => string;
 }
+
+type ListItem =
+  | { kind: "create"; label: string }
+  | { kind: "option"; option: DropdownOption };
 
 const Dropdown: React.FC<DropdownProps> = ({
   label,
@@ -23,6 +35,9 @@ const Dropdown: React.FC<DropdownProps> = ({
   className = "",
   placeholder = "Select...",
   disabled = false,
+  allowCreate = false,
+  onCreateOption,
+  getCreateLabel = (t) => `Create "${t}"`,
 }) => {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -34,7 +49,7 @@ const Dropdown: React.FC<DropdownProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const listItemRefs = useRef<(HTMLLIElement | null)[]>([]);
 
-  // Clear search when menu closes and reset highlight
+  // Reset search/highlight when menu toggles
   useEffect(() => {
     if (!open) setSearch("");
     if (open) setHighlighted(-1);
@@ -51,12 +66,12 @@ const Dropdown: React.FC<DropdownProps> = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Focus the search input when opening
+  // Focus the search when opening
   useEffect(() => {
     if (open) inputRef.current?.focus();
   }, [open]);
 
-  // Scroll the highlighted option into view
+  // Scroll highlighted into view
   useEffect(() => {
     const el = listItemRefs.current[highlighted];
     if (el && panelRef.current) {
@@ -64,51 +79,82 @@ const Dropdown: React.FC<DropdownProps> = ({
     }
   }, [highlighted]);
 
-  const filteredOptions = options.filter((opt) =>
-    opt.label.toLowerCase().includes(search.toLowerCase())
+  const lower = search.trim().toLowerCase();
+
+  const filteredOptions = useMemo(
+    () => options.filter((opt) => opt.label.toLowerCase().includes(lower)),
+    [options, lower]
   );
 
   const selected = options.find((o) => o.value === value);
   const selectedLabel = selected?.label ?? "";
 
+  const existsExact = useMemo(
+    () => options.some((o) => o.label.toLowerCase() === lower) || lower === "",
+    [options, lower]
+  );
+
+  const canCreate = allowCreate && !existsExact && search.trim().length > 0;
+
+  // Build the list rendered (optionally prepending a "create" row)
+  const list: ListItem[] = useMemo(() => {
+    const base: ListItem[] = filteredOptions.map((o) => ({
+      kind: "option",
+      option: o,
+    }));
+    return canCreate
+      ? [{ kind: "create", label: search.trim() }, ...base]
+      : base;
+  }, [filteredOptions, canCreate, search]);
+
   const closeMenu = () => {
     setOpen(false);
-    // return focus to button for accessibility
     buttonRef.current?.focus({ preventScroll: true });
   };
 
-  // Keyboard handling on the whole root (when open)
+  const selectByIndex = (idx: number) => {
+    const item = list[idx];
+    if (!item) return;
+    if (item.kind === "option") {
+      onChange(item.option.value);
+      closeMenu();
+    } else if (item.kind === "create" && allowCreate && onCreateOption) {
+      const createdValue = onCreateOption(item.label);
+      // If onCreateOption returns a value, select it automatically
+      if (typeof createdValue === "string") {
+        onChange(createdValue);
+      }
+      closeMenu();
+    }
+  };
+
+  // Keyboard handling on root
   const onKeyDownRoot = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (!open) return;
     if (e.key === "ArrowDown") {
       e.preventDefault();
-      setHighlighted((prev) =>
-        prev < filteredOptions.length - 1 ? prev + 1 : prev
-      );
+      setHighlighted((prev) => (prev < list.length - 1 ? prev + 1 : prev));
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
       setHighlighted((prev) => (prev > 0 ? prev - 1 : prev));
     } else if (e.key === "Enter") {
       if (highlighted >= 0) {
         e.preventDefault();
-        onChange(filteredOptions[highlighted].value);
-        closeMenu();
+        selectByIndex(highlighted);
       }
     } else if (e.key === "Escape") {
       e.preventDefault();
       closeMenu();
     } else if (e.key === "Tab") {
-      // Let Tab close the menu naturally
       closeMenu();
     }
   };
 
-  // Keyboard handling on the button (open with arrow down)
+  // Keyboard handling on the button (open + preselect first row)
   const onKeyDownButton = (e: React.KeyboardEvent<HTMLButtonElement>) => {
     if (e.key === "ArrowDown" && !open) {
       e.preventDefault();
       setOpen(true);
-      // set highlight to first visible option
       setHighlighted(0);
     }
   };
@@ -128,9 +174,10 @@ const Dropdown: React.FC<DropdownProps> = ({
       <button
         ref={buttonRef}
         type="button"
-        onPointerDown={(e) => e.stopPropagation()} // prevent parent handlers
-        className={`bg-white dark:bg-dark dark:text-white w-full placeholder:text-gray-400 dark:placeholder:text-gray-600 py-2 rounded-2xl border-2 focus:ring-1 focus:ring-primary focus:border-primary focus:bg-primary-lightest dark:focus:bg-primary-darkest outline-none border-color dark:border-primary-dark pr-9 pl-3 text-left transition-colors duration-300
-          ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
+        onPointerDown={(e) => e.stopPropagation()}
+        className={`bg-white dark:bg-dark dark:text-white w-full placeholder:text-gray-400 dark:placeholder:text-gray-600 py-2 rounded-2xl border-2 focus:ring-1 focus:ring-primary focus:border-primary focus:bg-primary-lightest dark:focus:bg-primary-darkest outline-none border-color dark:border-primary-dark pr-9 pl-3 text-left transition-colors duration-300 ${
+          disabled ? "opacity-50 cursor-not-allowed" : ""
+        }`}
         onClick={() => (!disabled ? setOpen((o) => !o) : null)}
         onKeyDown={onKeyDownButton}
         aria-haspopup="listbox"
@@ -179,6 +226,22 @@ const Dropdown: React.FC<DropdownProps> = ({
             onChange={(e) => setSearch(e.target.value)}
             aria-label="Search options"
             onPointerDown={(e) => e.stopPropagation()}
+            onKeyDown={(e) => {
+              // Quick create on Enter when nothing highlighted
+              if (
+                e.key === "Enter" &&
+                allowCreate &&
+                !existsExact &&
+                search.trim()
+              ) {
+                e.preventDefault();
+                if (onCreateOption) {
+                  const createdValue = onCreateOption(search.trim());
+                  if (typeof createdValue === "string") onChange(createdValue);
+                }
+                closeMenu();
+              }
+            }}
           />
 
           <ul
@@ -188,20 +251,54 @@ const Dropdown: React.FC<DropdownProps> = ({
               highlighted >= 0 ? `dropdown-opt-${highlighted}` : undefined
             }
           >
-            {filteredOptions.length === 0 && (
+            {/* Create row (if allowed + needed) is already included in list */}
+            {list.length === 0 && (
               <li className="px-3 py-2 text-gray-400 dark:text-gray-500 select-none">
                 No options
               </li>
             )}
 
-            {filteredOptions.map((opt, idx) => {
+            {list.map((item, idx) => {
               const isActive = highlighted === idx;
-              const isSelected = value === opt.value;
 
+              if (item.kind === "create") {
+                return (
+                  <li
+                    id={`dropdown-opt-${idx}`}
+                    key="__create__"
+                    // @ts-ignore
+                    ref={(el) => (listItemRefs.current[idx] = el)}
+                    role="option"
+                    aria-selected={false}
+                    className={[
+                      "px-3 py-2 cursor-pointer rounded-lg transition-colors",
+                      "text-gray-800 dark:text-white",
+                      isActive
+                        ? "bg-primary/20 dark:bg-primary/25"
+                        : "hover:bg-primary/10 dark:hover:bg-gray-800",
+                      "font-medium text-primary",
+                    ].join(" ")}
+                    onMouseEnter={() => setHighlighted(idx)}
+                    onMouseLeave={() => setHighlighted(-1)}
+                    onClick={() => {
+                      if (onCreateOption) {
+                        const createdValue = onCreateOption(item.label);
+                        if (typeof createdValue === "string")
+                          onChange(createdValue);
+                      }
+                      closeMenu();
+                    }}
+                  >
+                    {getCreateLabel(item.label)}
+                  </li>
+                );
+              }
+
+              const isSelected = value === item.option.value;
               return (
                 <li
                   id={`dropdown-opt-${idx}`}
-                  key={opt.value}
+                  key={item.option.value}
                   // @ts-ignore
                   ref={(el) => (listItemRefs.current[idx] = el)}
                   role="option"
@@ -217,11 +314,11 @@ const Dropdown: React.FC<DropdownProps> = ({
                   onMouseEnter={() => setHighlighted(idx)}
                   onMouseLeave={() => setHighlighted(-1)}
                   onClick={() => {
-                    onChange(opt.value);
+                    onChange(item.option.value);
                     closeMenu();
                   }}
                 >
-                  {opt.label}
+                  {item.option.label}
                 </li>
               );
             })}

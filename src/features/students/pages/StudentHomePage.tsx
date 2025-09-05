@@ -33,7 +33,7 @@ export default function StudentHomePage() {
     (user as any)?.details?.firstName || (user as any)?.username || "there";
 
   return (
-    <div className="alternate-sections">
+    <div className="alternate-sections max-sm:text-center">
       {/* ===================== HERO ===================== */}
       <section>
         <div className="py-16 px-6 max-w-7xl mx-auto grid lg:grid-cols-[1.15fr_0.85fr] gap-12 items-center">
@@ -53,7 +53,7 @@ export default function StudentHomePage() {
               courses curated just for you.
             </p>
 
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-4 max-sm:justify-center">
               {enrolledCourses?.length ? (
                 <Button
                   variant="primary"
@@ -89,9 +89,11 @@ export default function StudentHomePage() {
 
           {/* Right: Quick stats with icons */}
           <div className="consect p-8">
-            <h3 className="text-xl font-semibold mb-6">Quick Stats</h3>
+            <h3 className="text-xl font-semibold mb-6 max-sm:text-center">
+              Quick Stats
+            </h3>
 
-            <ul className="space-y-4">
+            <ul className="space-y-4 text-start">
               <li className="flex items-center gap-3">
                 <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 dark:bg-primary/20">
                   <BookOpenIcon className="w-5 h-5 text-primary" />
@@ -148,13 +150,13 @@ export default function StudentHomePage() {
       {enrolledCourses?.length > 0 && (
         <section className="bg-gray-50 dark:bg-dark/40">
           <div>
-            <div className="px-24 mx-auto py-14">
+            <div className="px-24 mx-auto py-14 max-sm:px-8">
               <div className="flex items-center justify-between mb-8">
                 <h2 className="text-3xl font-bold">Continue learning</h2>
                 <Button
                   variant="secondary"
                   onClick={() => navigate("/courses")}
-                  className="inline-flex items-center gap-2"
+                  className="inline-flex items-center gap-2 max-sm:hidden"
                 >
                   Browse more
                   <ArrowRightIcon className="w-4 h-4" />
@@ -167,9 +169,11 @@ export default function StudentHomePage() {
                   const level = course.level ?? "Beginner";
                   const category =
                     (course as any)?.categories?.[0]?.name ?? "General";
-                  const thumb = `https://placehold.co/800x450?text=${encodeURIComponent(
-                    course.title
-                  )}`;
+                  const thumb =
+                    course.image ||
+                    `https://placehold.co/800x450?text=${encodeURIComponent(
+                      course.title
+                    )}`;
                   const duration = (course as any)?.durationHours;
                   const modulesCount = course.modules?.length ?? 0;
                   const progress =
@@ -188,7 +192,7 @@ export default function StudentHomePage() {
                         <img
                           src={thumb}
                           alt={`Course cover for ${course.title}`}
-                          className="h-48 w-full object-cover transition-transform duration-300 group-hover:scale-[1.3]"
+                          className="h-48 w-full object-cover transition-transform duration-300 group-hover:scale-[1.12]"
                           loading="lazy"
                         />
 

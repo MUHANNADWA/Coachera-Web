@@ -44,7 +44,6 @@ export default function SectionCard({
   const handleDragEnd = (e: DragEndEvent) => {
     const { active, over } = e;
     if (!over || active.id === over.id) return;
-    // keep using helper that returns the next materials array
     const next = reorderLessons(section, String(active.id), String(over.id));
     onReorderLessons(next);
   };
@@ -106,11 +105,17 @@ export default function SectionCard({
                       onUpdateLesson(lIndex, { ...lesson, title })
                     }
                     onEdit={() => {
-                      // pass identifiers (and optionally initial data) via location.state
-                      navigate(`/manage-lesson/${lesson.id}`, {
+                      const numericId =
+                        typeof lesson.id === "number" &&
+                        Number.isFinite(lesson.id)
+                          ? (lesson.id as number)
+                          : undefined;
+
+                      navigate(`/manage-lesson/${numericId ?? "new"}`, {
                         state: {
                           sectionId: section.id,
-                          materialId: lesson.id,
+                          materialId: numericId, // undefined => create
+                          orderIndex: lIndex, // required for create
                           initial: lesson,
                         },
                       });

@@ -18,6 +18,7 @@ import {
 } from "@heroicons/react/24/outline";
 
 import { useGetMeQuery } from "../../students/api/studentsApiSlice";
+import Loader from "../../../shared/components/Loader";
 
 export default function ProfilePage() {
   const { user, navigate, wishlistCourses, enrolledCourses } = useAppHook();
@@ -39,7 +40,8 @@ export default function ProfilePage() {
       education: student?.data.education ?? user?.details.education ?? "",
       phoneNumber: student?.data.phoneNumber ?? user?.details.phoneNumber ?? "",
       address: student?.data.address ?? user?.details.address ?? "",
-      profileImage: student?.data.profileImage ?? user?.profileImage ?? PROFILE_IMAGE,
+      profileImage:
+        student?.data.profileImage ?? user?.profileImage ?? PROFILE_IMAGE,
     }),
     [student, user]
   );
@@ -87,9 +89,7 @@ export default function ProfilePage() {
   );
 
   if (isLoading) {
-    return (
-      <div className="text-center py-10 text-gray-500">Loading profile...</div>
-    );
+    return <Loader logo />;
   }
 
   return (
@@ -144,12 +144,28 @@ export default function ProfilePage() {
       <section className="mb-12">
         <h2 className="text-3xl font-bold mb-4 dark:text-white">About</h2>
         <div className="grid md:grid-cols-2 gap-4">
-          <InfoRow icon={UserIcon} label="First Name" value={profile.firstName} />
+          <InfoRow
+            icon={UserIcon}
+            label="First Name"
+            value={profile.firstName}
+          />
           <InfoRow icon={UserIcon} label="Last Name" value={profile.lastName} />
-          <InfoRow icon={CalendarIcon} label="Birth Date" value={profile.birthDate} />
+          <InfoRow
+            icon={CalendarIcon}
+            label="Birth Date"
+            value={profile.birthDate}
+          />
           <InfoRow icon={UsersIcon} label="Gender" value={profile.gender} />
-          <InfoRow icon={AcademicCapIcon} label="Education" value={profile.education} />
-          <InfoRow icon={PhoneIcon} label="Phone Number" value={profile.phoneNumber} />
+          <InfoRow
+            icon={AcademicCapIcon}
+            label="Education"
+            value={profile.education}
+          />
+          <InfoRow
+            icon={PhoneIcon}
+            label="Phone Number"
+            value={profile.phoneNumber}
+          />
           <InfoRow icon={MapPinIcon} label="Address" value={profile.address} />
         </div>
       </section>
@@ -157,7 +173,9 @@ export default function ProfilePage() {
       {/* Currently Learning */}
       <section className="mb-16">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-3xl font-bold dark:text-white">Currently Learning</h2>
+          <h2 className="text-3xl font-bold dark:text-white">
+            Currently Learning
+          </h2>
           {enrolledCourses?.length > 0 && (
             <Button
               variant="secondary"
@@ -190,7 +208,9 @@ export default function ProfilePage() {
       {/* Favorites */}
       <section className="mb-16" id="wishlist">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-3xl font-bold dark:text-white">Favorited Courses</h2>
+          <h2 className="text-3xl font-bold dark:text-white">
+            Favorited Courses
+          </h2>
         </div>
 
         {!wishlistCourses || wishlistCourses.length === 0 ? (

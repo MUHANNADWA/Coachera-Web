@@ -27,16 +27,16 @@ import Loader from "../../../../shared/components/Loader";
 import Message from "../../../../shared/components/Message";
 import { Module, Section } from "../../../../shared/types/types";
 
-/** Normalize server course -> builder shape using title/materials */
+/** Normalize server course -> builder shape */
 function normalizeCourseToModules(course: any): Module[] {
   const modules = course?.modules ?? [];
   return (modules as any[]).map((m, mIdx) => ({
-    id: m.id ?? mIdx, // ensure a stable id (number in your interface)
+    id: m.id ?? mIdx,
     title: m.title ?? m.name ?? `Module ${mIdx + 1}`,
     sections: (m.sections ?? []).map((s: any, sIdx: number) => ({
       id: s.id ?? sIdx,
       title: s.title ?? s.name ?? `Section ${sIdx + 1}`,
-      materials: s.materials ?? s.lessons ?? [], // keep raw materials for editor
+      materials: s.materials ?? s.lessons ?? [],
     })),
   }));
 }
@@ -46,7 +46,6 @@ export default function EditCoursePage() {
   const { id: courseIdParam } = useParams<{ id: string }>();
   const courseId = Number(courseIdParam);
 
-  // fetch course
   const {
     data: courseResp,
     isLoading,
@@ -63,33 +62,30 @@ export default function EditCoursePage() {
     [courseResp]
   );
 
-  // local state mirrors server
   const [modules, setModules] = useState<Module[]>([]);
   useEffect(() => {
     if (!serverCourse) return;
     setModules(normalizeCourseToModules(serverCourse));
   }, [serverCourse]);
 
-  // mutations
   const [createModule] = useCreateModuleMutation();
   const [deleteModule] = useDeleteModuleMutation();
   const [createSection] = useCreateSectionMutation();
   const [deleteSection] = useDeleteSectionMutation();
 
-  // reorder modules (local)
   const onModulesDragEnd = (e: DragEndEvent) => {
     const { active, over } = e;
     if (!over || active.id === over.id) return;
     const next = reorderModules(modules, String(active.id), String(over.id));
     setModules(next);
-    // TODO: persist orderIndex if API available, then refetch
   };
 
-  // module actions
+  // Modules
   const addModuleHandler = async () => {
+    const orderIndex = modules.length;
     const tmp: Module = {
-      id: Date.now(), // temp number id
-      title: `Module ${modules.length + 1}`,
+      id: Date.now(),
+      title: `Module ${orderIndex + 1}`,
       sections: [],
     };
     setModules((prev) => [...prev, tmp]);
@@ -97,7 +93,7 @@ export default function EditCoursePage() {
     try {
       const created: any = await createModule({
         courseId,
-        data: { title: tmp.title }, // use title (not name)
+        data: { title: tmp.title, orderIndex },
       }).unwrap();
       const real = created?.data ?? created;
       setModules((prev) =>
@@ -123,8 +119,11 @@ export default function EditCoursePage() {
     );
   };
 
-  // section actions
+  // Sections
   const addSectionHandler = async (moduleId: number) => {
+    const orderIndex =
+      modules.find((m) => m.id === moduleId)?.sections.length ?? 0;
+
     const nextSection: Section = {
       id: Date.now(),
       title: "Section",
@@ -139,8 +138,9 @@ export default function EditCoursePage() {
 
     try {
       const created: any = await createSection({
-        moduleId,
-        data: { title: nextSection.title, orderIndex: 0, materials: [] },
+        title: nextSection.title,
+        orderIndex,
+        moduleId, // included as required
       }).unwrap();
       const real = created?.data ?? created;
 
@@ -161,16 +161,23 @@ export default function EditCoursePage() {
     }
   };
 
-  const removeSectionHandler = async (moduleId: number, sectionId: number) => {
+  // 🔧 Remove section by sectionId only (moduleId is derived)
+  const removeSectionHandler = async (sectionId: number) => {
+    const parent = modules.find((m) =>
+      m.sections.some((s) => s.id === sectionId)
+    );
+    if (!parent) return;
+
     setModules((prev) =>
       prev.map((m) =>
-        m.id !== moduleId
+        m.id !== parent.id
           ? m
           : { ...m, sections: m.sections.filter((s) => s.id !== sectionId) }
       )
     );
+
     try {
-      await deleteSection({ moduleId, sectionId }).unwrap();
+      await deleteSection(sectionId);
     } finally {
       await refetchCourse();
     }
@@ -200,13 +207,10 @@ export default function EditCoursePage() {
     setModules((prev) =>
       prev.map((m) => (m.id === moduleId ? { ...m, sections } : m))
     );
-    // TODO: persist orderIndex if API available
   };
 
-  // UI states
   if (isLoading || isFetching) return <Loader logo />;
   if (error) {
-    // @ts-ignore
     const msg = (error as any)?.data?.message ?? "Failed to load course";
     return (
       <div className="max-w-3xl mx-auto p-6">
@@ -248,9 +252,9 @@ export default function EditCoursePage() {
             <SortableItem key={module.id} id={module.id}>
               <ModuleCard
                 module={module}
-                onChangeTitle={(title) => {
-                  updateModuleLocal(module.id, { title });
-                }}
+                onChangeTitle={(title) =>
+                  updateModuleLocal(module.id, { title })
+                }
                 onRemove={() => removeModuleHandler(module.id)}
                 onAddSection={() => addSectionHandler(module.id)}
                 onUpdateSection={(sIndex, nextSection) =>
@@ -259,7 +263,8 @@ export default function EditCoursePage() {
                 onRemoveSection={(sIndex) => {
                   const sec = module.sections[sIndex];
                   if (!sec) return;
-                  removeSectionHandler(module.id, sec.id as number);
+                  // 🟢 now only pass sectionId
+                  removeSectionHandler(sec.id as number);
                 }}
                 onReorderSections={(next) =>
                   reorderSectionsPersist(module.id, next)

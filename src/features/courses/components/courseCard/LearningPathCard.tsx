@@ -45,7 +45,10 @@ export default function LearningPathCard({
       {/* Image Container */}
       <div className="relative overflow-hidden">
         <img
-          src={`https://placehold.co/800?text=${learningPath.title}`}
+          src={
+            learningPath.imageUrl ||
+            `https://placehold.co/800?text=${learningPath.title}`
+          }
           alt={`LearningPath cover for ${learningPath.title}`}
           className="h-48 w-full object-cover transition-transform duration-300 group-hover:scale-105"
           loading="lazy"

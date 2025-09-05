@@ -8,7 +8,12 @@ import {
   ChevronDownIcon,
   ChevronRightIcon,
 } from "@heroicons/react/24/outline";
-import { Course, Material, Module } from "../../../shared/types/types";
+import {
+  Course,
+  Material,
+  MaterialType,
+  Module,
+} from "../../../shared/types/types";
 
 interface CourseModulesProps {
   course: Course;
@@ -19,7 +24,7 @@ export function CourseModules({ course }: CourseModulesProps) {
   const allSections = modules.flatMap((m) => m.sections);
   const allMaterials = allSections.flatMap((s) => s.materials);
 
-  const countByType = (type: Material["type"]): number =>
+  const countByType = (type: MaterialType): number =>
     allMaterials.filter((m) => m.type === type).length;
 
   return (
@@ -91,7 +96,7 @@ function ModuleCard({ module }: ModuleCardProps) {
 
   const groupMaterials = (
     materials: Material[],
-    type: Material["type"]
+    type: MaterialType
   ): Material[] => materials.filter((m) => m.type === type);
 
   const handleToggle = (e: React.MouseEvent | React.KeyboardEvent) => {

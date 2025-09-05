@@ -28,6 +28,15 @@ export const notificationsApiSlice = apiSlice.injectEndpoints({
       }),
     }),
 
+    // registering to server
+    registerDevice: builder.mutation({
+      query: (data) => ({
+        url: `${NOTIFICATIONS_URL}/register-device`,
+        method: "POST",
+        body: data,
+      }),
+    }),
+
     // إرسال إشعار لمجموعة
     sendBulkNotification: builder.mutation({
       query: (data) => ({
@@ -53,4 +62,5 @@ export const {
   useSendNotificationMutation,
   useSendBulkNotificationMutation,
   useMarkAllAsReadMutation,
+  useRegisterDeviceMutation,
 } = notificationsApiSlice;

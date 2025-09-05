@@ -29,6 +29,7 @@ import {
   useDeleteStudentMutation,
 } from "../../students/api/studentsApiSlice";
 import toastPromise from "../../../shared/utils/toast";
+import Loader from "../../../shared/components/Loader";
 
 type FormState = {
   username: string;
@@ -143,11 +144,7 @@ export default function EditProfilePage() {
   };
 
   if (isLoading) {
-    return (
-      <div className="max-w-6xl mx-auto px-4 py-10 text-center text-gray-500">
-        Loading profile...
-      </div>
-    );
+    return <Loader logo />;
   }
 
   return (

@@ -38,8 +38,8 @@ export const sectionsApiSlice = apiSlice.injectEndpoints({
 
     // Delete a section
     deleteSection: builder.mutation({
-      query: ({ moduleId, sectionId }) => ({
-        url: `${moduleId}/sections/${sectionId}`,
+      query: (sectionId) => ({
+        url: `sections/${sectionId}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Section"],

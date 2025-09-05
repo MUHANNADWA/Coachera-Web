@@ -32,6 +32,8 @@ export default function LearnPage() {
     return <NotFoundPage />;
   }
 
+  console.log(material);
+
   return (
     <div className="page flex">
       <CourseSidebar

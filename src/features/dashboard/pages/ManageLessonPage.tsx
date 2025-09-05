@@ -7,18 +7,10 @@ import {
   useUpdateMaterialMutation,
 } from "../../courses/api/materialApiSlice";
 import { useAppHook } from "../../../shared/hooks/useAppHook";
-import { Material } from "../../../shared/types/types";
-
-// Markdown preview
+import { Material, MaterialType } from "../../../shared/types/types";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-export type LessonType = "video" | "article" | "quiz";
-
-const typeToApi = (t: LessonType): "VIDEO" | "ARTICLE" | "QUIZ" =>
-  t === "video" ? "VIDEO" : t === "article" ? "ARTICLE" : "QUIZ";
-
-/** Insert helpers for the markdown toolbar */
 function surroundSelection(
   textarea: HTMLTextAreaElement,
   before: string,
@@ -52,62 +44,68 @@ function insertSnippet(textarea: HTMLTextAreaElement, snippet: string) {
   return { next, caret };
 }
 
-const ManageLessonPage = () => {
+/** Enum helpers */
+const MATERIAL_TYPES: MaterialType[] = ["VIDEO", "ARTICLE", "QUIZ"];
+
+const typeLabel = (t: MaterialType) =>
+  t === "VIDEO" ? "Video" : t === "ARTICLE" ? "Article" : "Quiz";
+
+export default function ManageLessonPage() {
   const { location, navigate } = useAppHook();
 
-  // identifiers coming from SectionCard navigate(..., { state: { sectionId, materialId, initial } })
   const sectionId = location?.state?.sectionId as number | string | undefined;
   const materialId = location?.state?.materialId as number | string | undefined;
   const initial: Material | undefined = location?.state?.initial;
+  const orderIndexFromState: number | undefined = location?.state?.orderIndex;
 
-  const [lessonType, setLessonType] = useState<LessonType>("video");
+  const [lessonType, setLessonType] = useState<MaterialType>("ARTICLE");
   const [title, setTitle] = useState("");
-  const [content, setContent] = useState(""); // holds markdown for article
+  const [content, setContent] = useState("");
   const [quizQuestions, setQuizQuestions] = useState<any[]>([]);
   const [showCheatsheet, setShowCheatsheet] = useState(true);
-
-  // keep a ref to control caret insertion in markdown textarea
   const mdRef = useRef<HTMLTextAreaElement | null>(null);
 
-  // hydrate initial values if editing
   useEffect(() => {
     if (!initial) return;
     setTitle(initial.title ?? "");
     if (initial.type === "VIDEO") {
-      setLessonType("video");
+      setLessonType("VIDEO");
       setContent(initial.videoUrl ?? "");
     } else if (initial.type === "ARTICLE") {
-      setLessonType("article");
+      setLessonType("ARTICLE");
       setContent(initial.article ?? "");
     } else if (initial.type === "QUIZ") {
-      setLessonType("quiz");
+      setLessonType("QUIZ");
       setQuizQuestions(initial.quiz?.questions ?? []);
     }
   }, [initial]);
 
-  // RTK Query mutations
   const [createMaterial, { isLoading: isCreating }] =
     useCreateMaterialMutation();
   const [updateMaterial, { isLoading: isUpdating }] =
     useUpdateMaterialMutation();
 
   const payload = useMemo(() => {
-    const base = {
+    const base: any = {
       title,
-      orderIndex: 1, // adjust if you support ordering
-      type: typeToApi(lessonType),
-    } as any;
-
-    if (lessonType === "quiz") {
-      base.quiz = { questions: quizQuestions };
-    } else if (lessonType === "video") {
-      base.videoUrl = content;
-    } else {
-      // store markdown as article content
-      base.article = content;
-    }
+      orderIndex: Number.isFinite(orderIndexFromState)
+        ? orderIndexFromState
+        : 0,
+      sectionId: sectionId,
+      type: lessonType,
+    };
+    if (lessonType === "QUIZ") base.quiz = { questions: quizQuestions };
+    else if (lessonType === "VIDEO") base.videoUrl = content;
+    else base.article = content; // markdown
     return base;
-  }, [title, lessonType, content, quizQuestions]);
+  }, [
+    title,
+    lessonType,
+    content,
+    quizQuestions,
+    orderIndexFromState,
+    sectionId,
+  ]);
 
   const handleSave = async () => {
     try {
@@ -115,24 +113,22 @@ const ManageLessonPage = () => {
         await updateMaterial({
           sectionId,
           materialId,
-          data: payload,
+          data: { ...payload },
         }).unwrap();
         alert("Lesson updated!");
       } else {
-        await createMaterial({
-          sectionId,
-          data: payload,
-        }).unwrap();
+        console.log("Trying to CREATE Material", payload);
+
+        await createMaterial(payload).unwrap();
         alert("Lesson created!");
       }
       navigate(-1);
-    } catch (err: any) {
+    } catch (err) {
       console.error("Failed to save lesson:", err);
       alert("Error saving lesson.");
     }
   };
 
-  // Toolbar action dispatcher
   const doAction = (kind: string) => {
     const ta = mdRef.current;
     if (!ta) return;
@@ -196,7 +192,6 @@ const ManageLessonPage = () => {
 
     if (res) {
       setContent(res.next);
-      // set caret after state update
       requestAnimationFrame(() => {
         if (!mdRef.current) return;
         mdRef.current.selectionStart = mdRef.current.selectionEnd = res!.caret;
@@ -211,7 +206,6 @@ const ManageLessonPage = () => {
         {materialId ? "Edit Lesson" : "Create Lesson"}
       </h1>
 
-      {/* Lesson Title */}
       <div>
         <label className="block font-medium mb-1">Lesson Title</label>
         <Input
@@ -222,9 +216,8 @@ const ManageLessonPage = () => {
         />
       </div>
 
-      {/* Type Tabs */}
       <div className="flex gap-2 border-b mb-4">
-        {(["video", "article", "quiz"] as LessonType[]).map((type) => (
+        {MATERIAL_TYPES.map((type: MaterialType) => (
           <button
             key={type}
             className={`px-4 py-2 font-medium rounded-t-lg ${
@@ -234,13 +227,12 @@ const ManageLessonPage = () => {
             }`}
             onClick={() => setLessonType(type)}
           >
-            {type.charAt(0).toUpperCase() + type.slice(1)}
+            {typeLabel(type)}
           </button>
         ))}
       </div>
 
-      {/* Content Fields */}
-      {lessonType === "video" && (
+      {lessonType === "VIDEO" && (
         <div>
           <label className="block font-medium mb-1">Video URL</label>
           <Input
@@ -259,9 +251,8 @@ const ManageLessonPage = () => {
         </div>
       )}
 
-      {lessonType === "article" && (
+      {lessonType === "ARTICLE" && (
         <div className="space-y-4">
-          {/* Toolbar */}
           <div className="flex flex-wrap gap-2 p-2 rounded-xl border-2 border-gray-200 dark:border-white/10 bg-white dark:bg-[#0b0f19]">
             <span className="text-xs opacity-60 self-center pr-2">
               Markdown
@@ -321,16 +312,14 @@ const ManageLessonPage = () => {
             </div>
           </div>
 
-          {/* Editor + Cheatsheet */}
           <div className="grid md:grid-cols-2 gap-4">
-            {/* Editor */}
             <div>
               <label className="block font-medium mb-1">Markdown Content</label>
               <textarea
                 ref={mdRef}
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                placeholder="Write your markdown (supports **bold**, _italic_, lists, tables, links...)"
+                placeholder="Write your markdown..."
                 className="w-full h-64 font-mono text-sm rounded-xl border-2 border-gray-200 dark:border-white/10 bg-white dark:bg-[#0b0f19] p-3 outline-none focus:ring-1 focus:ring-primary"
               />
               <div className="flex justify-between text-xs text-gray-500 mt-1">
@@ -338,7 +327,6 @@ const ManageLessonPage = () => {
                 <span>{content.length} chars</span>
               </div>
 
-              {/* Cheatsheet */}
               {showCheatsheet && (
                 <div className="mt-3 rounded-xl border-2 border-dashed border-gray-200 dark:border-white/10 p-4 text-sm">
                   <div className="font-semibold mb-2 opacity-80">
@@ -346,12 +334,11 @@ const ManageLessonPage = () => {
                   </div>
                   <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <li>
-                      <code># Heading 1</code>, <code>## Heading 2</code>,{" "}
-                      <code>### Heading 3</code>
+                      <code># H1</code>, <code>## H2</code>, <code>### H3</code>
                     </li>
                     <li>
                       <code>**bold**</code>, <code>_italic_</code>,{" "}
-                      <code>~~strikethrough~~</code>
+                      <code>~~strike~~</code>
                     </li>
                     <li>
                       <code>[text](https://example.com)</code>
@@ -360,8 +347,7 @@ const ManageLessonPage = () => {
                       <code>![alt](https://...)</code>
                     </li>
                     <li>
-                      <code>`inline code`</code> /{" "}
-                      <code>```lang\ncode\n```</code>
+                      <code>`inline`</code> / <code>```lang\ncode\n```</code>
                     </li>
                     <li>
                       <code>- item</code> / <code>1. item</code> /{" "}
@@ -387,7 +373,6 @@ const ManageLessonPage = () => {
               )}
             </div>
 
-            {/* Live Preview */}
             <div>
               <div className="text-sm font-semibold mb-2 opacity-70">
                 Preview
@@ -402,7 +387,7 @@ const ManageLessonPage = () => {
         </div>
       )}
 
-      {lessonType === "quiz" && (
+      {lessonType === "QUIZ" && (
         <QuizSection
           quizQuestions={quizQuestions}
           setQuizQuestions={setQuizQuestions}
@@ -425,6 +410,4 @@ const ManageLessonPage = () => {
       </Button>
     </div>
   );
-};
-
-export default ManageLessonPage;
+}

@@ -6,6 +6,8 @@ import { useGetEnrolledCoursesQuery } from "../../features/courses/api/coursesAp
 import { setEnrolledCourses } from "../../features/courses/slices/enrolledCoursesSlice";
 import { Course } from "../types/types";
 import { UserRole } from "../../features/auth/types";
+import { generateToken } from "../../features/notifications/firebase";
+import { onMessage } from "firebase/messaging";
 
 interface WishlistItem {
   createdAt: string;
@@ -41,6 +43,22 @@ const InitProvider = () => {
   const { theme, user, dispatch } = useAppHook();
 
   const isStudent = user?.role === UserRole.STUDENT;
+
+  useEffect(() => {
+    generateToken();
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker
+          .register("/firebase-messaging-sw.js")
+          .then((registration) => {
+            console.log("Service Worker registered:", registration);
+          })
+          .catch((err) => {
+            console.error("Service Worker registration failed:", err);
+          });
+      });
+    }
+  }, []);
 
   useEffect(() => {
     if (theme === "dark") {

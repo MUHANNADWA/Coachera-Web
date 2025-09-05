@@ -1,11 +1,21 @@
+import {
+  AcademicCapIcon,
+  ArrowLeftEndOnRectangleIcon,
+  ArrowRightStartOnRectangleIcon,
+  BellIcon,
+  HeartIcon,
+  MoonIcon,
+  PencilSquareIcon,
+  UserCircleIcon,
+} from "@heroicons/react/24/outline";
 import { PROFILE_URL } from "../../../constants/constants";
 import { useAppHook } from "../../hooks/useAppHook";
 import { Button } from "../form/Button";
-
-type NavLink = {
-  title: string;
-  path: string;
-};
+import Modal from "../Modal";
+import { useLogoutMutation } from "../../../features/auth/api/authApiSlice";
+import toastPromise from "../../utils/toast";
+import { logout } from "../../../features/auth/authSlice";
+import { useModal } from "../../hooks/useModal";
 
 type HeaderMobileMenuProps = {
   open: boolean;
@@ -16,17 +26,72 @@ export default function HeaderMobileMenu({
   open,
   onClose,
 }: HeaderMobileMenuProps) {
-  const { user, navigate } = useAppHook();
+  // ✅ Always call hooks at the top level
+  const { token, user, navigate, dispatch } = useAppHook();
+  const [logoutApiCall] = useLogoutMutation();
+  const { openModal, closeModal, isModalOpen } = useModal();
 
-  const navLinks: NavLink[] = [
-    ...(user
-      ? [{ title: "Profile", path: PROFILE_URL }]
-      : [
-          { title: "Login", path: "/login" },
-          { title: "Signup", path: "/signup" },
-        ]),
-  ];
+  const logoutHandler = async () => {
+    await toastPromise(logoutApiCall(token), {
+      loadingMessage: "Logging out...",
+      successMessage: "Logged out successfully!",
+      errorMessage: "Logging out failed",
+      onSuccess: () => {
+        dispatch(logout());
+        navigate("/login");
+      },
+    });
+  };
 
+  // ✅ Build links AFTER hooks so openModal exists; keep exact styling/structure
+  const navLinks = user
+    ? [
+        {
+          label: "My Profile",
+          icon: UserCircleIcon,
+          action: () => navigate(PROFILE_URL),
+        },
+        {
+          label: "Edit Profile",
+          icon: PencilSquareIcon,
+          action: () => navigate("/edit-profile"),
+        },
+        {
+          label: "Accomplishments",
+          icon: AcademicCapIcon,
+          action: () => navigate("/accomplishments"),
+        },
+        {
+          label: "Notifications",
+          icon: BellIcon,
+          action: () => navigate("/notifications"),
+        },
+        {
+          label: "Favorites",
+          icon: HeartIcon,
+          action: () => navigate("/profile#favorites"),
+        },
+        { label: "Toggle Theme", icon: MoonIcon, action: () => navigate("#") },
+        {
+          label: "Logout",
+          icon: ArrowRightStartOnRectangleIcon,
+          action: () => openModal(),
+        }, // <-- call it
+      ]
+    : [
+        {
+          label: "Login",
+          icon: ArrowLeftEndOnRectangleIcon,
+          action: () => navigate("/login"),
+        },
+        {
+          label: "Signup",
+          icon: ArrowLeftEndOnRectangleIcon,
+          action: () => navigate("/signup"),
+        },
+      ];
+
+  // ✅ Safe to conditionally return after hooks are called
   if (!open) return null;
 
   return (
@@ -52,21 +117,31 @@ export default function HeaderMobileMenu({
           {navLinks.map((link) => {
             return (
               <Button
-                key={link.path}
+                key={link.label}
                 onClick={() => {
                   onClose();
-                  navigate(link.path);
+                  link.action();
                 }}
                 className={
-                  "m-0! w-full px-2 py-2 rounded-2xl transition font-semibold hover:bg-primary/10 hover:text-primary"
+                  "group flex w-full items-center justify-start gap-1 px-3! py-2! m-1! text-gray-700 dark:text-gray-300"
                 }
               >
-                {link.title}
+                <link.icon className="h-4 w-4 text-gray-700 dark:text-gray-300 mr-2" />
+                {link.label}
               </Button>
             );
           })}
         </nav>
       </aside>
+
+      <Modal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        title="Logout"
+        message="Are you sure you want to logout?"
+        variant="confirm"
+        onConfirm={logoutHandler}
+      />
     </>
   );
 }

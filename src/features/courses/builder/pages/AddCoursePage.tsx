@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useReducer, useCallback } from "react";
+import { useEffect, useMemo, useReducer, useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../../../shared/components/form/Button";
 import Input from "../../../../shared/components/form/Input";
@@ -9,9 +9,8 @@ import {
 } from "../../api/coursesApiSlice";
 import toastPromise from "../../../../shared/utils/toast";
 import { useGetInstructorsQuery } from "../../api/instructorApiSlice";
-import { useGetCategoriesQuery } from "../../api/categoriesApiSlice"; // <- add categories hook
+import { useGetCategoriesQuery } from "../../api/categoriesApiSlice";
 
-/** Domain types */
 type Level = "Beginner" | "Intermediate" | "Advanced";
 type Option = { label: string; value: string };
 
@@ -21,7 +20,6 @@ const levelOptions: Array<{ label: Level; value: Level }> = [
   { label: "Advanced", value: "Advanced" },
 ];
 
-/** Utilities */
 const toNumber = (v: string) => {
   const n = Number(v);
   return Number.isFinite(n) ? n : NaN;
@@ -29,23 +27,16 @@ const toNumber = (v: string) => {
 const addUnique = <T,>(arr: T[], v: T) => (arr.includes(v) ? arr : [...arr, v]);
 const removeValue = <T,>(arr: T[], v: T) => arr.filter((x) => x !== v);
 
-/** Form state + reducer */
 type State = {
   title: string;
   description: string;
   level: Level;
   price: string;
   durationHours: string;
-
-  /** Instructors multi-pick */
-  instructorIds: string[];
+  instructors: string[];
   lastInstructorPick: string;
-
-  /** Categories multi-pick (exactly like instructors) */
   categories: string[];
-  lastCategoryPick: string;
-
-  /** Image */
+  lastCategoryPickId: string;
   imageFile: File | null;
   imagePreviewUrl: string | null;
 };
@@ -55,8 +46,8 @@ type Action =
   | { type: "SET_LEVEL"; value: Level }
   | { type: "ADD_INSTRUCTOR"; id: string }
   | { type: "REMOVE_INSTRUCTOR"; id: string }
-  | { type: "ADD_CATEGORY"; id: string }
-  | { type: "REMOVE_CATEGORY"; id: string }
+  | { type: "ADD_CATEGORY_FROM_PICK"; id: string; name: string }
+  | { type: "REMOVE_CATEGORY"; name: string }
   | { type: "SET_FILE"; file: File | null }
   | { type: "RESET" };
 
@@ -66,13 +57,10 @@ const initialState: State = {
   level: "Beginner",
   price: "0",
   durationHours: "1",
-
-  instructorIds: [],
+  instructors: [],
   lastInstructorPick: "",
-
   categories: [],
-  lastCategoryPick: "",
-
+  lastCategoryPickId: "",
   imageFile: null,
   imagePreviewUrl: null,
 };
@@ -81,36 +69,30 @@ function reducer(state: State, action: Action): State {
   switch (action.type) {
     case "FIELD":
       return { ...state, [action.name]: action.value } as State;
-
     case "SET_LEVEL":
       return { ...state, level: action.value };
-
     case "ADD_INSTRUCTOR":
       return {
         ...state,
         lastInstructorPick: action.id,
-        instructorIds: addUnique(state.instructorIds, action.id),
+        instructors: addUnique(state.instructors, action.id),
       };
-
     case "REMOVE_INSTRUCTOR":
       return {
         ...state,
-        instructorIds: removeValue(state.instructorIds, action.id),
+        instructors: removeValue(state.instructors, action.id),
       };
-
-    case "ADD_CATEGORY":
+    case "ADD_CATEGORY_FROM_PICK":
       return {
         ...state,
-        lastCategoryPick: action.id,
-        categories: addUnique(state.categories, action.id),
+        lastCategoryPickId: action.id,
+        categories: addUnique(state.categories, action.name),
       };
-
     case "REMOVE_CATEGORY":
       return {
         ...state,
-        categories: removeValue(state.categories, action.id),
+        categories: removeValue(state.categories, action.name),
       };
-
     case "SET_FILE": {
       if (state.imagePreviewUrl) URL.revokeObjectURL(state.imagePreviewUrl);
       return {
@@ -119,11 +101,9 @@ function reducer(state: State, action: Action): State {
         imagePreviewUrl: action.file ? URL.createObjectURL(action.file) : null,
       };
     }
-
     case "RESET":
       if (state.imagePreviewUrl) URL.revokeObjectURL(state.imagePreviewUrl);
       return { ...initialState };
-
     default:
       return state;
   }
@@ -139,18 +119,16 @@ export default function AddCoursePage() {
     level,
     price,
     durationHours,
-    instructorIds,
+    instructors,
     lastInstructorPick,
     categories,
-    lastCategoryPick,
+    lastCategoryPickId,
     imageFile,
     imagePreviewUrl,
   } = state;
 
-  /** RTK Query hooks */
   const { data: instructorsData, isLoading: loadingInstructors } =
     useGetInstructorsQuery({});
-
   const { data: categoriesData, isLoading: loadingCategories } =
     useGetCategoriesQuery({
       page: 0,
@@ -168,116 +146,101 @@ export default function AddCoursePage() {
     [instructorsData]
   );
 
+  const [localCategories, setLocalCategories] = useState<Option[]>([]);
   const categoryOptions: Option[] = useMemo(
-    () =>
-      categoriesData?.data?.content?.map((cat: any) => ({
+    () => [
+      ...(categoriesData?.data?.content?.map((cat: any) => ({
         label: cat.name ?? `#${cat.id}`,
-        value: String(cat.id),
-      })) ?? [],
-    [categoriesData]
+        value: cat.name,
+      })) ?? []),
+      ...localCategories,
+    ],
+    [categoriesData, localCategories]
   );
 
   const [createCourse, { isLoading: creating }] = useCreateCourseMutation();
   const [uploadCourseImage, { isLoading: uploading }] =
     useUploadCourseImageMutation();
 
-  /** Simple (kept as-is) validation flags computed but not rendered here */
   const errors = useMemo(() => {
     const e: Record<string, string> = {};
     if (!title.trim()) e.title = "Title is required";
     if ((description ?? "").trim().length < 20)
       e.description = "Description must be at least 20 characters";
-    if (instructorIds.length === 0)
+    if (instructors.length === 0)
       e.instructors = "At least one instructor is required";
-
     const p = toNumber(price);
-    if (!Number.isFinite(p) || p < 0) e.price = "Price must be a number >= 0";
-
+    if (!Number.isFinite(p) || p < 0) e.price = "Price must be >= 0";
     const d = toNumber(durationHours);
-    if (!Number.isFinite(d) || d <= 0)
-      e.duration = "Duration must be a number > 0";
-
+    if (!Number.isFinite(d) || d <= 0) e.duration = "Duration must be > 0";
     return e;
-  }, [title, description, instructorIds.length, price, durationHours]);
+  }, [title, description, instructors.length, price, durationHours]);
 
   const hasErrors = Object.keys(errors).length > 0;
 
-  /** Handlers */
   const handleInstructorPick = (id: string) => {
     dispatch({ type: "ADD_INSTRUCTOR", id });
   };
 
-  const handleCategoryPick = (id: string) => {
-    dispatch({ type: "ADD_CATEGORY", id });
+  const handleCategoryPick = (pickedId: string) => {
+    dispatch({ type: "ADD_CATEGORY_FROM_PICK", id: pickedId, name: pickedId });
   };
 
-  /** Submit */
-  const onSubmit = useCallback(
-    async (goToBuilder: boolean) => {
-      if (hasErrors) return;
+  const onSubmit = useCallback(async () => {
+    if (hasErrors) return;
 
-      const doCreate = async () => {
-        let uploadedUrl: string | undefined;
+    const doCreate = async () => {
+      let uploadedUrl: string | undefined;
 
-        if (imageFile) {
-          const fd = new FormData();
-          fd.append("file", imageFile);
-          const uploaded: any = await uploadCourseImage(fd).unwrap();
-          uploadedUrl =
-            uploaded?.data?.url ??
-            uploaded?.data?.path ??
-            uploaded?.url ??
-            uploaded?.path ??
-            uploaded?.data ??
-            undefined;
-        }
+      if (imageFile) {
+        const fd = new FormData();
+        fd.append("file", imageFile);
+        const uploaded: any = await uploadCourseImage(fd).unwrap();
+        uploadedUrl =
+          uploaded?.data?.url ??
+          uploaded?.data?.path ??
+          uploaded?.url ??
+          uploaded?.path ??
+          uploaded?.data ??
+          undefined;
+      }
 
-        // Send IDs for instructors and categories
-        const payload = {
-          title: title.trim(),
-          description: description.trim(),
-          level,
-          price: toNumber(price),
-          durationHours: toNumber(durationHours),
-          instructors: instructorIds, // array of instructor IDs
-          categories: categories, // array of category IDs
-          image: uploadedUrl,
-        };
-
-        const created: any = await createCourse(payload).unwrap();
-        const createdData = created?.data ?? created;
-        const newId: string | undefined = createdData?.id ?? createdData?._id;
-
-        dispatch({ type: "RESET" });
-
-        if (goToBuilder && newId) {
-          navigate(`/admin/courses/${newId}/builder`);
-        }
+      const payload = {
+        title: title.trim(),
+        description: description.trim(),
+        level,
+        price: toNumber(price),
+        durationHours: toNumber(durationHours),
+        instructors,
+        categories,
+        image: uploadedUrl,
       };
 
-      await toastPromise(doCreate(), {
-        loadingMessage: imageFile ? "Uploading image..." : "Creating course...",
-        successMessage: "Course created successfully",
-        errorMessage: "Failed to create course",
-      });
-    },
-    [
-      hasErrors,
-      imageFile,
-      uploadCourseImage,
-      title,
-      description,
-      level,
-      price,
-      durationHours,
-      instructorIds,
-      categories,
-      createCourse,
-      navigate,
-    ]
-  );
+      await createCourse(payload).unwrap();
+      dispatch({ type: "RESET" });
+      navigate("/");
+    };
 
-  /** Cleanup */
+    await toastPromise(doCreate(), {
+      loadingMessage: imageFile ? "Uploading image..." : "Creating course...",
+      successMessage: "Course created successfully",
+      errorMessage: "Failed to create course",
+    });
+  }, [
+    hasErrors,
+    imageFile,
+    uploadCourseImage,
+    title,
+    description,
+    level,
+    price,
+    durationHours,
+    instructors,
+    categories,
+    createCourse,
+    navigate,
+  ]);
+
   useEffect(() => {
     return () => {
       if (imagePreviewUrl) URL.revokeObjectURL(imagePreviewUrl);
@@ -308,23 +271,20 @@ export default function AddCoursePage() {
             required
           />
 
-          {/* Instructor picker (single-select that accumulates into a list) */}
           <div>
             <Dropdown
               label="Assign Instructor"
               value={lastInstructorPick}
               options={instructorOptions}
-              onChange={(v: string) => handleInstructorPick(v)}
+              onChange={handleInstructorPick}
               placeholder={
                 loadingInstructors ? "Loading..." : "Select instructor"
               }
               disabled={loadingInstructors}
             />
-
-            {/* Selected instructors as chips */}
-            {instructorIds.length > 0 && (
+            {instructors.length > 0 && (
               <div className="mt-2 flex flex-wrap gap-2">
-                {instructorIds.map((id) => {
+                {instructors.map((id) => {
                   const label =
                     instructorOptions.find((o) => o.value === id)?.label ?? id;
                   return (
@@ -339,8 +299,6 @@ export default function AddCoursePage() {
                         onClick={() =>
                           dispatch({ type: "REMOVE_INSTRUCTOR", id })
                         }
-                        aria-label={`Remove ${label}`}
-                        title="Remove"
                       >
                         ✕
                       </Button>
@@ -357,7 +315,7 @@ export default function AddCoursePage() {
               value={level}
               options={levelOptions}
               onChange={(v: string) =>
-                dispatch({ type: "SET_LEVEL", value: v as Level })
+                dispatch({ type: "FIELD", name: "level", value: v })
               }
               placeholder="Select level"
             />
@@ -392,49 +350,47 @@ export default function AddCoursePage() {
             placeholder="e.g. 12"
           />
 
-          {/* Category picker (identical behavior to instructors) */}
           <div>
             <Dropdown
               label="Assign Category"
-              value={lastCategoryPick}
+              value={lastCategoryPickId}
               options={categoryOptions}
-              onChange={(v: string) => handleCategoryPick(v)}
+              allowCreate
+              onCreateOption={(name) => {
+                setLocalCategories((prev) => [
+                  ...prev,
+                  { label: name, value: name },
+                ]);
+                return name;
+              }}
+              onChange={handleCategoryPick}
               placeholder={loadingCategories ? "Loading..." : "Select category"}
               disabled={loadingCategories}
             />
-
-            {/* Selected categories as chips */}
             {categories.length > 0 && (
               <div className="mt-2 flex flex-wrap gap-2">
-                {categories.map((id) => {
-                  const label =
-                    categoryOptions.find((o) => o.value === id)?.label ?? id;
-                  return (
-                    <span
-                      key={id}
-                      className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-lightest border-2 border-primary dark:bg-primary-darkest dark:text-gray-300 text-sm"
+                {categories.map((name) => (
+                  <span
+                    key={name}
+                    className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-lightest border-2 border-primary dark:bg-primary-darkest dark:text-gray-300 text-sm"
+                  >
+                    {name}
+                    <button
+                      type="button"
+                      className="text-xs opacity-70 hover:opacity-100"
+                      onClick={() =>
+                        dispatch({ type: "REMOVE_CATEGORY", name })
+                      }
                     >
-                      {label}
-                      <button
-                        type="button"
-                        className="text-xs opacity-70 hover:opacity-100"
-                        onClick={() =>
-                          dispatch({ type: "REMOVE_CATEGORY", id })
-                        }
-                        aria-label={`Remove ${label}`}
-                        title="Remove"
-                      >
-                        ✕
-                      </button>
-                    </span>
-                  );
-                })}
+                      ✕
+                    </button>
+                  </span>
+                ))}
               </div>
             )}
           </div>
         </div>
 
-        {/* Description */}
         <div className="mt-4">
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Description
@@ -454,7 +410,6 @@ export default function AddCoursePage() {
           />
         </div>
 
-        {/* Image upload */}
         <div className="mt-4 grid md:grid-cols-[1fr_auto] gap-4 items-end">
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -487,21 +442,20 @@ export default function AddCoursePage() {
           )}
         </div>
 
-        {/* Actions */}
         <div className="mt-6 flex flex-wrap gap-2">
           <Button
-            onClick={() => onSubmit(false)}
+            onClick={() => dispatch({ type: "RESET" })}
             variant="secondary"
-            disabled={isBusy || hasErrors}
+            disabled={isBusy}
           >
-            Save Draft
+            Reset
           </Button>
           <Button
-            onClick={() => onSubmit(true)}
+            onClick={onSubmit}
             variant="primary"
             disabled={isBusy || hasErrors}
           >
-            Create & Open Builder
+            Create Course
           </Button>
         </div>
       </section>

@@ -32,7 +32,7 @@ import {
 
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 
-import { Course } from "../../../shared/types/types";
+import { Course, MaterialType } from "../../../shared/types/types";
 
 import {
   DocumentTextIcon,
@@ -64,7 +64,7 @@ export const renderStars = (rating: number) => {
 
 // ---------------------------------------------------------------
 
-export function getMaterialIcon(type: string) {
+export function getMaterialIcon(type: MaterialType) {
   switch (type) {
     case "VIDEO":
       return <PlayCircleIcon className="w-4 h-4" aria-hidden="true" />;

@@ -307,15 +307,28 @@ export default function RegisterPage() {
               )}
 
               {formData.role === UserRole.INSTRUCTOR && (
-                <Input
-                  label="Bio"
-                  value={formData.bio || ""}
-                  onChange={(e) =>
-                    setFormData({ ...formData, bio: e.target.value })
-                  }
-                  required
-                  prefixIcon={DocumentTextIcon}
-                />
+                <>
+                  <Input
+                    label="Full Name"
+                    value={formData.name || ""}
+                    onChange={(e) =>
+                      setFormData({ ...formData, name: e.target.value })
+                    }
+                    required
+                    prefixIcon={UserIcon}
+                    placeholder="Son Goku"
+                  />
+                  <Input
+                    label="Bio"
+                    value={formData.bio || ""}
+                    onChange={(e) =>
+                      setFormData({ ...formData, bio: e.target.value })
+                    }
+                    required
+                    prefixIcon={DocumentTextIcon}
+                    placeholder="I am Super Sayan hhh"
+                  />
+                </>
               )}
 
               {formData.role === UserRole.ORGANIZATION && (

@@ -36,6 +36,7 @@ export interface RegisterFormData {
   address?: string;
 
   // step 3 (instructor)
+  name?: string;
   bio?: string;
 
   // step 3 (organization)
@@ -120,7 +121,10 @@ export default function useRegister() {
         address: formData.address?.trim(),
       };
     } else if (formData.role === UserRole.INSTRUCTOR) {
-      payload.details = { bio: formData.bio?.trim() };
+      payload.details = {
+        bio: formData.bio?.trim(),
+        name: formData.name,
+      };
     } else if (formData.role === UserRole.ORGANIZATION) {
       payload.details = {
         orgName: formData.orgName?.trim(),

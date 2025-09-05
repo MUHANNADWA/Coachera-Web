@@ -25,6 +25,7 @@ interface CoursesViewProps {
     | "trending"
     | "popular"
     | "org"
+    | "my_org"
     | "inst"
     | "similar";
   orgId?: number;
@@ -97,6 +98,14 @@ export default function CoursesView({
     orgError,
     orgTotal,
     orgLast,
+    // my org
+    myOrgCourses,
+    myOrgSize,
+    setMyOrgSize,
+    myOrgLoading,
+    myOrgError,
+    myOrgTotal,
+    myOrgLast,
     // inst
     instCourses,
     instSize,
@@ -204,6 +213,18 @@ export default function CoursesView({
         setSize: setOrgSize,
       };
       break;
+    case "my_org":
+      data = {
+        title: "My Organization Courses",
+        list: myOrgCourses,
+        isLoading: myOrgLoading,
+        error: myOrgError,
+        total: myOrgTotal,
+        last: myOrgLast,
+        getSize: () => myOrgSize,
+        setSize: setMyOrgSize,
+      };
+      break;
     case "inst":
       data = {
         title: "Instructor Courses",
@@ -223,7 +244,7 @@ export default function CoursesView({
   const navigate = useNavigate();
 
   const maybeAddCard =
-    variant === "org" ? (
+    variant === "my_org" ? (
       <AddCourseCard onClick={() => navigate("/add-course")} />
     ) : null;
 
@@ -301,7 +322,7 @@ export default function CoursesView({
                 className="p-4 flex overflow-x-auto space-x-4 snap-x snap-mandatory scroll-smooth"
                 style={{ scrollbarWidth: "none" }}
               >
-                {(variant === "org" || variant === "inst") && (
+                {(variant === "my_org" || variant === "inst") && (
                   <div className="snap-start min-w-[300px]">
                     <CourseCardSkeleton />
                   </div>
@@ -317,7 +338,7 @@ export default function CoursesView({
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {(variant === "org" || variant === "inst") && (
+              {(variant === "my_org" || variant === "inst") && (
                 <CourseCardSkeleton />
               )}
               {Array(Math.min(gridPageSize, data.getSize()))
@@ -331,7 +352,7 @@ export default function CoursesView({
           showErrorMessage(data.error)
         ) : data.list.length === 0 ? (
           <div className="min-w-full text-center">
-            {variant === "org" ? (
+            {variant === "my_org" ? (
               <div className="flex justify-center">{maybeAddCard}</div>
             ) : (
               <Message variant="info">
@@ -364,7 +385,7 @@ export default function CoursesView({
               className="p-4 flex overflow-x-auto space-x-4 snap-x snap-mandatory scroll-smooth"
               style={{ scrollbarWidth: "none" }}
             >
-              {variant === "org" && (
+              {variant === "my_org" && (
                 <div className="snap-start min-w-[300px]">{maybeAddCard}</div>
               )}
               {data.list.map((course: Course) => (
@@ -372,8 +393,8 @@ export default function CoursesView({
                   <CourseCard
                     course={course}
                     actionMode={
-                      variant === "org"
-                        ? "org"
+                      variant === "my_org"
+                        ? "my_org"
                         : variant === "inst"
                         ? "inst"
                         : "none"
@@ -410,14 +431,14 @@ export default function CoursesView({
         ) : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {variant === "org" && maybeAddCard}
+              {variant === "my_org" && maybeAddCard}
               {data.list.map((course: Course) => (
                 <CourseCard
                   key={course.id}
                   course={course}
                   actionMode={
-                    variant === "org"
-                      ? "org"
+                    variant === "my_org"
+                      ? "my_org"
                       : variant === "inst"
                       ? "inst"
                       : "none"
