@@ -16,6 +16,7 @@ import {
 } from "@dnd-kit/sortable";
 import { useState } from "react";
 import { Material, Module, Section } from "../../../../shared/types/types";
+import { useDeleteMaterialMutation } from "../../api/materialApiSlice";
 
 interface Props {
   module: Module;
@@ -37,6 +38,8 @@ export default function ModuleCard({
   onReorderSections,
 }: Props) {
   const [collapsed, setCollapsed] = useState(false);
+
+  const [deleteMaterial] = useDeleteMaterialMutation();
 
   const handleDragEnd = (e: DragEndEvent) => {
     const { active, over } = e;
@@ -123,6 +126,7 @@ export default function ModuleCard({
                     const materials = section.materials.filter(
                       (_, i) => i !== lIndex
                     );
+                    deleteMaterial(lIndex);
                     onUpdateSection(sIndex, { ...section, materials });
                   }}
                   onReorderLessons={(nextLessons) =>

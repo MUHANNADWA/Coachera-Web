@@ -114,6 +114,8 @@ export default function QuizSection({
         correctAnswerIndex: 1,
       })),
     };
+    console.log("quizPayload = ", payload);
+
     try {
       await createQuiz(payload).unwrap();
       alert("Quiz saved successfully!");

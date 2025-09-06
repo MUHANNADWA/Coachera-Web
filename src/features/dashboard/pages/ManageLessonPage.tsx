@@ -1,11 +1,11 @@
+// ManageLessonPage.tsx
+// Edit-only page. Creation happens in SectionCard before navigating here.
+
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "../../../shared/components/form/Button";
 import QuizSection from "./QuizSection";
 import Input from "../../../shared/components/form/Input";
-import {
-  useCreateMaterialMutation,
-  useUpdateMaterialMutation,
-} from "../../courses/api/materialApiSlice";
+import { useUpdateMaterialMutation } from "../../courses/api/materialApiSlice";
 import { useAppHook } from "../../../shared/hooks/useAppHook";
 import { Material, MaterialType } from "../../../shared/types/types";
 import ReactMarkdown from "react-markdown";
@@ -46,7 +46,6 @@ function insertSnippet(textarea: HTMLTextAreaElement, snippet: string) {
 
 /** Enum helpers */
 const MATERIAL_TYPES: MaterialType[] = ["VIDEO", "ARTICLE", "QUIZ"];
-
 const typeLabel = (t: MaterialType) =>
   t === "VIDEO" ? "Video" : t === "ARTICLE" ? "Article" : "Quiz";
 
@@ -58,6 +57,11 @@ export default function ManageLessonPage() {
   const initial: Material | undefined = location?.state?.initial;
   const orderIndexFromState: number | undefined = location?.state?.orderIndex;
 
+  // If no materialId, go back (edit-only page)
+  useEffect(() => {
+    if (!materialId) navigate(-1);
+  }, [materialId, navigate]);
+
   const [lessonType, setLessonType] = useState<MaterialType>("ARTICLE");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -65,6 +69,7 @@ export default function ManageLessonPage() {
   const [showCheatsheet, setShowCheatsheet] = useState(true);
   const mdRef = useRef<HTMLTextAreaElement | null>(null);
 
+  // Initialize form from passed initial data
   useEffect(() => {
     if (!initial) return;
     setTitle(initial.title ?? "");
@@ -80,8 +85,6 @@ export default function ManageLessonPage() {
     }
   }, [initial]);
 
-  const [createMaterial, { isLoading: isCreating }] =
-    useCreateMaterialMutation();
   const [updateMaterial, { isLoading: isUpdating }] =
     useUpdateMaterialMutation();
 
@@ -91,11 +94,12 @@ export default function ManageLessonPage() {
       orderIndex: Number.isFinite(orderIndexFromState)
         ? orderIndexFromState
         : 0,
-      sectionId: sectionId,
+      sectionId,
       type: lessonType,
     };
-    if (lessonType === "QUIZ") base.quiz = { questions: quizQuestions };
-    else if (lessonType === "VIDEO") base.videoUrl = content;
+    // if (lessonType === "QUIZ") base.quiz = { questions: quizQuestions };
+    // else
+    if (lessonType === "VIDEO") base.videoUrl = content;
     else base.article = content; // markdown
     return base;
   }, [
@@ -108,20 +112,15 @@ export default function ManageLessonPage() {
   ]);
 
   const handleSave = async () => {
-    try {
-      if (materialId) {
-        await updateMaterial({
-          sectionId,
-          materialId,
-          data: { ...payload },
-        }).unwrap();
-        alert("Lesson updated!");
-      } else {
-        console.log("Trying to CREATE Material", payload);
+    console.log("trying to update material => ", payload);
 
-        await createMaterial(payload).unwrap();
-        alert("Lesson created!");
-      }
+    try {
+      if (!materialId) return;
+      await updateMaterial({
+        materialId,
+        data: { ...payload },
+      }).unwrap();
+      alert("Lesson updated!");
       navigate(-1);
     } catch (err) {
       console.error("Failed to save lesson:", err);
@@ -202,9 +201,7 @@ export default function ManageLessonPage() {
 
   return (
     <div className="max-w-5xl mx-auto p-6 space-y-6">
-      <h1 className="text-2xl font-bold">
-        {materialId ? "Edit Lesson" : "Create Lesson"}
-      </h1>
+      <h1 className="text-2xl font-bold">Edit Lesson</h1>
 
       <div>
         <label className="block font-medium mb-1">Lesson Title</label>
@@ -399,15 +396,9 @@ export default function ManageLessonPage() {
         onClick={handleSave}
         className="mt-4"
         variant="primary"
-        disabled={isCreating || isUpdating}
+        disabled={isUpdating}
       >
-        {materialId
-          ? isUpdating
-            ? "Updating..."
-            : "Update Lesson"
-          : isCreating
-          ? "Saving..."
-          : "Save Lesson"}
+        {isUpdating ? "Updating..." : "Update Lesson"}
       </Button>
     </div>
   );

@@ -1,3 +1,6 @@
+// LessonRow.tsx
+// Simple row with inline title editing and edit/remove actions.
+
 import {
   PencilSquareIcon,
   TrashIcon,
